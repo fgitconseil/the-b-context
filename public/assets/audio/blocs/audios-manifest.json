@@ -1,0 +1,200 @@
+{
+  "bloc-01": {
+    "duration_seconds": 608.5,
+    "size_bytes": 9737239,
+    "chapitres": [
+      {
+        "name": "1.1",
+        "duration": 57.776,
+        "tStart_in_bloc": 0.0,
+        "source_size_bytes": 1398816
+      },
+      {
+        "name": "1.2",
+        "duration": 209.947,
+        "tStart_in_bloc": 57.776,
+        "source_size_bytes": 5079456
+      },
+      {
+        "name": "1.3",
+        "duration": 120.11,
+        "tStart_in_bloc": 267.723,
+        "source_size_bytes": 2906572
+      },
+      {
+        "name": "1.4",
+        "duration": 153.843,
+        "tStart_in_bloc": 387.833,
+        "source_size_bytes": 3722372
+      },
+      {
+        "name": "1.5",
+        "duration": 66.976,
+        "tStart_in_bloc": 541.676,
+        "source_size_bytes": 1621212
+      }
+    ]
+  },
+  "bloc-02": {
+    "duration_seconds": 720.2,
+    "size_bytes": 11524432,
+    "chapitres": [
+      {
+        "name": "2.1",
+        "duration": 52.776,
+        "tStart_in_bloc": 0.0,
+        "source_size_bytes": 1277556
+      },
+      {
+        "name": "2.2",
+        "duration": 161.371,
+        "tStart_in_bloc": 52.776,
+        "source_size_bytes": 3904520
+      },
+      {
+        "name": "2.3",
+        "duration": 176.176,
+        "tStart_in_bloc": 214.147,
+        "source_size_bytes": 4262640
+      },
+      {
+        "name": "2.4",
+        "duration": 198.547,
+        "tStart_in_bloc": 390.323,
+        "source_size_bytes": 4803396
+      },
+      {
+        "name": "2.5",
+        "duration": 89.843,
+        "tStart_in_bloc": 588.87,
+        "source_size_bytes": 2174368
+      },
+      {
+        "name": "2.6",
+        "duration": 41.707,
+        "tStart_in_bloc": 678.713,
+        "source_size_bytes": 1009728
+      }
+    ]
+  },
+  "bloc-03": {
+    "duration_seconds": 754.3,
+    "size_bytes": 12069869,
+    "chapitres": [
+      {
+        "name": "3.1",
+        "duration": 70.411,
+        "tStart_in_bloc": 0.0,
+        "source_size_bytes": 1704288
+      },
+      {
+        "name": "3.2",
+        "duration": 192.51,
+        "tStart_in_bloc": 70.411,
+        "source_size_bytes": 4657368
+      },
+      {
+        "name": "3.3",
+        "duration": 106.891,
+        "tStart_in_bloc": 262.921,
+        "source_size_bytes": 2586652
+      },
+      {
+        "name": "3.4",
+        "duration": 114.043,
+        "tStart_in_bloc": 369.812,
+        "source_size_bytes": 2759512
+      },
+      {
+        "name": "3.5",
+        "duration": 141.019,
+        "tStart_in_bloc": 483.855,
+        "source_size_bytes": 3412256
+      },
+      {
+        "name": "3.6",
+        "duration": 129.643,
+        "tStart_in_bloc": 624.874,
+        "source_size_bytes": 3136700
+      }
+    ]
+  },
+  "bloc-04": {
+    "duration_seconds": 476.2,
+    "size_bytes": 7620275,
+    "chapitres": [
+      {
+        "name": "4.1",
+        "duration": 83.176,
+        "tStart_in_bloc": 0.0,
+        "source_size_bytes": 2012856
+      },
+      {
+        "name": "4.2",
+        "duration": 166.576,
+        "tStart_in_bloc": 83.176,
+        "source_size_bytes": 4030424
+      },
+      {
+        "name": "4.3",
+        "duration": 73.11,
+        "tStart_in_bloc": 249.752,
+        "source_size_bytes": 1769296
+      },
+      {
+        "name": "4.4",
+        "duration": 62.827,
+        "tStart_in_bloc": 322.862,
+        "source_size_bytes": 1520584
+      },
+      {
+        "name": "4.5",
+        "duration": 90.71,
+        "tStart_in_bloc": 385.689,
+        "source_size_bytes": 2195012
+      }
+    ]
+  },
+  "bloc-05": {
+    "duration_seconds": 662.7,
+    "size_bytes": 10604086,
+    "chapitres": [
+      {
+        "name": "5.1",
+        "duration": 70.363,
+        "tStart_in_bloc": 0.0,
+        "source_size_bytes": 1703256
+      },
+      {
+        "name": "5.2",
+        "duration": 31.043,
+        "tStart_in_bloc": 70.363,
+        "source_size_bytes": 752252
+      },
+      {
+        "name": "5.3",
+        "duration": 125.707,
+        "tStart_in_bloc": 101.406,
+        "source_size_bytes": 3041764
+      },
+      {
+        "name": "5.4",
+        "duration": 180.355,
+        "tStart_in_bloc": 227.113,
+        "source_size_bytes": 4363788
+      },
+      {
+        "name": "5.5",
+        "duration": 217.219,
+        "tStart_in_bloc": 407.468,
+        "source_size_bytes": 5255424
+      },
+      {
+        "name": "5.6",
+        "duration": 38.176,
+        "tStart_in_bloc": 624.687,
+        "source_size_bytes": 924596
+      }
+    ]
+  }
+}
