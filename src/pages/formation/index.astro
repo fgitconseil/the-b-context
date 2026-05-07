@@ -57,11 +57,12 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
     const content = document.getElementById('formation-content');
     if (content) content.style.visibility = '';
 
-    // Charger la progression
+    // Charger la progression — uniquement les blocs avec completed_at non nul
     const { data: progress } = await supabase
       .from('formation_progress')
       .select('bloc_id')
-      .eq('user_id', session.user.id);
+      .eq('user_id', session.user.id)
+      .not('completed_at', 'is', null);
 
     const completed = new Set((progress ?? []).map((r: { bloc_id: string }) => r.bloc_id));
     const count = completed.size;
