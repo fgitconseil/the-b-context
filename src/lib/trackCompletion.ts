@@ -62,6 +62,8 @@ export async function saveSlideProgress(blocId: string, slideIndex: number): Pro
 export async function loadSlideProgress(blocId: string): Promise<number> {
   const { data: { session } } = await supabase.auth.getSession();
   if (session) {
+    // Connecté : Supabase fait autorité. Si la ligne n'existe pas (ex : DELETE manuel),
+    // on repart de 0 — pas de fallback localStorage.
     const { data } = await supabase
       .from('formation_progress')
       .select('current_slide')
@@ -69,9 +71,10 @@ export async function loadSlideProgress(blocId: string): Promise<number> {
       .eq('bloc_id', blocId)
       .maybeSingle();
 
-    if (data?.current_slide != null) return data.current_slide;
+    return data?.current_slide ?? 0;
   }
 
+  // Non connecté : fallback localStorage
   try {
     const stored = localStorage.getItem(`${LS_KEY_PREFIX}${blocId}`);
     if (stored !== null) return Number.parseInt(stored, 10) || 0;
