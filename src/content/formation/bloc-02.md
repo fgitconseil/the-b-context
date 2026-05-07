@@ -2,81 +2,54 @@
 bloc: 2
 titre: "Risques · cadre commun"
 duree_estimee: "~12 min"
-audio: "/assets/audio/blocs/bloc-02.mp3"
-takeaway: "/assets/takeaways/bloc-02.png"
 accroche: "Les 3 risques professionnels réels — exfiltration, risque réputationnel, industrialisation prématurée. Les règles simples pour ne pas les subir."
 categorie: "Comprendre"
+takeaway: "/assets/takeaways/bloc-02.png"
 slides:
   - index: 0
     titre: "Accroche · manager 18h, appel d'offres"
-    visuel: "assets/visuels/Diapositive9.PNG"
-    t_start: 0.0
-    marqueurs: []
+    audio: "/assets/audio/blocs/2.1.mp3"
+    duration: 52.776
+    visuels:
+      - { fichier: "Diapositive9.PNG", t_start: 0 }
   - index: 1
-    titre: "Exfiltration · définition"
-    visuel: "assets/visuels/Diapositive10.PNG"
-    t_start: 52.776
-    marqueurs: []
+    titre: "Exfiltration · règles et niveaux de protection"
+    audio: "/assets/audio/blocs/2.2.mp3"
+    duration: 161.371
+    visuels:
+      - { fichier: "Diapositive10.PNG", t_start: 0 }
+      - { fichier: "Diapositive11.PNG", t_start: 25,  marqueurs: ["4-categories-donnees"] }
+      - { fichier: "Diapositive12.PNG", t_start: 70,  marqueurs: ["3-questions-regle", "question-1-public", "question-2-personnes", "question-3-strategique"] }
+      - { fichier: "Diapositive13.PNG", t_start: 100, marqueurs: ["3-niveaux-protection", "niveau-public", "niveau-pro", "niveau-enterprise"] }
   - index: 2
-    titre: "4 catégories · clients, RH, stratégiques, code"
-    visuel: "assets/visuels/Diapositive11.PNG"
-    t_start: 77.776
-    marqueurs: ["4-categories-donnees"]
+    titre: "Réputationnel · zones et protocole"
+    audio: "/assets/audio/blocs/2.3.mp3"
+    duration: 176.176
+    visuels:
+      - { fichier: "Diapositive14.PNG", t_start: 0,   marqueurs: ["4-zones-reputation", "zone-dates", "zone-chiffres", "zone-citations", "zone-engagements"] }
+      - { fichier: "Diapositive15.PNG", t_start: 65,  marqueurs: ["usurpation-deepfakes", "deepfakes-exemples"] }
+      - { fichier: "Diapositive16.PNG", t_start: 139, marqueurs: ["protocole-3-temps", "etape-identifier", "etape-verifier", "etape-relire"] }
   - index: 3
-    titre: "Règle des 3 questions"
-    visuel: "assets/visuels/Diapositive12.PNG"
-    t_start: 122.776
-    marqueurs: ["3-questions-regle", "question-1-public", "question-2-personnes", "question-3-strategique"]
+    titre: "Industrialisation · cadre S.F.O.I. et garde-fous"
+    audio: "/assets/audio/blocs/2.4.mp3"
+    duration: 198.547
+    visuels:
+      - { fichier: "Diapositive17.PNG", t_start: 0,   marqueurs: ["industrialisation-prematuree", "scenario-commercial", "scenario-erreur-multipliee"] }
+      - { fichier: "Diapositive18.PNG", t_start: 45,  marqueurs: ["progression-sfoi-apercu", "sfoi-S", "sfoi-F", "sfoi-O", "sfoi-I", "sfoi-regle-absolue"] }
+      - { fichier: "Diapositive19.PNG", t_start: 81,  marqueurs: ["3-questions-automatiser", "q-validation-humaine", "q-erreurs-corrigees", "q-supervision"] }
+      - { fichier: "Diapositive20.PNG", t_start: 108, marqueurs: ["ai-act-article-4"] }
   - index: 4
-    titre: "3 niveaux de protection"
-    visuel: "assets/visuels/Diapositive13.PNG"
-    t_start: 152.776
-    marqueurs: ["3-niveaux-protection", "niveau-public", "niveau-pro", "niveau-enterprise"]
-  - index: 5
-    titre: "Réputationnel · 4 zones"
-    visuel: "assets/visuels/Diapositive14.PNG"
-    t_start: 214.147
-    marqueurs: ["4-zones-reputation", "zone-dates", "zone-chiffres", "zone-citations", "zone-engagements"]
-  - index: 6
-    titre: "Usurpation · deepfakes (3 cas)"
-    visuel: "assets/visuels/Diapositive15.PNG"
-    t_start: 279.147
-    marqueurs: ["usurpation-deepfakes", "deepfakes-exemples"]
-  - index: 7
-    titre: "Protocole de vérification en 3 temps"
-    visuel: "assets/visuels/Diapositive16.PNG"
-    t_start: 353.147
-    marqueurs: ["protocole-3-temps", "etape-identifier", "etape-verifier", "etape-relire"]
-  - index: 8
-    titre: "Industrialisation · scénario 200 clients"
-    visuel: "assets/visuels/Diapositive17.PNG"
-    t_start: 390.323
-    marqueurs: ["industrialisation-prematuree", "scenario-commercial", "scenario-erreur-multipliee"]
-  - index: 9
-    titre: "S.F.O.I. en aperçu"
-    visuel: "assets/visuels/Diapositive18.PNG"
-    t_start: 435.323
-    marqueurs: ["progression-sfoi-apercu", "sfoi-S", "sfoi-F", "sfoi-O", "sfoi-I", "sfoi-regle-absolue"]
-  - index: 10
-    titre: "3 questions avant d'automatiser"
-    visuel: "assets/visuels/Diapositive19.PNG"
-    t_start: 471.323
-    marqueurs: ["3-questions-automatiser", "q-validation-humaine", "q-erreurs-corrigees", "q-supervision"]
-  - index: 11
-    titre: "AI Act Article 4 · 3 questions auto-éval"
-    visuel: "assets/visuels/Diapositive20.PNG"
-    t_start: 498.323
-    marqueurs: ["ai-act-article-4"]
-  - index: 12
     titre: "Clôture · 3 risques ↔ 3 règles"
-    visuel: "assets/visuels/Diapositive21.PNG"
-    t_start: 588.87
-    marqueurs: []
-  - index: 13
+    audio: "/assets/audio/blocs/2.5.mp3"
+    duration: 89.843
+    visuels:
+      - { fichier: "Diapositive21.PNG", t_start: 0 }
+  - index: 5
     titre: "Postscript environnemental"
-    visuel: "assets/visuels/Diapositive22.PNG"
-    t_start: 678.713
-    marqueurs: []
+    audio: "/assets/audio/blocs/2.6.mp3"
+    duration: 41.707
+    visuels:
+      - { fichier: "Diapositive22.PNG", t_start: 0 }
 quiz_inline:
   - after_slide: 4
     question: "Vous recevez une demande urgente d'un client. Pour rédiger rapidement votre réponse, vous copiez-collez son email complet (avec ses coordonnées, le montant du contrat et ses conditions particulières) dans l'interface gratuite d'un outil IA. Quel risque avez-vous pris ?"

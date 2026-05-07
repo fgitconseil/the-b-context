@@ -2,66 +2,51 @@
 bloc: 5
 titre: "Quand l'usage devient collectif"
 duree_estimee: "~11 min"
-audio: "/assets/audio/blocs/bloc-05.mp3"
-takeaway: "/assets/takeaways/bloc-05.png"
 accroche: "Skills, boucle amplificatrice et reddition cognitive. Ce que la formation individuelle ne résout pas — et ce que l'AI Practice Steward adresse."
 categorie: "Ouverture"
+takeaway: "/assets/takeaways/bloc-05.png"
 slides:
   - index: 0
-    titre: "Récap parcours · 4 cartouches"
-    visuel: "assets/visuels/Diapositive38.PNG"
-    t_start: 0.0
-    marqueurs: ["recap-chemin"]
+    titre: "Récap parcours"
+    audio: "/assets/audio/blocs/5.1.mp3"
+    duration: 70.363
+    visuels:
+      - { fichier: "Diapositive38.PNG", t_start: 0, marqueurs: ["recap-chemin"] }
   - index: 1
     titre: "Lucidité · individu vs système"
-    visuel: "assets/visuels/Diapositive39.PNG"
-    t_start: 70.363
-    marqueurs: []
+    audio: "/assets/audio/blocs/5.2.mp3"
+    duration: 31.043
+    visuels:
+      - { fichier: "Diapositive39.PNG", t_start: 0 }
   - index: 2
-    titre: "Boucles · capacité crée responsabilité"
-    visuel: "assets/visuels/Diapositive40.PNG"
-    t_start: 101.406
-    marqueurs: []
+    titre: "Les 2 boucles"
+    audio: "/assets/audio/blocs/5.3.mp3"
+    duration: 125.707
+    visuels:
+      - { fichier: "Diapositive40.PNG", t_start: 0 }
+      - { fichier: "Diapositive41.PNG", t_start: 55, marqueurs: ["boucle-amplificatrice", "ampli-etape-1", "ampli-etape-2", "ampli-etape-3", "ampli-etape-4", "ampli-choc"] }
+      - { fichier: "Diapositive42.PNG", t_start: 78, marqueurs: ["reddition-cognitive", "reddition-jalon-1", "reddition-jalon-2", "reddition-jalon-3", "reddition-question"] }
   - index: 3
-    titre: "Boucle amplificatrice"
-    visuel: "assets/visuels/Diapositive41.PNG"
-    t_start: 156.406
-    marqueurs: ["boucle-amplificatrice", "ampli-etape-1", "ampli-etape-2", "ampli-etape-3", "ampli-etape-4", "ampli-choc"]
+    titre: "IMIA · pentagone"
+    audio: "/assets/audio/blocs/5.4.mp3"
+    duration: 180.355
+    visuels:
+      - { fichier: "Diapositive43.PNG", t_start: 0, marqueurs: ["imia-pentagone", "imia-trace-organisation"] }
   - index: 4
-    titre: "Reddition cognitive"
-    visuel: "assets/visuels/Diapositive42.PNG"
-    t_start: 179.406
-    marqueurs: ["reddition-cognitive", "reddition-jalon-1", "reddition-jalon-2", "reddition-jalon-3", "reddition-question"]
+    titre: "Le Steward · sens et capacités"
+    audio: "/assets/audio/blocs/5.5.mp3"
+    duration: 217.219
+    visuels:
+      - { fichier: "Diapositive44.PNG", t_start: 0 }
+      - { fichier: "Diapositive45.PNG", t_start: 35,  marqueurs: ["steward-titre"] }
+      - { fichier: "Diapositive46.PNG", t_start: 119, marqueurs: ["capacite-voir-boucles", "capacite-niveaux", "steward-niveau-individu", "steward-niveau-equipe", "steward-niveau-organisation", "capacite-resistance"] }
+      - { fichier: "Diapositive47.PNG", t_start: 143, marqueurs: ["skills-expert", "skills-capture", "skills-cartouche", "skills-cas-usage"] }
   - index: 5
-    titre: "IMIA · pentagone des 5 dimensions"
-    visuel: "assets/visuels/Diapositive43.PNG"
-    t_start: 227.113
-    marqueurs: ["imia-pentagone", "imia-trace-organisation"]
-  - index: 6
-    titre: "Trois rôles confondus"
-    visuel: "assets/visuels/Diapositive44.PNG"
-    t_start: 407.468
-    marqueurs: []
-  - index: 7
-    titre: "Sens originel du Steward"
-    visuel: "assets/visuels/Diapositive45.PNG"
-    t_start: 442.468
-    marqueurs: ["steward-titre"]
-  - index: 8
-    titre: "3 capacités appliquées à l'IA"
-    visuel: "assets/visuels/Diapositive46.PNG"
-    t_start: 526.468
-    marqueurs: ["capacite-voir-boucles", "capacite-niveaux", "steward-niveau-individu", "steward-niveau-equipe", "steward-niveau-organisation", "capacite-resistance"]
-  - index: 9
-    titre: "Livrables · ne fait pas"
-    visuel: "assets/visuels/Diapositive47.PNG"
-    t_start: 550.468
-    marqueurs: ["skills-expert", "skills-capture", "skills-cartouche", "skills-cas-usage"]
-  - index: 10
     titre: "Clôture"
-    visuel: "assets/visuels/Diapositive48.PNG"
-    t_start: 624.687
-    marqueurs: []
+    audio: "/assets/audio/blocs/5.6.mp3"
+    duration: 38.176
+    visuels:
+      - { fichier: "Diapositive48.PNG", t_start: 0 }
 quiz_inline:
   - after_slide: 9
     question: "Un skill donné à un assistant, c'est avant tout..."

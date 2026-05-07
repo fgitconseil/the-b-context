@@ -10,90 +10,81 @@ interface Props {
 }
 
 const { entry, blocId, nextBlocUrl, phaseLabel = 'Formation' } = Astro.props;
-const { slides, quiz_inline, quiz_final } = entry.data;
+const { slides, quiz_inline, quiz_final, titre, bloc } = entry.data;
 const qi = quiz_inline ?? [];
 const qf = quiz_final ?? [];
+const TOTAL_QF = qf.length;
 
-const audioSrc = entry.data.audio ?? `${base}assets/audio/blocs/${blocId}.mp3`;
-const takeawayPath = entry.data.takeaway ?? null;
-const hasTakeaway = !!takeawayPath;
+// ── Parse body into script sections (H2 → text) ─────────────────────
+const bodyText = (entry as any).body ?? '';
+const sections: Record<string, string> = {};
+const sectionParts = bodyText.split(/\n(?=## )/);
+for (const part of sectionParts) {
+  const m = part.match(/^## (.+?)\n([\s\S]*)/);
+  if (m) sections[m[1].trim()] = m[2].trim();
+}
 
-// Per-bloc accent
-const accentClass: Record<number, string> = {
+function mdToHtml(md: string): string {
+  return md.split('\n\n').map(p => {
+    const html = p
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/_(.*?)_/g, '<em>$1</em>')
+      .replace(/\n/g, '<br>');
+    return `<p class="mb-3 text-slate-600 text-sm leading-relaxed">${html}</p>`;
+  }).join('');
+}
+
+const scriptHtmls: string[] = slides.map(s =>
+  sections[s.titre]
+    ? mdToHtml(sections[s.titre])
+    : '<p class="text-slate-400 italic text-sm">Script non disponible pour cette slide.</p>'
+);
+
+// Build-time report of H2 mismatches
+const mismatches = slides.filter(s => !sections[s.titre]).map(s => s.titre);
+if (mismatches.length > 0) {
+  console.warn(`[SlidePlayer ${blocId}] H2 sections introuvables pour :`, mismatches);
+}
+
+// ── Per-bloc accent colors ───────────────────────────────────────────
+const accentBg: Record<number, string> = {
   1: 'bg-blue-600', 2: 'bg-blue-600', 3: 'bg-green-600', 4: 'bg-amber-500', 5: 'bg-purple-600',
 };
-const accentTextClass: Record<number, string> = {
+const accentText: Record<number, string> = {
   1: 'text-blue-600', 2: 'text-blue-600', 3: 'text-green-600', 4: 'text-amber-600', 5: 'text-purple-600',
 };
-const quizOptHover: Record<number, string> = {
+const qiAccent: Record<number, string> = {
   1: 'hover:border-blue-400 hover:bg-blue-50',
   2: 'hover:border-blue-400 hover:bg-blue-50',
   3: 'hover:border-green-400 hover:bg-green-50',
   4: 'hover:border-amber-400 hover:bg-amber-50',
   5: 'hover:border-purple-400 hover:bg-purple-50',
 };
-const progressColor = accentClass[entry.data.bloc] ?? 'bg-blue-600';
-const textAccent = accentTextClass[entry.data.bloc] ?? 'text-blue-600';
-const qHover = quizOptHover[entry.data.bloc] ?? quizOptHover[1];
+const progressColor = accentBg[bloc] ?? 'bg-blue-600';
+const textAccent    = accentText[bloc] ?? 'text-blue-600';
+const qHover        = qiAccent[bloc] ?? qiAccent[1];
 
-// Build ordered panels
-const panels: Array<
-  | { kind: 'slide'; slide: typeof slides[0]; slideIdx: number }
-  | { kind: 'quiz-inline'; quiz: typeof qi[0]; quizIdx: number }
-  | { kind: 'quiz-final'; quiz: typeof qf[0]; qNum: number }
-  | { kind: 'score' }
-  | { kind: 'endscreen' }
-> = [];
+const hasTakeaway = !!entry.data.takeaway;
+const takeawayPath = entry.data.takeaway ?? '';
 
-for (let i = 0; i < slides.length; i++) {
-  panels.push({ kind: 'slide', slide: slides[i], slideIdx: i });
-  const q = qi.find(q => q.after_slide === i);
-  if (q) panels.push({ kind: 'quiz-inline', quiz: q, quizIdx: qi.indexOf(q) });
-}
-qf.forEach((q, idx) => panels.push({ kind: 'quiz-final', quiz: q, qNum: idx + 1 }));
-panels.push(qf.length > 0 ? { kind: 'score' } : { kind: 'endscreen' });
+// ── Minimal slides data for client JS ───────────────────────────────
+const slidesForJs = slides.map(s => ({
+  audio: s.audio,
+  titre: s.titre,
+  visuels: s.visuels.map(v => ({ fichier: v.fichier, t_start: v.t_start })),
+}));
 
-const TOTAL_PANELS = panels.length;
-const SLIDES_COUNT = slides.length;
-const TOTAL_QF = qf.length;
-
-// Build TIMELINE (audio timestamp → panel transition)
-const TIMELINE: Array<{
-  t: number; type: 'slide' | 'quiz';
-  panelIdx: number; nextPanelIdx?: number; slideIdx: number;
-}> = [];
-
-for (let i = 0; i < slides.length - 1; i++) {
-  const nextSlide = slides[i + 1];
-  const quizAfterI = qi.find(q => q.after_slide === i);
-  if (quizAfterI) {
-    const quizPanelIdx = panels.findIndex(
-      p => p.kind === 'quiz-inline' && (p as { quizIdx: number }).quizIdx === qi.indexOf(quizAfterI)
-    );
-    const nextSlidePanelIdx = panels.findIndex(
-      p => p.kind === 'slide' && (p as { slideIdx: number }).slideIdx === i + 1
-    );
-    TIMELINE.push({ t: nextSlide.t_start, type: 'quiz', panelIdx: quizPanelIdx, nextPanelIdx: nextSlidePanelIdx, slideIdx: i });
-  } else {
-    const nextSlidePanelIdx = panels.findIndex(
-      p => p.kind === 'slide' && (p as { slideIdx: number }).slideIdx === i + 1
-    );
-    TIMELINE.push({ t: nextSlide.t_start, type: 'slide', panelIdx: nextSlidePanelIdx, slideIdx: i + 1 });
-  }
-}
-
-const TIMELINE_JSON = JSON.stringify(TIMELINE);
+const qiForJs = qi.map(q => ({ after_slide: q.after_slide }));
 ---
 
 <section
   class="max-w-2xl mx-auto px-4 py-8"
   id="sp-root"
   data-bloc-id={blocId}
-  data-timeline={TIMELINE_JSON}
-  data-total-panels={String(TOTAL_PANELS)}
-  data-total-qf={String(TOTAL_QF)}
-  data-slides-count={String(SLIDES_COUNT)}
   data-next-bloc-url={nextBlocUrl}
+  data-slides-json={JSON.stringify(slidesForJs)}
+  data-qi-json={JSON.stringify(qiForJs)}
+  data-total-qf={String(TOTAL_QF)}
 >
 
   <!-- Breadcrumb -->
@@ -103,236 +94,203 @@ const TIMELINE_JSON = JSON.stringify(TIMELINE);
     <span>{phaseLabel}</span>
   </nav>
 
-  <h1 class="text-xl font-bold text-slate-900 mb-5">{entry.data.titre}</h1>
+  <h1 class="text-xl font-bold text-slate-900 mb-5">{titre}</h1>
 
-  <!-- Slide counter + progress bar -->
-  <div class="mb-6">
+  <!-- Counter + progress (hidden during qf/done phases by JS) -->
+  <div id="counter-section" class="mb-6">
     <div class="flex items-center justify-between mb-2">
-      <span id="slide-counter" class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-        1 / {SLIDES_COUNT}
+      <span class="text-xs font-bold uppercase tracking-widest text-slate-500">
+        Slide <span id="counter-current">1</span> / <span id="counter-total">{slides.length}</span>
       </span>
     </div>
     <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
       <div
         id="progress-fill"
         class={`h-full ${progressColor} rounded-full transition-all duration-300`}
-        style={`width:${(1 / SLIDES_COUNT * 100).toFixed(2)}%`}
+        style={`width:${(1 / slides.length * 100).toFixed(2)}%`}
       ></div>
     </div>
   </div>
 
-  <!-- Hidden audio element — src driven by frontmatter.audio -->
-  <audio id="bloc-audio" src={audioSrc} preload="metadata" style="display:none"></audio>
+  <!-- Slide narrative title -->
+  <h2 id="slide-narrative-title" class={`text-base font-semibold mb-4 ${textAccent}`}>
+    {slides[0].titre}
+  </h2>
 
-  <!-- Panels container -->
-  <div id="panels-container">
-    {panels.map((panel, i) => (
-      <div
-        class="sp-panel"
-        id={`panel-${i}`}
-        data-panel-kind={panel.kind}
-        data-slide-idx={panel.kind === 'slide' ? String((panel as { slideIdx: number }).slideIdx) : ''}
-        style={i > 0 ? 'display:none' : ''}
+  <!-- ── SLIDE AREA ────────────────────────────────────────────────── -->
+  <div id="slide-area">
+
+    <!-- Image zone -->
+    <div id="visuel-zone" class="relative mb-4 rounded-xl overflow-hidden border border-slate-100 bg-slate-50">
+      <img
+        id="main-visuel"
+        src={`${base}assets/visuels/${slides[0].visuels[0].fichier}`}
+        alt={slides[0].titre}
+        style="width:100%; max-height:480px; object-fit:contain; display:block;"
+        loading="eager"
+      />
+      <button
+        class="zoom-btn absolute bottom-2 right-2 w-8 h-8 rounded-md flex items-center justify-center"
+        style="background:rgba(0,0,0,0.45); border:none; cursor:pointer; z-index:2;"
+        data-action="zoom"
+        aria-label="Agrandir"
       >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15,3 21,3 21,9"/><polyline points="9,21 3,21 3,15"/>
+          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+      </button>
+    </div>
 
-        {/* ── CONTENT SLIDE ── */}
-        {panel.kind === 'slide' && (() => {
-          const s = (panel as { slide: typeof slides[0] }).slide;
-          return (
-            <div>
-              {/* Image — click on wrap toggles play/pause */}
-              <div
-                class="img-player-wrap mb-4 rounded-xl overflow-hidden border border-slate-100 bg-slate-50"
-                data-action="play-pause"
-                data-img-wrap
-                role="button"
-                tabindex="0"
-                style="position:relative; cursor:pointer;"
-              >
-                <img
-                  src={`${base}${s.visuel}`}
-                  alt={s.titre}
-                  style="width:100%; max-height:480px; object-fit:contain; display:block;"
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                />
-                <div class="play-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-                  <div class="play-circle">
-                    <svg class="play-icon" width="30" height="30" viewBox="0 0 24 24" fill="white" aria-hidden="true">
-                      <polygon points="7,3 21,12 7,21"/>
-                    </svg>
-                    <svg class="pause-icon" width="30" height="30" viewBox="0 0 24 24" fill="white" aria-hidden="true" style="display:none">
-                      <rect x="4" y="3" width="5" height="18" rx="1"/>
-                      <rect x="15" y="3" width="5" height="18" rx="1"/>
-                    </svg>
-                  </div>
-                </div>
-                <button
-                  class="zoom-btn"
-                  data-action="zoom"
-                  aria-label="Agrandir l'image"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polyline points="15,3 21,3 21,9"/><polyline points="9,21 3,21 3,15"/>
-                    <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
-                  </svg>
-                </button>
-              </div>
-
-              {/* Play button + time display */}
-              <div class="mb-4 flex items-center gap-3">
-                <button
-                  class={`flex items-center gap-2 px-4 py-2 rounded-lg ${progressColor} text-white text-sm font-medium hover:opacity-90 transition-opacity`}
-                  data-action="play-pause"
-                >
-                  <svg class="btn-play-icon" width="12" height="12" viewBox="0 0 24 24" fill="white" aria-hidden="true">
-                    <polygon points="7,3 21,12 7,21"/>
-                  </svg>
-                  <svg class="btn-pause-icon" width="12" height="12" viewBox="0 0 24 24" fill="white" aria-hidden="true" style="display:none">
-                    <rect x="4" y="3" width="5" height="18" rx="1"/>
-                    <rect x="15" y="3" width="5" height="18" rx="1"/>
-                  </svg>
-                  <span class="btn-label">Écouter</span>
-                </button>
-                <span id="audio-time" class="text-xs text-slate-400 font-mono">0:00 / —</span>
-              </div>
-            </div>
-          );
-        })()}
-
-        {/* ── QUIZ INLINE ── */}
-        {panel.kind === 'quiz-inline' && (() => {
-          const p = panel as { quiz: typeof qi[0] };
-          return (
-            <div>
-              <div class="flex items-center gap-2 mb-5">
-                <span class="text-xs font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full uppercase tracking-wide">Pause réflexion</span>
-              </div>
-              <p class="text-base font-semibold text-slate-900 mb-5 leading-snug">{p.quiz.question}</p>
-              <div class="quiz-block space-y-2" data-answer={String(p.quiz.answer)} data-quiz-kind="inline">
-                {p.quiz.options.map((opt, j) => (
-                  <button
-                    type="button"
-                    class={`quiz-opt w-full text-left px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 ${qHover} transition-all`}
-                    data-index={String(j)}
-                    data-action="quiz-answer"
-                  >
-                    <span class="font-semibold text-amber-600 mr-2">{String.fromCharCode(65 + j)})</span>{opt}
-                  </button>
-                ))}
-                <div class="quiz-expl px-4 py-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 leading-relaxed mt-3" style="display:none">
-                  {p.quiz.explanation}
-                </div>
-              </div>
+    <!-- Quiz inline zone (hidden; appears when audio ends on relevant slide) -->
+    <div id="qi-zone" style="display:none">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-xs font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full uppercase tracking-wide">Pause réflexion</span>
+      </div>
+      {qi.map(q => (
+        <div class="qi-panel" data-after-slide={String(q.after_slide)} style="display:none">
+          <p class="text-base font-semibold text-slate-900 mb-4 leading-snug">{q.question}</p>
+          <div class="quiz-block space-y-2" data-answer={String(q.answer)} data-quiz-kind="inline">
+            {q.options.map((opt, j) => (
               <button
                 type="button"
-                id={`quiz-next-${i}`}
-                data-action="quiz-continue"
-                class="mt-5 px-5 py-2.5 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-900 transition-all"
-                style="display:none"
+                class={`quiz-opt w-full text-left px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 ${qHover} transition-all`}
+                data-index={String(j)}
+                data-action="quiz-answer"
               >
-                Continuer →
+                <span class="font-semibold text-amber-600 mr-2">{String.fromCharCode(65 + j)})</span>{opt}
               </button>
-            </div>
-          );
-        })()}
-
-        {/* ── QUIZ FINAL ── */}
-        {panel.kind === 'quiz-final' && (() => {
-          const p = panel as { quiz: typeof qf[0]; qNum: number };
-          return (
-            <div>
-              <div class="flex items-center gap-3 mb-5">
-                <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full uppercase tracking-wide">Quiz final</span>
-                <span class="text-xs text-slate-400">Question {p.qNum} / {TOTAL_QF}</span>
-              </div>
-              <p class="text-base font-semibold text-slate-900 mb-5 leading-snug">{p.quiz.question}</p>
-              <div class="quiz-block space-y-2" data-answer={String(p.quiz.answer)} data-quiz-kind="final">
-                {p.quiz.options.map((opt, j) => (
-                  <button
-                    type="button"
-                    class="quiz-opt w-full text-left px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 hover:border-blue-400 hover:bg-blue-50 transition-all"
-                    data-index={String(j)}
-                    data-action="quiz-answer"
-                  >
-                    <span class="font-semibold text-blue-600 mr-2">{String.fromCharCode(65 + j)})</span>{opt}
-                  </button>
-                ))}
-                <div class="quiz-expl px-4 py-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 leading-relaxed mt-3" style="display:none">
-                  {p.quiz.explanation}
-                </div>
-              </div>
-            </div>
-          );
-        })()}
-
-        {/* ── SCORE ── */}
-        {panel.kind === 'score' && (
-          <div class="text-center py-8">
-            <div id={`end-${blocId}`} style="display:none"></div>
-            <div class={`w-16 h-16 rounded-2xl ${progressColor} flex items-center justify-center mx-auto mb-6`}>
-              <span class="text-white text-2xl font-bold">✓</span>
-            </div>
-            <h2 class="text-2xl font-bold text-slate-900 mb-3">Bloc {entry.data.bloc} terminé</h2>
-            <div id="score-display" class={`text-3xl font-bold ${textAccent} mb-1`}>—</div>
-            <p class="text-slate-500 text-sm mb-6">questions du quiz final</p>
-            {hasTakeaway ? (
-              <div>
-                <p class="text-slate-500 mb-6 max-w-sm mx-auto">Téléchargez la fiche mémo pour garder les points clés sous la main.</p>
-                <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                  <a href={takeawayPath} download class={`inline-flex items-center gap-2 px-6 py-3 rounded-lg ${progressColor} text-white text-sm font-semibold hover:opacity-90 transition-colors`}>
-                    ↓ Télécharger la fiche mémo (PNG)
-                  </a>
-                  <a href={nextBlocUrl} class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:border-slate-300 hover:bg-slate-50 transition-colors">
-                    Bloc suivant →
-                  </a>
-                </div>
-              </div>
-            ) : (
-              <a href={nextBlocUrl} class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:border-slate-300 hover:bg-slate-50 transition-colors">
-                Bloc suivant →
-              </a>
-            )}
-          </div>
-        )}
-
-        {/* ── ENDSCREEN (bloc 5) ── */}
-        {panel.kind === 'endscreen' && (
-          <div class="py-8">
-            <div id={`end-${blocId}`} style="display:none"></div>
-            <div class="text-center mb-8">
-              <div class="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center mx-auto mb-4">
-                <span class="text-white text-2xl">★</span>
-              </div>
-              <h2 class="text-2xl font-bold text-slate-900 mb-2">Vous avez terminé la formation Reflexe IA.</h2>
-              <p class="text-slate-500 max-w-md mx-auto">Vous disposez d'une méthode personnelle — S.F.O.I. — et d'une grille de lecture pour ce qui dépasse l'individu : l'IMIA et le rôle d'AI Practice Steward.</p>
-            </div>
-            <div class="mb-6 p-5 rounded-xl bg-slate-50 border border-slate-200">
-              <p class="text-sm font-semibold text-slate-700 mb-3">Partagez votre progression</p>
-              <p class="text-sm text-slate-500 mb-4">Vous avez acquis une méthode concrète pour utiliser l'IA de façon rigoureuse et responsable. Si ce parcours vous a été utile, vous pouvez le signaler sur votre profil LinkedIn.</p>
-              <a
-                href="https://www.linkedin.com/profile/add?startTask=FORMATION-REFLEXE-IA&name=Formation%20Reflexe%20IA%20%E2%80%94%20M%C3%A9thode%20S.F.O.I.&organizationId=112952006&issueYear=2026&issueMonth=4&certUrl=https%3A%2F%2Freflexe-ia.org%2Fformation%2F"
-                target="_blank" rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0A66C2] text-white text-sm font-semibold hover:bg-[#004182] transition-colors"
-              >
-                Partager sur LinkedIn
-              </a>
-            </div>
-            <div class="p-6 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Aller plus loin</p>
-              <h3 class="text-lg font-bold mb-2">Vos collaborateurs ont suivi la formation — mais les pratiques ne changent pas dans l'organisation ?</h3>
-              <p class="text-slate-300 text-sm mb-4 leading-relaxed">Ce n'est pas un problème de compétence. C'est un problème de système.<br />C'est exactement ce qu'adresse un accompagnement par un AI Practice Steward.</p>
-              <a href={`${base}framework/ai-practice-steward/`} class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-slate-900 text-sm font-semibold hover:bg-slate-100 transition-colors">
-                Découvrir le rôle →
-              </a>
+            ))}
+            <div class="quiz-expl px-4 py-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 leading-relaxed mt-3" style="display:none">
+              {q.explanation}
             </div>
           </div>
-        )}
+          <button
+            type="button"
+            data-action="quiz-continue"
+            class="mt-4 px-5 py-2.5 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-900 transition-all"
+            style="display:none"
+          >
+            Continuer →
+          </button>
+        </div>
+      ))}
+    </div>
 
+    <!-- Native audio player -->
+    <audio
+      id="bloc-audio"
+      src={slides[0].audio}
+      preload="metadata"
+      controls
+      class="w-full mt-4 mb-4 rounded-lg"
+      style="height:40px;"
+    ></audio>
+
+    <!-- Script accordion -->
+    <details id="script-accordion" class="mt-2 rounded-xl border border-slate-100 bg-slate-50 overflow-hidden">
+      <summary class="px-4 py-3 text-sm font-medium text-slate-600 cursor-pointer select-none hover:text-slate-900 transition-colors list-none flex items-center justify-between">
+        <span>Voir le script complet</span>
+        <span class="text-slate-400 text-xs">▾</span>
+      </summary>
+      <div id="script-body" class="px-4 pb-4 pt-2 border-t border-slate-100" set:html={scriptHtmls[0]}></div>
+    </details>
+
+  </div>
+
+  <!-- ── QUIZ FINAL area (hidden) ──────────────────────────────────── -->
+  <div id="qf-area" style="display:none">
+    {qf.map((q, idx) => (
+      <div class="qf-panel" style={idx > 0 ? 'display:none' : ''}>
+        <div class="flex items-center gap-3 mb-5">
+          <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full uppercase tracking-wide">Quiz final</span>
+          <span class="text-xs text-slate-400">Question {idx + 1} / {TOTAL_QF}</span>
+        </div>
+        <p class="text-base font-semibold text-slate-900 mb-5 leading-snug">{q.question}</p>
+        <div class="quiz-block space-y-2" data-answer={String(q.answer)} data-quiz-kind="final">
+          {q.options.map((opt, j) => (
+            <button
+              type="button"
+              class="quiz-opt w-full text-left px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 hover:border-blue-400 hover:bg-blue-50 transition-all"
+              data-index={String(j)}
+              data-action="qf-answer"
+            >
+              <span class="font-semibold text-blue-600 mr-2">{String.fromCharCode(65 + j)})</span>{opt}
+            </button>
+          ))}
+          <div class="quiz-expl px-4 py-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 leading-relaxed mt-3" style="display:none">
+            {q.explanation}
+          </div>
+        </div>
       </div>
     ))}
   </div>
 
-  <!-- Navigation -->
+  <!-- ── DONE area : score + endscreen ────────────────────────────── -->
+  <div id="done-area" style="display:none">
+    <div id={`end-${blocId}`} style="display:none"></div>
+
+    {TOTAL_QF > 0 ? (
+      <!-- Score screen (blocs 1-4) -->
+      <div class="text-center py-8">
+        <div class={`w-16 h-16 rounded-2xl ${progressColor} flex items-center justify-center mx-auto mb-6`}>
+          <span class="text-white text-2xl font-bold">✓</span>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-3">Bloc {bloc} terminé</h2>
+        <div id="score-display" class={`text-3xl font-bold ${textAccent} mb-1`}>—</div>
+        <p class="text-slate-500 text-sm mb-6">questions du quiz final</p>
+        {hasTakeaway ? (
+          <div>
+            <p class="text-slate-500 mb-6 max-w-sm mx-auto">Téléchargez la fiche mémo pour garder les points clés sous la main.</p>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+              <a href={takeawayPath} download class={`inline-flex items-center gap-2 px-6 py-3 rounded-lg ${progressColor} text-white text-sm font-semibold hover:opacity-90 transition-colors`}>
+                ↓ Télécharger la fiche mémo (PNG)
+              </a>
+              <a href={nextBlocUrl} class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:border-slate-300 hover:bg-slate-50 transition-colors">
+                Bloc suivant →
+              </a>
+            </div>
+          </div>
+        ) : (
+          <a href={nextBlocUrl} class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:border-slate-300 hover:bg-slate-50 transition-colors">
+            Bloc suivant →
+          </a>
+        )}
+      </div>
+    ) : (
+      <!-- Endscreen (bloc 5 — no quiz_final) -->
+      <div class="py-8">
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center mx-auto mb-4">
+            <span class="text-white text-2xl">★</span>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900 mb-2">Vous avez terminé la formation Reflexe IA.</h2>
+          <p class="text-slate-500 max-w-md mx-auto">Vous disposez d'une méthode personnelle — S.F.O.I. — et d'une grille de lecture pour ce qui dépasse l'individu.</p>
+        </div>
+        <div class="mb-6 p-5 rounded-xl bg-slate-50 border border-slate-200">
+          <p class="text-sm font-semibold text-slate-700 mb-3">Partagez votre progression</p>
+          <p class="text-sm text-slate-500 mb-4">Vous avez acquis une méthode concrète pour utiliser l'IA de façon rigoureuse et responsable. Si ce parcours vous a été utile, vous pouvez le signaler sur votre profil LinkedIn.</p>
+          <a
+            href="https://www.linkedin.com/profile/add?startTask=CERTIFICATION&name=Pratique%20IA%20professionnelle%20%C2%B7%20Reflexe%20IA&organizationName=Reflexe%20IA&organizationId=112952006&issueYear=2026&issueMonth=4&certUrl=https%3A%2F%2Freflexe-ia.org%2Fformation%2F"
+            target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0A66C2] text-white text-sm font-semibold hover:bg-[#004182] transition-colors"
+          >
+            Partager sur LinkedIn
+          </a>
+        </div>
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Aller plus loin</p>
+          <h3 class="text-lg font-bold mb-2">Vos collaborateurs ont suivi la formation — mais les pratiques ne changent pas dans l'organisation ?</h3>
+          <p class="text-slate-300 text-sm mb-4 leading-relaxed">Ce n'est pas un problème de compétence. C'est un problème de système.</p>
+          <a href={`${base}framework/ai-practice-steward/`} class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-slate-900 text-sm font-semibold hover:bg-slate-100 transition-colors">
+            Découvrir le rôle →
+          </a>
+        </div>
+      </div>
+    )}
+  </div>
+
+  <!-- ── Navigation ────────────────────────────────────────────────── -->
   <div id="nav-bar" class="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
     <button
       id="prev-btn"
@@ -349,6 +307,13 @@ const TIMELINE_JSON = JSON.stringify(TIMELINE);
     >
       Suivant →
     </button>
+  </div>
+
+  <!-- ── Pre-rendered scripts (hidden, referenced by JS) ──────────── -->
+  <div id="script-sections" style="display:none" aria-hidden="true">
+    {scriptHtmls.map((html, i) => (
+      <div id={`sp-script-${i}`} set:html={html}></div>
+    ))}
   </div>
 
 </section>
@@ -372,153 +337,239 @@ const TIMELINE_JSON = JSON.stringify(TIMELINE);
   .quiz-opt.q-correct  { border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #15803d !important; }
   .quiz-opt.q-wrong    { border-color: #f87171 !important; background-color: #fef2f2 !important; color: #dc2626 !important; }
   .quiz-opt.q-inactive { opacity: 0.4; cursor: default; }
-  .play-circle {
-    width: 68px; height: 68px; border-radius: 50%;
-    background: rgba(0,0,0,0.52);
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.15s, transform 0.15s;
-  }
-  .img-player-wrap:hover .play-circle { background: rgba(0,0,0,0.72); transform: scale(1.07); }
-  .zoom-btn {
-    position: absolute; bottom: 8px; right: 8px;
-    width: 32px; height: 32px; border-radius: 6px;
-    background: rgba(0,0,0,0.5); border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0.8; transition: opacity 0.15s, transform 0.15s; z-index: 2;
-  }
   .zoom-btn:hover { opacity: 1; transform: scale(1.1); }
+  audio::-webkit-media-controls-panel { background: #f8fafc; }
+  details > summary::-webkit-details-marker { display: none; }
 </style>
 
 <script>
   import { trackBlocCompletion, observeEndScreen, saveSlideProgress, loadSlideProgress } from '../lib/trackCompletion';
 
-  // ── Read data from DOM ──────────────────────────────────────────────────
+  // ── Read config from DOM ─────────────────────────────────────────────
   const root = document.getElementById('sp-root') as HTMLElement;
   const BLOC_ID       = root.dataset.blocId ?? '';
-  const TIMELINE      = JSON.parse(root.dataset.timeline ?? '[]') as Array<{
-    t: number; type: 'slide' | 'quiz';
-    panelIdx: number; nextPanelIdx?: number; slideIdx: number;
-  }>;
-  const TOTAL_PANELS  = parseInt(root.dataset.totalPanels ?? '0');
+  const NEXT_BLOC_URL = root.dataset.nextBlocUrl ?? '/formation/';
   const TOTAL_QF      = parseInt(root.dataset.totalQf ?? '0');
-  const SLIDES_COUNT  = parseInt(root.dataset.slidesCount ?? '0');
 
-  const audio = document.getElementById('bloc-audio') as HTMLAudioElement | null;
+  interface SlideData {
+    audio: string;
+    titre: string;
+    visuels: { fichier: string; t_start: number }[];
+  }
+  interface QiData { after_slide: number; }
 
-  // ── State ───────────────────────────────────────────────────────────────
-  let currentPanelIdx  = 0;
+  const SLIDES: SlideData[] = JSON.parse(root.dataset.slidesJson ?? '[]');
+  const QI: QiData[]        = JSON.parse(root.dataset.qiJson ?? '[]');
+
+  // ── DOM refs ─────────────────────────────────────────────────────────
+  const audio           = document.getElementById('bloc-audio') as HTMLAudioElement;
+  const mainVisuel      = document.getElementById('main-visuel') as HTMLImageElement;
+  const counterCurrent  = document.getElementById('counter-current') as HTMLElement;
+  const progressFill    = document.getElementById('progress-fill') as HTMLElement;
+  const slideTitleEl    = document.getElementById('slide-narrative-title') as HTMLElement;
+  const scriptBody      = document.getElementById('script-body') as HTMLElement;
+  const scriptAccordion = document.getElementById('script-accordion') as HTMLDetailsElement;
+  const slideArea       = document.getElementById('slide-area') as HTMLElement;
+  const qiZone          = document.getElementById('qi-zone') as HTMLElement;
+  const visuelZone      = document.getElementById('visuel-zone') as HTMLElement;
+  const qfArea          = document.getElementById('qf-area') as HTMLElement;
+  const doneArea        = document.getElementById('done-area') as HTMLElement;
+  const navBar          = document.getElementById('nav-bar') as HTMLElement;
+  const prevBtn         = document.getElementById('prev-btn') as HTMLButtonElement;
+  const nextBtn         = document.getElementById('next-btn') as HTMLButtonElement;
+
+  // ── State ─────────────────────────────────────────────────────────────
   let currentSlideIdx  = 0;
-  let timelinePtr      = 0;
-  let waitingForQuiz   = false;
-  let pendingNextPanel = -1;
+  let currentVisuelIdx = 0;
+  let showingQI        = false;
+  let qfIdx            = 0;
   let quizScore        = 0;
+  type Phase = 'slides' | 'qf' | 'done';
+  let phase: Phase = 'slides';
 
-  // ── Helpers ─────────────────────────────────────────────────────────────
-  function fmtTime(s: number) {
-    const m   = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+  // ── Helpers ───────────────────────────────────────────────────────────
+  const BASE = import.meta.env.BASE_URL;
+
+  function updateVisuel(fichier: string, altText: string) {
+    mainVisuel.src = `${BASE}assets/visuels/${fichier}`;
+    mainVisuel.alt = altText;
   }
 
-  function updatePlayUI() {
-    const paused = !audio || audio.paused;
-    document.querySelectorAll('.play-icon').forEach(
-      el => ((el as HTMLElement).style.display = paused ? 'block' : 'none')
-    );
-    document.querySelectorAll('.pause-icon').forEach(
-      el => ((el as HTMLElement).style.display = paused ? 'none' : 'block')
-    );
-    document.querySelectorAll('.btn-play-icon').forEach(
-      el => ((el as HTMLElement).style.display = paused ? 'block' : 'none')
-    );
-    document.querySelectorAll('.btn-pause-icon').forEach(
-      el => ((el as HTMLElement).style.display = paused ? 'none' : 'block')
-    );
-    document.querySelectorAll('.btn-label').forEach(
-      el => ((el as HTMLElement).textContent = paused ? 'Écouter' : 'Pause')
-    );
-    document.querySelectorAll<HTMLElement>('.play-overlay').forEach(
-      el => (el.style.opacity = paused ? '1' : '0')
-    );
+  function updateScript(idx: number) {
+    const el = document.getElementById(`sp-script-${idx}`);
+    if (el) scriptBody.innerHTML = el.innerHTML;
   }
 
-  function updateTimeDisplay() {
-    const el = document.getElementById('audio-time');
-    if (!el || !audio) return;
-    const dur = isNaN(audio.duration) ? '—' : fmtTime(audio.duration);
-    el.textContent = `${fmtTime(audio.currentTime)} / ${dur}`;
+  // ── loadSlide ─────────────────────────────────────────────────────────
+  function loadSlide(idx: number, autoplay = true) {
+    currentSlideIdx  = idx;
+    currentVisuelIdx = 0;
+    showingQI        = false;
+
+    const slide = SLIDES[idx];
+
+    // Audio
+    audio.src = slide.audio;
+    audio.load();
+    if (autoplay) audio.play().catch(() => {});
+
+    // Visuel
+    updateVisuel(slide.visuels[0].fichier, slide.titre);
+
+    // Script
+    updateScript(idx);
+    scriptAccordion.removeAttribute('open');
+
+    // Slide title
+    slideTitleEl.textContent = slide.titre;
+
+    // Counter + progress
+    counterCurrent.textContent = String(idx + 1);
+    progressFill.style.width = `${((idx + 1) / SLIDES.length * 100).toFixed(2)}%`;
+
+    // Show slide area, hide quiz inline
+    visuelZone.style.display = '';
+    qiZone.style.display = 'none';
+    slideArea.style.display = '';
+    qfArea.style.display = 'none';
+    doneArea.style.display = 'none';
+
+    // Nav
+    navBar.style.display = '';
+    prevBtn.disabled = idx === 0;
+    const isLast = idx === SLIDES.length - 1;
+    nextBtn.textContent = isLast && TOTAL_QF === 0 ? 'Bloc suivant →' : 'Suivant →';
+
+    // Progress save
+    saveSlideProgress(BLOC_ID, idx);
   }
 
-  // ── Core: show a panel by index ─────────────────────────────────────────
-  function showPanel(n: number) {
-    document.querySelectorAll<HTMLElement>('.sp-panel').forEach((p, i) => {
-      p.style.display = i === n ? 'block' : 'none';
+  // ── Phase transitions ─────────────────────────────────────────────────
+  function advanceFromSlides() {
+    audio.pause();
+    if (TOTAL_QF > 0) {
+      phase = 'qf';
+      qfIdx = 0;
+      showQFPanel(0);
+    } else {
+      phase = 'done';
+      showDone();
+    }
+  }
+
+  function showQFPanel(idx: number) {
+    slideArea.style.display = 'none';
+    qfArea.style.display = '';
+    doneArea.style.display = 'none';
+    navBar.style.display = 'none';
+    document.querySelectorAll<HTMLElement>('.qf-panel').forEach((el, i) => {
+      el.style.display = i === idx ? '' : 'none';
     });
-    currentPanelIdx = n;
+  }
 
-    // Track slide index from panel attribute
-    const panelEl = document.getElementById(`panel-${n}`);
-    const slideIdxAttr = panelEl?.dataset.slideIdx;
-    if (slideIdxAttr !== undefined && slideIdxAttr !== '') {
-      currentSlideIdx = parseInt(slideIdxAttr);
+  function showDone() {
+    slideArea.style.display = 'none';
+    qfArea.style.display = 'none';
+    doneArea.style.display = '';
+    navBar.style.display = 'none';
+    const scoreEl = document.getElementById('score-display');
+    if (scoreEl && TOTAL_QF > 0) scoreEl.textContent = `${quizScore} / ${TOTAL_QF}`;
+    // Trigger Supabase tracking via observeEndScreen pattern
+    document.querySelectorAll<HTMLElement>('[id^="end-"]').forEach(el => (el.style.display = 'block'));
+  }
+
+  // ── Audio: visuel switch on timeupdate ────────────────────────────────
+  audio.addEventListener('timeupdate', () => {
+    if (phase !== 'slides' || showingQI) return;
+    const slide = SLIDES[currentSlideIdx];
+    const t = audio.currentTime;
+    let newIdx = 0;
+    for (let i = slide.visuels.length - 1; i >= 0; i--) {
+      if (slide.visuels[i].t_start <= t) { newIdx = i; break; }
+    }
+    if (newIdx !== currentVisuelIdx) {
+      currentVisuelIdx = newIdx;
+      updateVisuel(slide.visuels[newIdx].fichier, slide.titre);
+    }
+  });
+
+  // ── Audio ended: show quiz inline if applicable ───────────────────────
+  audio.addEventListener('ended', () => {
+    if (phase !== 'slides' || showingQI) return;
+    const qiMatch = QI.find(q => q.after_slide === currentSlideIdx);
+    if (qiMatch) {
+      showingQI = true;
+      visuelZone.style.display = 'none';
+      document.querySelectorAll<HTMLElement>('.qi-panel').forEach(el => {
+        el.style.display = parseInt(el.dataset.afterSlide ?? '-1') === currentSlideIdx ? '' : 'none';
+      });
+      qiZone.style.display = '';
+    }
+  });
+
+  // ── Event delegation ──────────────────────────────────────────────────
+  document.addEventListener('click', e => {
+    const target = (e.target as HTMLElement).closest<HTMLElement>('[data-action]');
+    if (!target) return;
+    const action = target.dataset.action;
+
+    if (action === 'prev') {
+      if (currentSlideIdx > 0) {
+        loadSlide(currentSlideIdx - 1, true);
+      }
+      return;
     }
 
-    // Update counter (slides only)
-    const counterEl = document.getElementById('slide-counter');
-    if (counterEl) counterEl.textContent = `${currentSlideIdx + 1} / ${SLIDES_COUNT}`;
-
-    // Update progress bar (slide-based)
-    const fillEl = document.getElementById('progress-fill');
-    if (fillEl) fillEl.style.width = `${((currentSlideIdx + 1) / SLIDES_COUNT * 100).toFixed(2)}%`;
-
-    // Prev button
-    const prevBtn = document.getElementById('prev-btn') as HTMLButtonElement | null;
-    if (prevBtn) prevBtn.disabled = n === 0;
-
-    // Hide nav on last panel or quiz-inline (they have their own "Continuer")
-    const panelKind = panelEl?.dataset.panelKind;
-    const navBar = document.getElementById('nav-bar');
-    if (navBar) {
-      navBar.style.display = (n === TOTAL_PANELS - 1 || panelKind === 'quiz-inline') ? 'none' : '';
+    if (action === 'next') {
+      if (showingQI) {
+        showingQI = false;
+        visuelZone.style.display = '';
+        qiZone.style.display = 'none';
+      }
+      if (currentSlideIdx < SLIDES.length - 1) {
+        loadSlide(currentSlideIdx + 1, true);
+      } else {
+        advanceFromSlides();
+      }
+      return;
     }
 
-    // Score / endscreen: show score + trigger end tracking
-    if (panelKind === 'score' || panelKind === 'endscreen') {
-      const scoreEl = document.getElementById('score-display');
-      if (scoreEl && TOTAL_QF > 0) scoreEl.textContent = `${quizScore} / ${TOTAL_QF}`;
-      document.querySelectorAll<HTMLElement>('[id^="end-"]').forEach(el => el.style.display = 'block');
+    if (action === 'quiz-continue') {
+      showingQI = false;
+      visuelZone.style.display = '';
+      qiZone.style.display = 'none';
+      if (currentSlideIdx < SLIDES.length - 1) {
+        loadSlide(currentSlideIdx + 1, true);
+      } else {
+        advanceFromSlides();
+      }
+      return;
     }
 
-    updatePlayUI();
-  }
+    if (action === 'quiz-answer') {
+      handleQuizAnswer(target, 'inline');
+      return;
+    }
 
-  // ── Navigation ──────────────────────────────────────────────────────────
-  function slidePrev() {
-    if (currentPanelIdx > 0) showPanel(currentPanelIdx - 1);
-  }
+    if (action === 'qf-answer') {
+      handleQuizAnswer(target, 'final');
+      return;
+    }
 
-  function slideNext() {
-    if (currentPanelIdx < TOTAL_PANELS - 1) showPanel(currentPanelIdx + 1);
-    // If entering quiz-final territory, stop audio
-    const nextPanel = document.getElementById(`panel-${currentPanelIdx}`);
-    if (audio && nextPanel?.dataset.panelKind === 'quiz-final') audio.pause();
-  }
+    if (action === 'zoom') {
+      openLightbox(mainVisuel.src, mainVisuel.alt);
+      return;
+    }
+  });
 
-  function handlePlayPause() {
-    if (!audio) return;
-    if (audio.paused) audio.play().catch(() => {});
-    else audio.pause();
-  }
-
-  // ── Quiz ────────────────────────────────────────────────────────────────
-  function handleQuizAnswer(btn: HTMLElement) {
+  // ── Quiz answer handler ───────────────────────────────────────────────
+  function handleQuizAnswer(btn: HTMLElement, kind: 'inline' | 'final') {
     const block = btn.closest<HTMLElement>('.quiz-block');
     if (!block || block.dataset.answered) return;
     block.dataset.answered = '1';
 
     const correct = parseInt(block.dataset.answer ?? '0');
     const chosen  = parseInt(btn.dataset.index ?? '-1');
-    const kind    = block.dataset.quizKind;
 
     if (kind === 'final' && chosen === correct) quizScore++;
 
@@ -528,31 +579,29 @@ const TIMELINE_JSON = JSON.stringify(TIMELINE);
       else if (i === chosen && chosen !== correct) opt.classList.add('q-wrong');
       else opt.classList.add('q-inactive');
     });
+
     const expl = block.querySelector<HTMLElement>('.quiz-expl');
     if (expl) expl.style.display = 'block';
 
     if (kind === 'inline') {
-      // Show the "Continuer" button in this panel
-      const continueBtn = document.getElementById(`panel-${currentPanelIdx}`)
-        ?.querySelector<HTMLElement>('[data-action="quiz-continue"]');
+      const continueBtn = btn.closest<HTMLElement>('.qi-panel')?.querySelector<HTMLElement>('[data-action="quiz-continue"]');
       if (continueBtn) continueBtn.style.display = '';
     }
+
     if (kind === 'final') {
       setTimeout(() => {
-        if (currentPanelIdx < TOTAL_PANELS - 1) showPanel(currentPanelIdx + 1);
+        if (qfIdx < TOTAL_QF - 1) {
+          qfIdx++;
+          showQFPanel(qfIdx);
+        } else {
+          phase = 'done';
+          showDone();
+        }
       }, 1200);
     }
   }
 
-  function quizContinue() {
-    waitingForQuiz = false;
-    const nextIdx = pendingNextPanel >= 0 ? pendingNextPanel : currentPanelIdx + 1;
-    pendingNextPanel = -1;
-    showPanel(nextIdx);
-    audio?.play().catch(() => {});
-  }
-
-  // ── Lightbox ────────────────────────────────────────────────────────────
+  // ── Lightbox ──────────────────────────────────────────────────────────
   function openLightbox(src: string, alt: string) {
     const lb    = document.getElementById('lightbox') as HTMLElement;
     const lbImg = document.getElementById('lightbox-img') as HTMLImageElement;
@@ -565,85 +614,17 @@ const TIMELINE_JSON = JSON.stringify(TIMELINE);
     (document.getElementById('lightbox') as HTMLElement).style.display = 'none';
     document.body.style.overflow = '';
   }
-
-  // Lightbox direct listeners (background click + close button)
-  const lightboxEl = document.getElementById('lightbox');
-  const lbClose    = document.getElementById('lightbox-close');
-  lightboxEl?.addEventListener('click', e => { if (e.target === lightboxEl) closeLightbox(); });
-  lbClose?.addEventListener('click', closeLightbox);
+  document.getElementById('lightbox')?.addEventListener('click', e => { if (e.target === document.getElementById('lightbox')) closeLightbox(); });
+  document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-  // ── Event delegation ────────────────────────────────────────────────────
-  document.addEventListener('click', e => {
-    const target = (e.target as HTMLElement).closest<HTMLElement>('[data-action]');
-    if (!target) return;
-    switch (target.dataset.action) {
-      case 'play-pause': handlePlayPause(); break;
-      case 'prev':       slidePrev(); break;
-      case 'next':       slideNext(); break;
-      case 'zoom': {
-        const wrap = target.closest<HTMLElement>('[data-img-wrap]');
-        const img  = wrap?.querySelector<HTMLImageElement>('img');
-        if (img) openLightbox(img.src, img.alt);
-        break;
-      }
-      case 'quiz-answer':   handleQuizAnswer(target); break;
-      case 'quiz-continue': quizContinue(); break;
-    }
-  });
-
-  // ── Audio event listeners ────────────────────────────────────────────────
-  if (audio) {
-    audio.addEventListener('loadedmetadata', updateTimeDisplay);
-    if (audio.readyState >= 1) updateTimeDisplay();
-
-    audio.addEventListener('timeupdate', () => {
-      updateTimeDisplay();
-      if (waitingForQuiz || audio.paused) return;
-      if (timelinePtr >= TIMELINE.length) return;
-
-      const entry = TIMELINE[timelinePtr];
-      if (audio.currentTime >= entry.t) {
-        timelinePtr++;
-        if (entry.type === 'quiz') {
-          audio.pause();
-          waitingForQuiz   = true;
-          pendingNextPanel = entry.nextPanelIdx ?? -1;
-          showPanel(entry.panelIdx);
-        } else {
-          showPanel(entry.panelIdx);
-        }
-      }
-    });
-
-    audio.addEventListener('ended', () => {
-      updatePlayUI();
-    });
-
-    audio.addEventListener('play',  updatePlayUI);
-    audio.addEventListener('pause', updatePlayUI);
-  }
-
-  // ── Supabase tracking ────────────────────────────────────────────────────
+  // ── Supabase + init ───────────────────────────────────────────────────
   if (BLOC_ID) {
     observeEndScreen(BLOC_ID, () => trackBlocCompletion(BLOC_ID));
-    loadSlideProgress(BLOC_ID).then(savedIdx => {
-      if (savedIdx > 0) {
-        showPanel(savedIdx);
-        const panelEl = document.getElementById(`panel-${savedIdx}`);
-        const slideIdxStr = panelEl?.dataset.slideIdx;
-        if (slideIdxStr && audio) {
-          const si = parseInt(slideIdxStr);
-          const tlEntry = TIMELINE.find(e => e.type === 'slide' && e.slideIdx === si);
-          if (tlEntry) {
-            audio.currentTime = tlEntry.t;
-            timelinePtr = TIMELINE.indexOf(tlEntry) + 1;
-          }
-        }
-      }
-    });
   }
 
-  // ── Init ─────────────────────────────────────────────────────────────────
-  showPanel(0);
+  (async () => {
+    const savedIdx = await loadSlideProgress(BLOC_ID);
+    loadSlide(savedIdx > 0 ? savedIdx : 0, false);
+  })();
 </script>

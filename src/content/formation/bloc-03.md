@@ -2,46 +2,47 @@
 bloc: 3
 titre: "Choisir le bon prompt"
 duree_estimee: "~13 min"
-audio: "/assets/audio/blocs/bloc-03.mp3"
-takeaway: "/assets/takeaways/bloc-03.png"
 accroche: "Les 4 intentions de prompt — Production, Exploration, Structuration, Vérification. Un mauvais type de prompt génère une mauvaise catégorie de réponse."
 categorie: "Choisir"
+takeaway: "/assets/takeaways/bloc-03.png"
 slides:
   - index: 0
-    titre: "Accroche"
-    visuel: "assets/visuels/Diapositive23.PNG"
-    t_start: 0.0
-    marqueurs: []
+    titre: "Accroche · 4 intentions"
+    audio: "/assets/audio/blocs/3.1.mp3"
+    duration: 70.411
+    visuels:
+      - { fichier: "Diapositive23.PNG", t_start: 0 }
+      - { fichier: "Diapositive24.PNG", t_start: 58, marqueurs: ["4-intentions", "intention-exploration", "intention-structuration", "intention-production", "intention-verification"] }
   - index: 1
-    titre: "4 intentions"
-    visuel: "assets/visuels/Diapositive24.PNG"
-    t_start: 58.0
-    marqueurs: ["4-intentions", "intention-exploration", "intention-structuration", "intention-production", "intention-verification"]
+    titre: "Exploration · gabarit"
+    audio: "/assets/audio/blocs/3.2.mp3"
+    duration: 192.510
+    visuels:
+      - { fichier: "Diapositive25.PNG", t_start: 0, marqueurs: ["gabarit-exploration"] }
   - index: 2
-    titre: "Exploration · gabarit (7 champs)"
-    visuel: "assets/visuels/Diapositive25.PNG"
-    t_start: 70.411
-    marqueurs: ["gabarit-exploration"]
+    titre: "Structuration · gabarit"
+    audio: "/assets/audio/blocs/3.3.mp3"
+    duration: 106.891
+    visuels:
+      - { fichier: "Diapositive26.PNG", t_start: 0, marqueurs: ["gabarit-structuration"] }
   - index: 3
-    titre: "Structuration · gabarit (6 champs)"
-    visuel: "assets/visuels/Diapositive26.PNG"
-    t_start: 262.921
-    marqueurs: ["gabarit-structuration"]
+    titre: "Production · gabarit"
+    audio: "/assets/audio/blocs/3.4.mp3"
+    duration: 114.043
+    visuels:
+      - { fichier: "Diapositive27.PNG", t_start: 0, marqueurs: ["gabarit-production"] }
   - index: 4
-    titre: "Production · gabarit (7 champs)"
-    visuel: "assets/visuels/Diapositive27.PNG"
-    t_start: 369.812
-    marqueurs: ["gabarit-production"]
+    titre: "Vérification · gabarit"
+    audio: "/assets/audio/blocs/3.5.mp3"
+    duration: 141.019
+    visuels:
+      - { fichier: "Diapositive28.PNG", t_start: 0, marqueurs: ["gabarit-verification"] }
   - index: 5
-    titre: "Vérification · gabarit (6 champs)"
-    visuel: "assets/visuels/Diapositive28.PNG"
-    t_start: 483.855
-    marqueurs: ["gabarit-verification"]
-  - index: 6
     titre: "Synthèse · tableau 4 types"
-    visuel: "assets/visuels/Diapositive29.PNG"
-    t_start: 624.874
-    marqueurs: ["synthese-4-types"]
+    audio: "/assets/audio/blocs/3.6.mp3"
+    duration: 129.643
+    visuels:
+      - { fichier: "Diapositive29.PNG", t_start: 0, marqueurs: ["synthese-4-types"] }
 quiz_inline:
   - after_slide: 1
     question: "Un manager demande à l'IA : « Dis-moi quelle stratégie adopter face à ce concurrent. » Il obtient une recommandation définitive, bien argumentée, mais inadaptée à son contexte réel. L'erreur la plus probable est :"

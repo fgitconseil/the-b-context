@@ -2,51 +2,43 @@
 bloc: 4
 titre: "Méthode S.F.O.I."
 duree_estimee: "~8 min"
-audio: "/assets/audio/blocs/bloc-04.mp3"
-takeaway: "/assets/takeaways/bloc-04.png"
 accroche: "🟢 Structurer sans perdre · 🟡 Fiabiliser chaque affirmation · 🔵 Optimiser pour l'usage direct · 🟣 Industrialiser avec gouvernance. Cas Marc (RH)."
 categorie: "Méthode"
+takeaway: "/assets/takeaways/bloc-04.png"
 slides:
   - index: 0
-    titre: "Intro 4.1"
-    visuel: "assets/visuels/Diapositive31.PNG"
-    t_start: 0.0
-    marqueurs: []
-  - index: 1
     titre: "Marc, mercredi matin"
-    visuel: "assets/visuels/Diapositive30.PNG"
-    t_start: 23.0
-    marqueurs: ["sfoi-acronyme"]
-  - index: 2
+    audio: "/assets/audio/blocs/4.1.mp3"
+    duration: 83.176
+    visuels:
+      - { fichier: "Diapositive31.PNG", t_start: 0 }
+      - { fichier: "Diapositive30.PNG", t_start: 23, marqueurs: ["sfoi-acronyme"] }
+  - index: 1
     titre: "Les 4 actes · S/F/O/I"
-    visuel: "assets/visuels/Diapositive32.PNG"
-    t_start: 83.176
-    marqueurs: ["acte-S", "acte-F", "acte-O", "acte-I"]
+    audio: "/assets/audio/blocs/4.2.mp3"
+    duration: 166.576
+    visuels:
+      - { fichier: "Diapositive32.PNG", t_start: 0, marqueurs: ["acte-S", "acte-F", "acte-O", "acte-I"] }
+  - index: 2
+    titre: "Marc applique S et F"
+    audio: "/assets/audio/blocs/4.3.mp3"
+    duration: 73.110
+    visuels:
+      - { fichier: "Diapositive33.PNG", t_start: 0,  marqueurs: ["marc-applique-titre", "marc-structurer"] }
+      - { fichier: "Diapositive34.PNG", t_start: 25, marqueurs: ["marc-fiabiliser"] }
   - index: 3
-    titre: "Marc applique Structurer"
-    visuel: "assets/visuels/Diapositive33.PNG"
-    t_start: 249.752
-    marqueurs: ["marc-applique-titre", "marc-structurer"]
-  - index: 4
-    titre: "Marc applique Fiabiliser"
-    visuel: "assets/visuels/Diapositive34.PNG"
-    t_start: 274.752
-    marqueurs: ["marc-fiabiliser"]
-  - index: 5
     titre: "3 erreurs labellisées"
-    visuel: "assets/visuels/Diapositive35.PNG"
-    t_start: 322.862
-    marqueurs: ["3-erreurs-titre", "erreur-confusion-structurer", "erreur-saut-fiabiliser", "erreur-saut-optimiser"]
-  - index: 6
-    titre: "Clôture · S.F.O.I. au quotidien"
-    visuel: "assets/visuels/Diapositive36.PNG"
-    t_start: 385.689
-    marqueurs: ["cloture-marc-livre", "sfoi-universel-livrables", "sfoi-question-quotidien"]
-  - index: 7
-    titre: "Bascule vers IMIA"
-    visuel: "assets/visuels/Diapositive37.PNG"
-    t_start: 426.689
-    marqueurs: ["bascule-echelle-organisation", "bascule-quatre-questions-org", "imia-acronyme", "sfoi-imia-conclusion"]
+    audio: "/assets/audio/blocs/4.4.mp3"
+    duration: 62.827
+    visuels:
+      - { fichier: "Diapositive35.PNG", t_start: 0, marqueurs: ["3-erreurs-titre", "erreur-confusion-structurer", "erreur-saut-fiabiliser", "erreur-saut-optimiser"] }
+  - index: 4
+    titre: "Clôture · S.F.O.I. et bascule IMIA"
+    audio: "/assets/audio/blocs/4.5.mp3"
+    duration: 90.710
+    visuels:
+      - { fichier: "Diapositive36.PNG", t_start: 0,  marqueurs: ["cloture-marc-livre", "sfoi-universel-livrables", "sfoi-question-quotidien"] }
+      - { fichier: "Diapositive37.PNG", t_start: 41, marqueurs: ["bascule-echelle-organisation", "bascule-quatre-questions-org", "imia-acronyme", "sfoi-imia-conclusion"] }
 quiz_inline:
   - after_slide: 3
     question: "🟢 Structurer signifie..."

@@ -2,51 +2,43 @@
 bloc: 1
 titre: "Comprendre les LLM"
 duree_estimee: "~10 min"
-audio: "/assets/audio/blocs/bloc-01.mp3"
-takeaway: "/assets/takeaways/bloc-01.png"
 accroche: "Ce qu'est vraiment un LLM : un moteur de prédiction statistique, pas un moteur de vérité. Mécanisme, cut-off, hallucinations, implications concrètes."
 categorie: "Comprendre"
+takeaway: "/assets/takeaways/bloc-01.png"
 slides:
   - index: 0
-    titre: "Accroche · L'IA générative est déjà là"
-    visuel: "assets/visuels/Diapositive1.PNG"
-    t_start: 0.0
-    marqueurs: []
+    titre: "Accroche terrain"
+    audio: "/assets/audio/blocs/1.1.mp3"
+    duration: 57.776
+    visuels:
+      - { fichier: "Diapositive1.PNG", t_start: 0 }
   - index: 1
-    titre: "LLM = moteur de prédiction statistique"
-    visuel: "assets/visuels/Diapositive2.PNG"
-    t_start: 57.776
-    marqueurs: ["llm-acronym", "llm-definition", "llm-predicts-not-understands"]
+    titre: "Ce qu'est un LLM"
+    audio: "/assets/audio/blocs/1.2.mp3"
+    duration: 209.947
+    visuels:
+      - { fichier: "Diapositive2.PNG", t_start: 0,   marqueurs: ["llm-acronym", "llm-definition", "llm-predicts-not-understands"] }
+      - { fichier: "Diapositive3.PNG", t_start: 38,  marqueurs: ["metaphore-stagiaire"] }
+      - { fichier: "Diapositive4.PNG", t_start: 86,  marqueurs: ["plateforme-vs-llm", "plateforme-mecanismes"] }
+      - { fichier: "Diapositive5.PNG", t_start: 148, marqueurs: ["hallucination-concept", "hallucination-exemple"] }
   - index: 2
-    titre: "Métaphore du stagiaire cultivé"
-    visuel: "assets/visuels/Diapositive3.PNG"
-    t_start: 95.776
-    marqueurs: ["metaphore-stagiaire"]
-  - index: 3
-    titre: "LLM vs Plateforme · 4 mécanismes"
-    visuel: "assets/visuels/Diapositive4.PNG"
-    t_start: 143.776
-    marqueurs: ["plateforme-vs-llm", "plateforme-mecanismes"]
-  - index: 4
-    titre: "Hallucination · forme correcte, fond faux"
-    visuel: "assets/visuels/Diapositive5.PNG"
-    t_start: 205.776
-    marqueurs: ["hallucination-concept", "hallucination-exemple"]
-  - index: 5
     titre: "Trois limites · cutoff, fichiers, incertitude"
-    visuel: "assets/visuels/Diapositive6.PNG"
-    t_start: 267.723
-    marqueurs: ["limite-1-cutoff", "limite-2-fichiers", "limite-3-incertitude"]
-  - index: 6
+    audio: "/assets/audio/blocs/1.3.mp3"
+    duration: 120.110
+    visuels:
+      - { fichier: "Diapositive6.PNG", t_start: 0, marqueurs: ["limite-1-cutoff", "limite-2-fichiers", "limite-3-incertitude"] }
+  - index: 3
     titre: "Quatre implications"
-    visuel: "assets/visuels/Diapositive7.PNG"
-    t_start: 387.833
-    marqueurs: ["implication-1-qualite-demande", "implication-2-verifier-faits", "implication-3-responsabilite", "implication-4-bons-outils"]
-  - index: 7
+    audio: "/assets/audio/blocs/1.4.mp3"
+    duration: 153.843
+    visuels:
+      - { fichier: "Diapositive7.PNG", t_start: 0, marqueurs: ["implication-1-qualite-demande", "implication-2-verifier-faits", "implication-3-responsabilite", "implication-4-bons-outils"] }
+  - index: 4
     titre: "Clôture · récap quadrant"
-    visuel: "assets/visuels/Diapositive8.PNG"
-    t_start: 541.676
-    marqueurs: []
+    audio: "/assets/audio/blocs/1.5.mp3"
+    duration: 66.976
+    visuels:
+      - { fichier: "Diapositive8.PNG", t_start: 0 }
 quiz_inline:
   - after_slide: 1
     question: "Un LLM génère ses réponses en..."
