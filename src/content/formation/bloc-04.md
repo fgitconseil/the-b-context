@@ -2,29 +2,53 @@
 bloc: 4
 titre: "Méthode S.F.O.I."
 duree_estimee: "~8 min"
+audio: "/assets/audio/blocs/bloc-04.mp3"
+takeaway: "/assets/takeaways/bloc-04.png"
+accroche: "🟢 Structurer sans perdre · 🟡 Fiabiliser chaque affirmation · 🔵 Optimiser pour l'usage direct · 🟣 Industrialiser avec gouvernance. Cas Marc (RH)."
+categorie: "Méthode"
 slides:
   - index: 0
-    titre: "Accroche"
-    visuel: "assets/images/m4/04-1-accroche.png"
+    titre: "Intro 4.1"
+    visuel: "assets/visuels/Diapositive31.PNG"
     t_start: 0.0
+    marqueurs: []
   - index: 1
-    titre: "La progression S.F.O.I."
-    visuel: "assets/images/m4/04-2-la-progression-sfoi.png"
-    t_start: 83.176
+    titre: "Marc, mercredi matin"
+    visuel: "assets/visuels/Diapositive30.PNG"
+    t_start: 23.0
+    marqueurs: ["sfoi-acronyme"]
   - index: 2
-    titre: "Cas pratique — Marc applique Structurer puis Fiabiliser"
-    visuel: "assets/images/m4/04-3-marc-applique-sfoi.png"
-    t_start: 249.752
+    titre: "Les 4 actes · S/F/O/I"
+    visuel: "assets/visuels/Diapositive32.PNG"
+    t_start: 83.176
+    marqueurs: ["acte-S", "acte-F", "acte-O", "acte-I"]
   - index: 3
-    titre: "Les 3 erreurs les plus fréquentes"
-    visuel: "assets/images/m4/04-4-les-3-erreurs.png"
-    t_start: 322.862
+    titre: "Marc applique Structurer"
+    visuel: "assets/visuels/Diapositive33.PNG"
+    t_start: 249.752
+    marqueurs: ["marc-applique-titre", "marc-structurer"]
   - index: 4
-    titre: "Clôture"
-    visuel: "assets/images/m4/04-5-cloture.png"
+    titre: "Marc applique Fiabiliser"
+    visuel: "assets/visuels/Diapositive34.PNG"
+    t_start: 274.752
+    marqueurs: ["marc-fiabiliser"]
+  - index: 5
+    titre: "3 erreurs labellisées"
+    visuel: "assets/visuels/Diapositive35.PNG"
+    t_start: 322.862
+    marqueurs: ["3-erreurs-titre", "erreur-confusion-structurer", "erreur-saut-fiabiliser", "erreur-saut-optimiser"]
+  - index: 6
+    titre: "Clôture · S.F.O.I. au quotidien"
+    visuel: "assets/visuels/Diapositive36.PNG"
     t_start: 385.689
+    marqueurs: ["cloture-marc-livre", "sfoi-universel-livrables", "sfoi-question-quotidien"]
+  - index: 7
+    titre: "Bascule vers IMIA"
+    visuel: "assets/visuels/Diapositive37.PNG"
+    t_start: 426.689
+    marqueurs: ["bascule-echelle-organisation", "bascule-quatre-questions-org", "imia-acronyme", "sfoi-imia-conclusion"]
 quiz_inline:
-  - after_slide: 1
+  - after_slide: 3
     question: "🟢 Structurer signifie..."
     options:
       - "Résumer le contenu brut en gardant l'essentiel"
@@ -33,7 +57,7 @@ quiz_inline:
       - "Vérifier que le contenu est factuel avant de le présenter"
     answer: 1
     explanation: "Structurer n'est pas résumer. Résumer supprime. Structurer réorganise sans rien enlever. Le critère de passage strict est : zéro information perdue. Un plan bien structuré peut encore contenir des informations incorrectes — c'est le travail de 🟡."
-  - after_slide: 2
+  - after_slide: 4
     question: "Marc demande à l'IA de vérifier si son plan respecte les obligations RGPD. Pourquoi est-il indispensable qu'il lui fournisse le texte du RGPD en référence ?"
     options:
       - "Pour que l'IA aille plus vite dans son analyse"
@@ -42,7 +66,7 @@ quiz_inline:
       - "Pour respecter les règles de confidentialité du document"
     answer: 2
     explanation: "Une vérification sans source de référence, c'est l'IA qui travaille dans le vide. Elle peut halluciner des obligations manquantes, ou valider ce qui devrait être signalé. La qualité du 🟡 dépend directement de la qualité du document de référence fourni."
-  - after_slide: 3
+  - after_slide: 5
     question: "Votre équipe vient de produire un compte rendu de réunion bien structuré (niveau 🟢). Un collègue propose de le mettre directement dans un workflow automatisé (niveau 🟣) pour gagner du temps. Pourquoi est-ce risqué ?"
     options:
       - "Les workflows automatisés sont encore trop coûteux pour les organisations"

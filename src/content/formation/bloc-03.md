@@ -2,31 +2,46 @@
 bloc: 3
 titre: "Choisir le bon prompt"
 duree_estimee: "~13 min"
+audio: "/assets/audio/blocs/bloc-03.mp3"
+takeaway: "/assets/takeaways/bloc-03.png"
+accroche: "Les 4 intentions de prompt — Production, Exploration, Structuration, Vérification. Un mauvais type de prompt génère une mauvaise catégorie de réponse."
+categorie: "Choisir"
 slides:
   - index: 0
     titre: "Accroche"
-    visuel: "assets/images/m3/03-1-accroche-terrain.png"
+    visuel: "assets/visuels/Diapositive23.PNG"
     t_start: 0.0
+    marqueurs: []
   - index: 1
-    titre: "Type 1 — prompt de production"
-    visuel: "assets/images/m3/03-2-type-1-prompt-production.png"
-    t_start: 70.411
+    titre: "4 intentions"
+    visuel: "assets/visuels/Diapositive24.PNG"
+    t_start: 58.0
+    marqueurs: ["4-intentions", "intention-exploration", "intention-structuration", "intention-production", "intention-verification"]
   - index: 2
-    titre: "Type 2 — prompt d'exploration"
-    visuel: "assets/images/m3/03-3-type-2-prompt-exploration.png"
-    t_start: 262.921
+    titre: "Exploration · gabarit (7 champs)"
+    visuel: "assets/visuels/Diapositive25.PNG"
+    t_start: 70.411
+    marqueurs: ["gabarit-exploration"]
   - index: 3
-    titre: "Type 3 — prompt de structuration"
-    visuel: "assets/images/m3/03-4-type-3-prompt-structuration.png"
-    t_start: 369.812
+    titre: "Structuration · gabarit (6 champs)"
+    visuel: "assets/visuels/Diapositive26.PNG"
+    t_start: 262.921
+    marqueurs: ["gabarit-structuration"]
   - index: 4
-    titre: "Type 4 — prompt de vérification"
-    visuel: "assets/images/m3/03-5-type-4-prompt-verification.png"
-    t_start: 483.855
+    titre: "Production · gabarit (7 champs)"
+    visuel: "assets/visuels/Diapositive27.PNG"
+    t_start: 369.812
+    marqueurs: ["gabarit-production"]
   - index: 5
-    titre: "Synthèse"
-    visuel: "assets/images/m3/03-6-synthese.png"
+    titre: "Vérification · gabarit (6 champs)"
+    visuel: "assets/visuels/Diapositive28.PNG"
+    t_start: 483.855
+    marqueurs: ["gabarit-verification"]
+  - index: 6
+    titre: "Synthèse · tableau 4 types"
+    visuel: "assets/visuels/Diapositive29.PNG"
     t_start: 624.874
+    marqueurs: ["synthese-4-types"]
 quiz_inline:
   - after_slide: 1
     question: "Un manager demande à l'IA : « Dis-moi quelle stratégie adopter face à ce concurrent. » Il obtient une recommandation définitive, bien argumentée, mais inadaptée à son contexte réel. L'erreur la plus probable est :"

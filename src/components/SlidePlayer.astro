@@ -437,6 +437,9 @@ const TIMELINE_JSON = JSON.stringify(TIMELINE);
     document.querySelectorAll('.btn-label').forEach(
       el => ((el as HTMLElement).textContent = paused ? 'Écouter' : 'Pause')
     );
+    document.querySelectorAll<HTMLElement>('.play-overlay').forEach(
+      el => (el.style.opacity = paused ? '1' : '0')
+    );
   }
 
   function updateTimeDisplay() {
@@ -592,6 +595,7 @@ const TIMELINE_JSON = JSON.stringify(TIMELINE);
   // ── Audio event listeners ────────────────────────────────────────────────
   if (audio) {
     audio.addEventListener('loadedmetadata', updateTimeDisplay);
+    if (audio.readyState >= 1) updateTimeDisplay();
 
     audio.addEventListener('timeupdate', () => {
       updateTimeDisplay();
@@ -614,7 +618,6 @@ const TIMELINE_JSON = JSON.stringify(TIMELINE);
 
     audio.addEventListener('ended', () => {
       updatePlayUI();
-      if (currentPanelIdx < TOTAL_PANELS - 1) showPanel(currentPanelIdx + 1);
     });
 
     audio.addEventListener('play',  updatePlayUI);
@@ -625,7 +628,19 @@ const TIMELINE_JSON = JSON.stringify(TIMELINE);
   if (BLOC_ID) {
     observeEndScreen(BLOC_ID, () => trackBlocCompletion(BLOC_ID));
     loadSlideProgress(BLOC_ID).then(savedIdx => {
-      if (savedIdx > 0) showPanel(savedIdx);
+      if (savedIdx > 0) {
+        showPanel(savedIdx);
+        const panelEl = document.getElementById(`panel-${savedIdx}`);
+        const slideIdxStr = panelEl?.dataset.slideIdx;
+        if (slideIdxStr && audio) {
+          const si = parseInt(slideIdxStr);
+          const tlEntry = TIMELINE.find(e => e.type === 'slide' && e.slideIdx === si);
+          if (tlEntry) {
+            audio.currentTime = tlEntry.t;
+            timelinePtr = TIMELINE.indexOf(tlEntry) + 1;
+          }
+        }
+      }
     });
   }
 

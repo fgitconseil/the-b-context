@@ -2,33 +2,83 @@
 bloc: 2
 titre: "Risques · cadre commun"
 duree_estimee: "~12 min"
+audio: "/assets/audio/blocs/bloc-02.mp3"
+takeaway: "/assets/takeaways/bloc-02.png"
+accroche: "Les 3 risques professionnels réels — exfiltration, risque réputationnel, industrialisation prématurée. Les règles simples pour ne pas les subir."
+categorie: "Comprendre"
 slides:
   - index: 0
-    titre: "Accroche"
-    visuel: "assets/images/m2/02-1-accroche-terrain.png"
+    titre: "Accroche · manager 18h, appel d'offres"
+    visuel: "assets/visuels/Diapositive9.PNG"
     t_start: 0.0
+    marqueurs: []
   - index: 1
-    titre: "Risque 1 — exfiltration de données"
-    visuel: "assets/images/m2/02-2-risque-1-exfiltration-donnees.png"
+    titre: "Exfiltration · définition"
+    visuel: "assets/visuels/Diapositive10.PNG"
     t_start: 52.776
+    marqueurs: []
   - index: 2
-    titre: "Risque 2 — réputationnel et usurpation"
-    visuel: "assets/images/m2/02-3-risque-2-reputationnel-usurpation.png"
-    t_start: 214.147
+    titre: "4 catégories · clients, RH, stratégiques, code"
+    visuel: "assets/visuels/Diapositive11.PNG"
+    t_start: 77.776
+    marqueurs: ["4-categories-donnees"]
   - index: 3
-    titre: "Risque 3 — industrialisation prématurée"
-    visuel: "assets/images/m2/02-4-risque-3-industrialisation-prematuree.png"
-    t_start: 390.323
+    titre: "Règle des 3 questions"
+    visuel: "assets/visuels/Diapositive12.PNG"
+    t_start: 122.776
+    marqueurs: ["3-questions-regle", "question-1-public", "question-2-personnes", "question-3-strategique"]
   - index: 4
-    titre: "Clôture"
-    visuel: "assets/images/m2/02-5-message-de-cloture.png"
-    t_start: 588.87
+    titre: "3 niveaux de protection"
+    visuel: "assets/visuels/Diapositive13.PNG"
+    t_start: 152.776
+    marqueurs: ["3-niveaux-protection", "niveau-public", "niveau-pro", "niveau-enterprise"]
   - index: 5
-    titre: "Un mot sur l'impact environnemental"
-    visuel: "assets/images/m2/02-6-impact-environnemental.png"
+    titre: "Réputationnel · 4 zones"
+    visuel: "assets/visuels/Diapositive14.PNG"
+    t_start: 214.147
+    marqueurs: ["4-zones-reputation", "zone-dates", "zone-chiffres", "zone-citations", "zone-engagements"]
+  - index: 6
+    titre: "Usurpation · deepfakes (3 cas)"
+    visuel: "assets/visuels/Diapositive15.PNG"
+    t_start: 279.147
+    marqueurs: ["usurpation-deepfakes", "deepfakes-exemples"]
+  - index: 7
+    titre: "Protocole de vérification en 3 temps"
+    visuel: "assets/visuels/Diapositive16.PNG"
+    t_start: 353.147
+    marqueurs: ["protocole-3-temps", "etape-identifier", "etape-verifier", "etape-relire"]
+  - index: 8
+    titre: "Industrialisation · scénario 200 clients"
+    visuel: "assets/visuels/Diapositive17.PNG"
+    t_start: 390.323
+    marqueurs: ["industrialisation-prematuree", "scenario-commercial", "scenario-erreur-multipliee"]
+  - index: 9
+    titre: "S.F.O.I. en aperçu"
+    visuel: "assets/visuels/Diapositive18.PNG"
+    t_start: 435.323
+    marqueurs: ["progression-sfoi-apercu", "sfoi-S", "sfoi-F", "sfoi-O", "sfoi-I", "sfoi-regle-absolue"]
+  - index: 10
+    titre: "3 questions avant d'automatiser"
+    visuel: "assets/visuels/Diapositive19.PNG"
+    t_start: 471.323
+    marqueurs: ["3-questions-automatiser", "q-validation-humaine", "q-erreurs-corrigees", "q-supervision"]
+  - index: 11
+    titre: "AI Act Article 4 · 3 questions auto-éval"
+    visuel: "assets/visuels/Diapositive20.PNG"
+    t_start: 498.323
+    marqueurs: ["ai-act-article-4"]
+  - index: 12
+    titre: "Clôture · 3 risques ↔ 3 règles"
+    visuel: "assets/visuels/Diapositive21.PNG"
+    t_start: 588.87
+    marqueurs: []
+  - index: 13
+    titre: "Postscript environnemental"
+    visuel: "assets/visuels/Diapositive22.PNG"
     t_start: 678.713
+    marqueurs: []
 quiz_inline:
-  - after_slide: 2
+  - after_slide: 4
     question: "Vous recevez une demande urgente d'un client. Pour rédiger rapidement votre réponse, vous copiez-collez son email complet (avec ses coordonnées, le montant du contrat et ses conditions particulières) dans l'interface gratuite d'un outil IA. Quel risque avez-vous pris ?"
     options:
       - "Aucun — les outils IA sont conçus pour traiter ce type de demandes professionnelles"
@@ -37,7 +87,7 @@ quiz_inline:
       - "Un risque d'industrialisation prématurée — vous n'avez pas encore validé le processus"
     answer: 1
     explanation: "En collant des données client dans un outil public gratuit, vous transmettez des informations confidentielles à un serveur externe. C'est le risque d'exfiltration dans sa forme la plus courante : invisible, immédiate, sans incident apparent — jusqu'à ce que ça compte."
-  - after_slide: 3
+  - after_slide: 11
     question: "Un collaborateur vous dit : « L'AI Act impose des obligations strictes à toutes les entreprises qui utilisent l'IA — on doit s'y conformer immédiatement. » Quelle est la nuance importante qu'il manque ?"
     options:
       - "L'AI Act ne concerne que les entreprises de plus de 250 salariés"

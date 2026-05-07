@@ -9,6 +9,8 @@ const formation = defineCollection({
     duree_estimee: z.string().optional(),
     audio: z.string().optional(),
     takeaway: z.string().optional(),
+    accroche: z.string().optional(),
+    categorie: z.string().optional(),
     slides: z.array(z.object({
       index: z.number(),
       titre: z.string(),

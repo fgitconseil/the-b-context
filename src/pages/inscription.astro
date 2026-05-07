@@ -1,6 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import BlocCard from '../components/BlocCard.astro';
+import { getCollection } from 'astro:content';
 const base = import.meta.env.BASE_URL;
+
+const blocs = await getCollection('formation');
+blocs.sort((a, b) => a.data.bloc - b.data.bloc);
 ---
 <Layout title="Créer un compte" description="Créez un compte gratuit pour accéder à la formation AI Practice Steward et sauvegarder votre progression.">
 
@@ -159,26 +164,8 @@ const base = import.meta.env.BASE_URL;
           <p class="text-slate-500 text-sm">5 blocs · ~1h · Parcours distanciel · De la compréhension à la maturité organisationnelle — à votre rythme.</p>
         </div>
         <div class="space-y-2">
-          {[
-            { num: 1, titre: "Comprendre les LLM", duree: "~10 min", phase: "Comprendre", phaseColor: "bg-blue-600", tagColor: "bg-blue-50 text-blue-700", desc: "Ce qu'est vraiment un LLM : un moteur de prédiction statistique, pas un moteur de vérité. Mécanisme, cut-off, hallucinations, implications concrètes.", fiche: false },
-            { num: 2, titre: "Risques · cadre commun", duree: "~12 min", phase: "Comprendre", phaseColor: "bg-blue-600", tagColor: "bg-blue-50 text-blue-700", desc: "Les 3 risques professionnels réels — exfiltration, risque réputationnel, industrialisation prématurée. Les règles simples pour ne pas les subir.", fiche: true },
-            { num: 3, titre: "Choisir le bon prompt", duree: "~13 min", phase: "Choisir", phaseColor: "bg-green-600", tagColor: "bg-green-50 text-green-700", desc: "Les 4 intentions de prompt — Production, Exploration, Structuration, Vérification. Un mauvais type de prompt génère une mauvaise catégorie de réponse.", fiche: true },
-            { num: 4, titre: "Méthode S.F.O.I.", duree: "~8 min", phase: "Méthode", phaseColor: "bg-amber-500", tagColor: "bg-amber-50 text-amber-700", desc: "🟢 Structurer sans perdre · 🟡 Fiabiliser chaque affirmation · 🔵 Optimiser pour l'usage direct · 🟣 Industrialiser avec gouvernance. Cas Marc (RH).", fiche: true },
-            { num: 5, titre: "Quand l'usage devient collectif", duree: "~11 min", phase: "Ouverture", phaseColor: "bg-purple-600", tagColor: "bg-purple-50 text-purple-700", desc: "Skills, boucle amplificatrice et reddition cognitive. Ce que la formation individuelle ne résout pas — et ce que l'AI Practice Steward adresse.", fiche: false },
-          ].map(bloc => (
-            <div class="flex items-start gap-4 p-4 rounded-xl bg-white border border-slate-100">
-              <div class={`w-8 h-8 rounded-full ${bloc.phaseColor} text-white flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5`}>{bloc.num}</div>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 flex-wrap mb-0.5">
-                  <span class="font-semibold text-slate-900 text-sm">{bloc.titre}</span>
-                  <span class="text-xs text-slate-400">{bloc.duree}</span>
-                  {bloc.fiche && <span class="text-xs bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded-full font-medium">Fiche mémo</span>}
-                  <span class={`text-xs font-semibold px-2 py-0.5 rounded-full ${bloc.tagColor}`}>{bloc.phase}</span>
-                </div>
-                <p class="text-slate-500 text-sm leading-relaxed">{bloc.desc}</p>
-              </div>
-              <span class="text-slate-300 self-center flex-shrink-0">→</span>
-            </div>
+          {blocs.map((entry) => (
+            <BlocCard entry={entry} variant="syllabus" />
           ))}
         </div>
 

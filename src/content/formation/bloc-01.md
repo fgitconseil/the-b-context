@@ -2,27 +2,51 @@
 bloc: 1
 titre: "Comprendre les LLM"
 duree_estimee: "~10 min"
+audio: "/assets/audio/blocs/bloc-01.mp3"
+takeaway: "/assets/takeaways/bloc-01.png"
+accroche: "Ce qu'est vraiment un LLM : un moteur de prédiction statistique, pas un moteur de vérité. Mécanisme, cut-off, hallucinations, implications concrètes."
+categorie: "Comprendre"
 slides:
   - index: 0
-    titre: "Accroche terrain"
-    visuel: "assets/images/m1/01-1-accroche-terrain.png"
+    titre: "Accroche · L'IA générative est déjà là"
+    visuel: "assets/visuels/Diapositive1.PNG"
     t_start: 0.0
+    marqueurs: []
   - index: 1
-    titre: "Ce qu'est un LLM"
-    visuel: "assets/images/m1/01-2-ce-quest-un-llm.png"
+    titre: "LLM = moteur de prédiction statistique"
+    visuel: "assets/visuels/Diapositive2.PNG"
     t_start: 57.776
+    marqueurs: ["llm-acronym", "llm-definition", "llm-predicts-not-understands"]
   - index: 2
-    titre: "Ce que l'IA ne fait pas"
-    visuel: "assets/images/m1/01-3-ce-que-ia-ne-fait-pas.png"
-    t_start: 267.723
+    titre: "Métaphore du stagiaire cultivé"
+    visuel: "assets/visuels/Diapositive3.PNG"
+    t_start: 95.776
+    marqueurs: ["metaphore-stagiaire"]
   - index: 3
-    titre: "Les 4 implications clés"
-    visuel: "assets/images/m1/01-4-les-4-implications-cles.png"
-    t_start: 387.833
+    titre: "LLM vs Plateforme · 4 mécanismes"
+    visuel: "assets/visuels/Diapositive4.PNG"
+    t_start: 143.776
+    marqueurs: ["plateforme-vs-llm", "plateforme-mecanismes"]
   - index: 4
-    titre: "Message de clôture"
-    visuel: "assets/images/m1/01-5-message-de-cloture.png"
+    titre: "Hallucination · forme correcte, fond faux"
+    visuel: "assets/visuels/Diapositive5.PNG"
+    t_start: 205.776
+    marqueurs: ["hallucination-concept", "hallucination-exemple"]
+  - index: 5
+    titre: "Trois limites · cutoff, fichiers, incertitude"
+    visuel: "assets/visuels/Diapositive6.PNG"
+    t_start: 267.723
+    marqueurs: ["limite-1-cutoff", "limite-2-fichiers", "limite-3-incertitude"]
+  - index: 6
+    titre: "Quatre implications"
+    visuel: "assets/visuels/Diapositive7.PNG"
+    t_start: 387.833
+    marqueurs: ["implication-1-qualite-demande", "implication-2-verifier-faits", "implication-3-responsabilite", "implication-4-bons-outils"]
+  - index: 7
+    titre: "Clôture · récap quadrant"
+    visuel: "assets/visuels/Diapositive8.PNG"
     t_start: 541.676
+    marqueurs: []
 quiz_inline:
   - after_slide: 1
     question: "Un LLM génère ses réponses en..."
@@ -33,7 +57,7 @@ quiz_inline:
       - "Accédant à des informations en temps réel sur le web"
     answer: 1
     explanation: "Un LLM est un modèle statistique de prédiction. Il ne comprend pas — il prédit. C'est pourquoi ses réponses peuvent sembler correctes sans l'être : elles sont plausibles, pas nécessairement vraies."
-  - after_slide: 2
+  - after_slide: 5
     question: "Vous demandez à l'IA le taux de TVA applicable à votre activité depuis le 1er janvier 2026. Quelle précaution s'impose ?"
     options:
       - "Aucune — la TVA est une donnée stable que l'IA connaît parfaitement"
@@ -42,7 +66,7 @@ quiz_inline:
       - "Utiliser un autre outil IA spécialisé en fiscalité"
     answer: 2
     explanation: "La date de coupure signifie que l'IA n'a pas accès aux informations postérieures à son entraînement. Toute réglementation, taux ou loi peut avoir évolué depuis. Vérifier dans une source officielle est obligatoire pour les données normatives récentes."
-  - after_slide: 3
+  - after_slide: 4
     question: "Une hallucination de l'IA, c'est quand..."
     options:
       - "L'IA invente une réponse parce qu'elle n'a pas compris la question"

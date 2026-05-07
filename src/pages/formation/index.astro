@@ -1,39 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import BlocCard from '../../components/BlocCard.astro';
 import { getCollection } from 'astro:content';
 const base = import.meta.env.BASE_URL;
 
 const blocs = await getCollection('formation');
 blocs.sort((a, b) => a.data.bloc - b.data.bloc);
-
-// Presentation metadata — not stored in content collection
-const META: Record<number, { phase: string; phaseColor: string; tagColor: string; desc: string; hasTakeaway: boolean }> = {
-  1: {
-    phase: 'Comprendre', phaseColor: 'bg-blue-600', tagColor: 'bg-blue-100 text-blue-700',
-    desc: "Le moteur LLM, la plateforme et ce qui change. Mécanisme de prédiction, hallucinations, date de coupure.",
-    hasTakeaway: false,
-  },
-  2: {
-    phase: 'Comprendre', phaseColor: 'bg-blue-600', tagColor: 'bg-blue-100 text-blue-700',
-    desc: "Les 3 risques professionnels — exfiltration, réputationnel, industrialisation prématurée. Les règles simples pour ne pas les subir.",
-    hasTakeaway: true,
-  },
-  3: {
-    phase: 'Choisir', phaseColor: 'bg-green-600', tagColor: 'bg-green-100 text-green-700',
-    desc: "Quatre intentions, quatre gabarits — Production, Exploration, Structuration, Vérification. Un mauvais type génère une mauvaise réponse.",
-    hasTakeaway: true,
-  },
-  4: {
-    phase: 'Méthode', phaseColor: 'bg-amber-500', tagColor: 'bg-amber-100 text-amber-700',
-    desc: "Quatre actes pour travailler avec un assistant IA — Structurer, Fiabiliser, Optimiser, Industrialiser. Cas appliqué en conditions réelles.",
-    hasTakeaway: true,
-  },
-  5: {
-    phase: 'Ouverture', phaseColor: 'bg-purple-600', tagColor: 'bg-purple-100 text-purple-700',
-    desc: "De la méthode personnelle à la maturité organisationnelle. Boucles systémiques, IMIA, et le rôle d'AI Practice Steward.",
-    hasTakeaway: false,
-  },
-};
 ---
 <Layout title="Formation Reflexe IA" description="5 blocs gratuits pour maîtriser la méthode S.F.O.I. et comprendre le rôle d'AI Practice Steward.">
 
@@ -61,36 +33,9 @@ const META: Record<number, { phase: string; phaseColor: string; tagColor: string
     </div>
 
     <div class="space-y-3">
-      {blocs.map((entry) => {
-        const m = META[entry.data.bloc];
-        const blocId = `bloc-0${entry.data.bloc}`;
-        return (
-          <a
-            href={`${base}formation/${blocId}/`}
-            data-bloc-id={blocId}
-            class="bloc-link flex items-start gap-4 p-5 rounded-xl border border-slate-100 hover:border-blue-300 hover:shadow-md transition-all bg-white group no-underline"
-          >
-            <div class={`w-9 h-9 rounded-full ${m.phaseColor} text-white flex items-center justify-center font-bold text-sm flex-shrink-0 mt-0.5`}>
-              {entry.data.bloc}
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 flex-wrap mb-1">
-                <span class="font-semibold text-slate-900 text-sm group-hover:text-blue-700 transition-colors">{entry.data.titre}</span>
-                <span class="text-xs text-slate-400">{entry.data.duree_estimee}</span>
-                {m.hasTakeaway && (
-                  <span class="text-xs bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded-full font-medium">Fiche mémo</span>
-                )}
-                <span class="completed-badge text-xs bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 rounded-full font-medium" style="display:none">✓ Complété</span>
-              </div>
-              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">
-                <span class={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${m.tagColor}`}>{m.phase}</span>
-              </div>
-              <div class="text-slate-500 text-sm leading-relaxed">{m.desc}</div>
-            </div>
-            <span class="text-slate-300 group-hover:text-blue-500 transition-colors self-center flex-shrink-0 text-lg">→</span>
-          </a>
-        );
-      })}
+      {blocs.map((entry) => (
+        <BlocCard entry={entry} variant="parcours" />
+      ))}
     </div>
 
   </section>

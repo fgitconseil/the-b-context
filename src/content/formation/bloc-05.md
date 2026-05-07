@@ -2,31 +2,68 @@
 bloc: 5
 titre: "Quand l'usage devient collectif"
 duree_estimee: "~11 min"
+audio: "/assets/audio/blocs/bloc-05.mp3"
+takeaway: "/assets/takeaways/bloc-05.png"
+accroche: "Skills, boucle amplificatrice et reddition cognitive. Ce que la formation individuelle ne résout pas — et ce que l'AI Practice Steward adresse."
+categorie: "Ouverture"
 slides:
   - index: 0
-    titre: "Récap du chemin parcouru"
-    visuel: "assets/images/m6/06-1-recap-chemin-parcouru.png"
+    titre: "Récap parcours · 4 cartouches"
+    visuel: "assets/visuels/Diapositive38.PNG"
     t_start: 0.0
+    marqueurs: ["recap-chemin"]
   - index: 1
-    titre: "Ce que sont les skills"
-    visuel: "assets/images/m6/06-2-ce-que-sont-les-skills.png"
+    titre: "Lucidité · individu vs système"
+    visuel: "assets/visuels/Diapositive39.PNG"
     t_start: 70.363
+    marqueurs: []
   - index: 2
-    titre: "Les deux boucles côté humain"
-    visuel: "assets/images/m6/06-3-les-deux-boucles.png"
+    titre: "Boucles · capacité crée responsabilité"
+    visuel: "assets/visuels/Diapositive40.PNG"
     t_start: 101.406
-    marqueurs:
-      - "t_abs=179.406 → transition reddition_cognitive"
+    marqueurs: []
   - index: 3
-    titre: "Le rôle — AI Practice Steward"
-    visuel: "assets/images/m6/06-4-role-ai-practice-steward.png"
-    t_start: 227.113
+    titre: "Boucle amplificatrice"
+    visuel: "assets/visuels/Diapositive41.PNG"
+    t_start: 156.406
+    marqueurs: ["boucle-amplificatrice", "ampli-etape-1", "ampli-etape-2", "ampli-etape-3", "ampli-etape-4", "ampli-choc"]
   - index: 4
-    titre: "Clôture"
-    visuel: "assets/images/m6/06-5-cloture.png"
+    titre: "Reddition cognitive"
+    visuel: "assets/visuels/Diapositive42.PNG"
+    t_start: 179.406
+    marqueurs: ["reddition-cognitive", "reddition-jalon-1", "reddition-jalon-2", "reddition-jalon-3", "reddition-question"]
+  - index: 5
+    titre: "IMIA · pentagone des 5 dimensions"
+    visuel: "assets/visuels/Diapositive43.PNG"
+    t_start: 227.113
+    marqueurs: ["imia-pentagone", "imia-trace-organisation"]
+  - index: 6
+    titre: "Trois rôles confondus"
+    visuel: "assets/visuels/Diapositive44.PNG"
     t_start: 407.468
+    marqueurs: []
+  - index: 7
+    titre: "Sens originel du Steward"
+    visuel: "assets/visuels/Diapositive45.PNG"
+    t_start: 442.468
+    marqueurs: ["steward-titre"]
+  - index: 8
+    titre: "3 capacités appliquées à l'IA"
+    visuel: "assets/visuels/Diapositive46.PNG"
+    t_start: 526.468
+    marqueurs: ["capacite-voir-boucles", "capacite-niveaux", "steward-niveau-individu", "steward-niveau-equipe", "steward-niveau-organisation", "capacite-resistance"]
+  - index: 9
+    titre: "Livrables · ne fait pas"
+    visuel: "assets/visuels/Diapositive47.PNG"
+    t_start: 550.468
+    marqueurs: ["skills-expert", "skills-capture", "skills-cartouche", "skills-cas-usage"]
+  - index: 10
+    titre: "Clôture"
+    visuel: "assets/visuels/Diapositive48.PNG"
+    t_start: 624.687
+    marqueurs: []
 quiz_inline:
-  - after_slide: 1
+  - after_slide: 9
     question: "Un skill donné à un assistant, c'est avant tout..."
     options:
       - "Un accès à des fonctionnalités avancées du modèle IA"
@@ -35,7 +72,7 @@ quiz_inline:
       - "Un plugin tiers connecté à l'assistant"
     answer: 1
     explanation: "Un skill ne rend pas l'assistant plus puissant — il lui donne un rôle précis. Sans skill, un assistant est généraliste. Avec un skill bien conçu, il ressemble à un collaborateur spécialisé."
-  - after_slide: 2
+  - after_slide: 4
     question: "Ce qui distingue fondamentalement la reddition cognitive de la boucle amplificatrice, c'est que..."
     options:
       - "La boucle amplificatrice est plus rapide à se mettre en place"
@@ -44,7 +81,7 @@ quiz_inline:
       - "La boucle amplificatrice est irréversible"
     answer: 2
     explanation: "La boucle amplificatrice produit des erreurs non vérifiées. La reddition cognitive va plus loin : l'équipe perd progressivement la compétence même de vérification. La question n'est plus « l'IA se trompe-t-elle ? » mais « sommes-nous encore capables de le détecter ? »"
-  - after_slide: 3
+  - after_slide: 6
     question: "Cette formation vous a donné une méthode individuelle solide. Qu'est-ce qu'elle ne peut pas résoudre à votre place ?"
     options:
       - "La technique — vous aurez besoin d'un consultant pour configurer les outils"
