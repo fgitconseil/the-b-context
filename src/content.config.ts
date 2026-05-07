@@ -1,19 +1,39 @@
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
 const formation = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: 'bloc-*.md', base: './src/content/formation' }),
   schema: z.object({
-    bloc: z.number().int().min(1).max(5),
-    slug: z.string(),
+    bloc: z.number(),
     titre: z.string(),
-    sous_titre: z.string().optional(),
-    duree_min: z.number().int().positive(),
-    badge: z.string(),
-    ordre: z.number().int().positive(),
-    statut: z.enum(['en-revision', 'valide', 'enregistre']),
-    audio_complet: z.boolean().default(false),
-    illustrations_validees: z.boolean().default(false),
-    sources_archive: z.array(z.string()).default([]),
+    duree_estimee: z.string(),
+    accroche: z.string(),
+    categorie: z.enum(['Comprendre', 'Choisir', 'Méthode', 'Ouverture']),
+    takeaway: z.string(),
+    slides: z.array(z.object({
+      index: z.number(),
+      titre: z.string(),
+      audio: z.string(),
+      duration: z.number(),
+      visuels: z.array(z.object({
+        fichier: z.string(),
+        t_start: z.number(),
+        marqueurs: z.array(z.string()).default([]),
+      })),
+    })),
+    quiz_inline: z.array(z.object({
+      after_slide: z.number(),
+      question: z.string(),
+      options: z.array(z.string()),
+      answer: z.number(),
+      explanation: z.string().optional(),
+    })).default([]),
+    quiz_final: z.array(z.object({
+      question: z.string(),
+      options: z.array(z.string()),
+      answer: z.number(),
+      explanation: z.string().optional(),
+    })).default([]),
   }),
 });
 

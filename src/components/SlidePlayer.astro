@@ -1,494 +1,694 @@
 ---
-import type { Slide } from '../lib/slides';
+import type { CollectionEntry } from 'astro:content';
+const base = import.meta.env.BASE_URL;
 
 interface Props {
-  slides:        Slide[];
-  blocId:        string;
-  nextBlocUrl?:  string;
-  nextBlocTitle?: string;
-  takeawayUrl?:  string;
+  entry: CollectionEntry<'formation'>;
+  blocId: string;
+  nextBlocUrl: string;
+  phaseLabel?: string;
 }
 
-const { slides, blocId, nextBlocUrl, nextBlocTitle, takeawayUrl } = Astro.props;
-const total = slides.length;
+const { entry, blocId, nextBlocUrl, phaseLabel = 'Formation' } = Astro.props;
+const { slides, quiz_inline, quiz_final, titre, bloc } = entry.data;
+const qi = quiz_inline ?? [];
+const qf = quiz_final ?? [];
+const TOTAL_QF = qf.length;
 
-// Category → illustration background color
-const catBg: Record<string, string> = {
-  intro:    '#EFF6FF',
-  partie1:  '#F0FDF4',
-  partie2:  '#FEFCE8',
-  partie3:  '#FAF5FF',
+// ── Parse body into script sections (H2 → text) ─────────────────────
+const bodyText = (entry as any).body ?? '';
+const sections: Record<string, string> = {};
+const sectionParts = bodyText.split(/\n(?=## )/);
+for (const part of sectionParts) {
+  const m = part.match(/^## (.+?)\n([\s\S]*)/);
+  if (m) sections[m[1].trim()] = m[2].trim();
+}
+
+function normalizeForMatch(s: string): string {
+  return (s ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+const normalizedSections: Record<string, string> = {};
+for (const [key, val] of Object.entries(sections)) {
+  normalizedSections[normalizeForMatch(key)] = val;
+}
+
+function mdToHtml(md: string): string {
+  return md.split('\n\n').map(p => {
+    const html = p
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/_(.*?)_/g, '<em>$1</em>')
+      .replace(/\n/g, '<br>');
+    return `<p class="mb-3 text-slate-600 text-sm leading-relaxed">${html}</p>`;
+  }).join('');
+}
+
+const scriptHtmls: string[] = slides.map(s => {
+  const key = normalizeForMatch(s.titre);
+  return normalizedSections[key]
+    ? mdToHtml(normalizedSections[key])
+    : '<p class="text-slate-400 italic text-sm">Script non disponible pour cette slide.</p>';
+});
+
+// Build-time report of H2 mismatches
+const mismatches = slides.filter(s => !normalizedSections[normalizeForMatch(s.titre)]).map(s => s.titre);
+if (mismatches.length > 0) {
+  console.warn(`[SlidePlayer ${blocId}] H2 sections introuvables pour :`, mismatches);
+}
+
+// ── Per-bloc accent colors ───────────────────────────────────────────
+const accentBg: Record<number, string> = {
+  1: 'bg-blue-600', 2: 'bg-blue-600', 3: 'bg-green-600', 4: 'bg-amber-500', 5: 'bg-purple-600',
 };
-const catAccent: Record<string, string> = {
-  intro:    '#2563EB',
-  partie1:  '#16A34A',
-  partie2:  '#CA8A04',
-  partie3:  '#7C3AED',
+const accentText: Record<number, string> = {
+  1: 'text-blue-600', 2: 'text-blue-600', 3: 'text-green-600', 4: 'text-amber-600', 5: 'text-purple-600',
 };
+const qiAccent: Record<number, string> = {
+  1: 'hover:border-blue-400 hover:bg-blue-50',
+  2: 'hover:border-blue-400 hover:bg-blue-50',
+  3: 'hover:border-green-400 hover:bg-green-50',
+  4: 'hover:border-amber-400 hover:bg-amber-50',
+  5: 'hover:border-purple-400 hover:bg-purple-50',
+};
+const progressColor = accentBg[bloc] ?? 'bg-blue-600';
+const textAccent    = accentText[bloc] ?? 'text-blue-600';
+const qHover        = qiAccent[bloc] ?? qiAccent[1];
+
+const hasTakeaway = !!entry.data.takeaway;
+const takeawayPath = entry.data.takeaway ?? '';
+
+// ── Minimal slides data for client JS ───────────────────────────────
+const slidesForJs = slides.map(s => ({
+  audio: s.audio,
+  titre: s.titre,
+  visuels: s.visuels.map(v => ({ fichier: v.fichier, t_start: v.t_start })),
+}));
+
+const qiForJs = qi.map(q => ({ after_slide: q.after_slide }));
 ---
 
-<div class="sp-player" id={`player-${blocId}`} data-bloc={blocId} data-total={total}>
+<section
+  class="max-w-2xl mx-auto px-4 py-8"
+  id="sp-root"
+  data-bloc-id={blocId}
+  data-next-bloc-url={nextBlocUrl}
+  data-slides-json={JSON.stringify(slidesForJs)}
+  data-qi-json={JSON.stringify(qiForJs)}
+  data-total-qf={String(TOTAL_QF)}
+>
 
-  <!-- Progress track -->
-  <div class="sp-track">
-    <div class="sp-bar" id={`pb-${blocId}`} style="width:0%"></div>
-  </div>
+  <!-- Breadcrumb -->
+  <nav class="mb-5 text-sm text-slate-400">
+    <a href={`${base}formation/`} class="hover:text-slate-700 no-underline transition-colors">← Parcours</a>
+    <span class="mx-2">·</span>
+    <span>{phaseLabel}</span>
+  </nav>
 
-  <!-- Header meta -->
-  <div class="sp-meta">
-    <span class="sp-counter" id={`counter-${blocId}`}>1 / {total}</span>
-    <span class="sp-cat-label" id={`cat-label-${blocId}`}></span>
-  </div>
+  <h1 class="text-xl font-bold text-slate-900 mb-5">{titre}</h1>
 
-  <!-- Slides -->
-  <div class="sp-viewport">
-    {slides.map((slide, i) => (
+  <!-- Counter + progress (hidden during qf/done phases by JS) -->
+  <div id="counter-section" class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-bold uppercase tracking-widest text-slate-500">
+        Slide <span id="counter-current">1</span> / <span id="counter-total">{slides.length}</span>
+      </span>
+    </div>
+    <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
       <div
-        class={`sp-slide${i === 0 ? ' active' : ''}`}
-        id={`slide-${blocId}-${i}`}
-        data-slide-index={i}
+        id="progress-fill"
+        class={`h-full ${progressColor} rounded-full transition-all duration-300`}
+        style={`width:${(1 / slides.length * 100).toFixed(2)}%`}
+      ></div>
+    </div>
+  </div>
+
+  <!-- Slide narrative title -->
+  <h2 id="slide-narrative-title" class={`text-base font-semibold mb-4 ${textAccent}`}>
+    {slides[0].titre}
+  </h2>
+
+  <!-- ── SLIDE AREA ────────────────────────────────────────────────── -->
+  <div id="slide-area">
+
+    <!-- Image zone -->
+    <div id="visuel-zone" class="relative mb-4 rounded-xl overflow-hidden border border-slate-100 bg-slate-50">
+      <img
+        id="main-visuel"
+        src={`${base}assets/visuels/${slides[0].visuels[0].fichier}`}
+        alt={slides[0].titre}
+        style="width:100%; max-height:480px; object-fit:contain; display:block;"
+        loading="eager"
+      />
+      <button
+        class="zoom-btn absolute bottom-2 right-2 w-8 h-8 rounded-md flex items-center justify-center"
+        style="background:rgba(0,0,0,0.45); border:none; cursor:pointer; z-index:2;"
+        data-action="zoom"
+        aria-label="Agrandir"
       >
-        <!-- Two-column layout -->
-        <div class="sp-content">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15,3 21,3 21,9"/><polyline points="9,21 3,21 3,15"/>
+          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+      </button>
+    </div>
 
-          <!-- Illustration column -->
-          <div
-            class="sp-illu-wrap"
-            style={`background:${catBg[slide.category] ?? '#F1F5F9'}`}
-          >
-            <img
-              src={slide.illustration}
-              alt=""
-              aria-hidden="true"
-              class="sp-illu-img"
-              width="160"
-              height="160"
-            />
-          </div>
-
-          <!-- Text column -->
-          <div class="sp-text-col">
-            <div
-              class="sp-slide-label"
-              style={`color:${catAccent[slide.category] ?? '#2563EB'}`}
-            >
-              {slide.title}
+    <!-- Quiz inline zone (hidden; appears when audio ends on relevant slide) -->
+    <div id="qi-zone" style="display:none">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-xs font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full uppercase tracking-wide">Pause réflexion</span>
+      </div>
+      {qi.map(q => (
+        <div class="qi-panel" data-after-slide={String(q.after_slide)} style="display:none">
+          <p class="text-base font-semibold text-slate-900 mb-4 leading-snug">{q.question}</p>
+          <div class="quiz-block space-y-2" data-answer={String(q.answer)} data-quiz-kind="inline">
+            {q.options.map((opt, j) => (
+              <button
+                type="button"
+                class={`quiz-opt w-full text-left px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 ${qHover} transition-all`}
+                data-index={String(j)}
+                data-action="quiz-answer"
+              >
+                <span class="font-semibold text-amber-600 mr-2">{String.fromCharCode(65 + j)})</span>{opt}
+              </button>
+            ))}
+            <div class="quiz-expl px-4 py-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 leading-relaxed mt-3" style="display:none">
+              {q.explanation}
             </div>
-            <p class="sp-key-message">{slide.keyMessage}</p>
+          </div>
+          <button
+            type="button"
+            data-action="quiz-continue"
+            class="mt-4 px-5 py-2.5 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-900 transition-all"
+            style="display:none"
+          >
+            Continuer →
+          </button>
+        </div>
+      ))}
+    </div>
+
+    <!-- Native audio player -->
+    <audio
+      id="bloc-audio"
+      src={slides[0].audio}
+      preload="metadata"
+      controls
+      class="w-full mt-4 mb-4 rounded-lg"
+      style="height:40px;"
+    ></audio>
+
+    <!-- Script accordion -->
+    <details id="script-accordion" class="mt-2 rounded-xl border border-slate-100 bg-slate-50 overflow-hidden">
+      <summary class="px-4 py-3 text-sm font-medium text-slate-600 cursor-pointer select-none hover:text-slate-900 transition-colors list-none flex items-center justify-between">
+        <span>Voir le script complet</span>
+        <span class="text-slate-400 text-xs">▾</span>
+      </summary>
+      <div id="script-body" class="px-4 pb-4 pt-2 border-t border-slate-100" set:html={scriptHtmls[0]}></div>
+    </details>
+
+  </div>
+
+  <!-- ── QUIZ FINAL area (hidden) ──────────────────────────────────── -->
+  <div id="qf-area" style="display:none">
+    {qf.map((q, idx) => (
+      <div class="qf-panel" style={idx > 0 ? 'display:none' : ''}>
+        <div class="flex items-center gap-3 mb-5">
+          <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full uppercase tracking-wide">Quiz final</span>
+          <span class="text-xs text-slate-400">Question {idx + 1} / {TOTAL_QF}</span>
+        </div>
+        <p class="text-base font-semibold text-slate-900 mb-5 leading-snug">{q.question}</p>
+        <div class="quiz-block space-y-2" data-answer={String(q.answer)} data-quiz-kind="final">
+          {q.options.map((opt, j) => (
+            <button
+              type="button"
+              class="quiz-opt w-full text-left px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 hover:border-blue-400 hover:bg-blue-50 transition-all"
+              data-index={String(j)}
+              data-action="qf-answer"
+            >
+              <span class="font-semibold text-blue-600 mr-2">{String.fromCharCode(65 + j)})</span>{opt}
+            </button>
+          ))}
+          <div class="quiz-expl px-4 py-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 leading-relaxed mt-3" style="display:none">
+            {q.explanation}
           </div>
         </div>
-
-        <!-- Narration (caché — toggle) -->
-        {slide.narration && (
-          <div class="sp-narration-wrap">
-            <button
-              class="sp-narration-toggle"
-              type="button"
-              aria-expanded="false"
-              data-narration-btn
-            >
-              Voir le script complet ▾
-            </button>
-            <div
-              class="sp-narration-body"
-              aria-hidden="true"
-              style="display:none"
-              data-narration={slide.narration}
-            >
-              <pre class="sp-narration-pre">{slide.narration}</pre>
-            </div>
-          </div>
-        )}
-
-        <!-- Quiz inline -->
-        {slide.quiz && (
-          <div
-            class="sp-quiz"
-            data-quiz-id={slide.quiz.id}
-            data-correct={slide.quiz.correct}
-          >
-            <div class="sp-quiz-question">{slide.quiz.question}</div>
-            <div class="sp-quiz-options">
-              {slide.quiz.options.map(opt => (
-                <button class="quiz-option" data-letter={opt.letter} type="button">
-                  <span class="quiz-letter">{opt.letter}</span>
-                  <span>{opt.text}</span>
-                </button>
-              ))}
-            </div>
-            <div class="sp-quiz-feedback" style="display:none">
-              <p class="sp-quiz-expl">{slide.quiz.explanation}</p>
-            </div>
-          </div>
-        )}
+        <button
+          type="button"
+          class="qf-next-btn mt-4 px-5 py-2.5 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-900 transition-all"
+          data-action="qf-next"
+          style="display:none"
+        >
+          {idx < qf.length - 1 ? 'Question suivante →' : 'Voir le résultat →'}
+        </button>
       </div>
     ))}
-
-    <!-- End screen -->
-    <div class="sp-end" id={`end-${blocId}`} style="display:none">
-      <div class="sp-end-icon">✓</div>
-      <h2 class="sp-end-title">Bloc terminé</h2>
-      <p class="sp-end-sub">Vous avez parcouru les {total} slides de ce bloc.</p>
-      <div class="sp-end-actions">
-        {takeawayUrl && (
-          <a href={takeawayUrl} class="btn-primary" target="_blank" rel="noopener">
-            Télécharger la fiche mémo →
-          </a>
-        )}
-        {nextBlocUrl && (
-          <a href={nextBlocUrl} class="btn-primary">
-            {nextBlocTitle ? `Bloc suivant : ${nextBlocTitle}` : 'Bloc suivant'} →
-          </a>
-        )}
-        <a href="/formation/" class="btn-secondary">← Retour au parcours</a>
-      </div>
-    </div>
-  </div><!-- /.sp-viewport -->
-
-  <!-- Navigation -->
-  <div class="sp-nav">
-    <button class="sp-btn" id={`btn-prev-${blocId}`} type="button" disabled>← Précédent</button>
-    <button class="sp-btn sp-btn-next" id={`btn-next-${blocId}`} type="button">Suivant →</button>
   </div>
 
-</div><!-- /.sp-player -->
+  <!-- ── DONE area : score + endscreen ────────────────────────────── -->
+  <div id="done-area" style="display:none">
+    <div id={`end-${blocId}`} style="display:none"></div>
+
+    {TOTAL_QF > 0 ? (
+      <div class="py-8">
+        <!-- Score header -->
+        <div class="text-center mb-6">
+          <div class={`w-16 h-16 rounded-2xl ${progressColor} flex items-center justify-center mx-auto mb-6`}>
+            <span class="text-white text-2xl font-bold">✓</span>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900 mb-3">Bloc {bloc} terminé</h2>
+          <div id="score-display" class={`text-3xl font-bold ${textAccent} mb-1`}>—</div>
+          <p class="text-slate-500 text-sm mb-6">questions du quiz final</p>
+        </div>
+
+        {bloc === 5 ? (
+          <!-- Bloc 5 : endscreen après score -->
+          <div>
+            {hasTakeaway && (
+              <div class="text-center mb-6">
+                <a href={takeawayPath} download class={`inline-flex items-center gap-2 px-6 py-3 rounded-lg ${progressColor} text-white text-sm font-semibold hover:opacity-90 transition-colors`}>
+                  ↓ Télécharger la fiche mémo (PNG)
+                </a>
+              </div>
+            )}
+            <div class="mb-6 p-5 rounded-xl bg-slate-50 border border-slate-200">
+              <p class="text-sm font-semibold text-slate-700 mb-3">Partagez votre progression</p>
+              <p class="text-sm text-slate-500 mb-4">Vous avez acquis une méthode concrète pour utiliser l'IA de façon rigoureuse et responsable. Si ce parcours vous a été utile, vous pouvez le signaler sur votre profil LinkedIn.</p>
+              <a
+                href="https://www.linkedin.com/profile/add?startTask=CERTIFICATION&name=Pratique%20IA%20professionnelle%20%C2%B7%20Reflexe%20IA&organizationName=Reflexe%20IA&organizationId=112952006&issueYear=2026&issueMonth=4&certUrl=https%3A%2F%2Freflexe-ia.org%2Fformation%2F"
+                target="_blank" rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0A66C2] text-white text-sm font-semibold hover:bg-[#004182] transition-colors"
+              >
+                Partager sur LinkedIn
+              </a>
+            </div>
+            <div class="p-6 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Aller plus loin</p>
+              <h3 class="text-lg font-bold mb-2">Vos collaborateurs ont suivi la formation — mais les pratiques ne changent pas dans l'organisation ?</h3>
+              <p class="text-slate-300 text-sm mb-4 leading-relaxed">Ce n'est pas un problème de compétence. C'est un problème de système.</p>
+              <a href={`${base}framework/ai-practice-steward/`} class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-slate-900 text-sm font-semibold hover:bg-slate-100 transition-colors">
+                Découvrir le rôle →
+              </a>
+            </div>
+          </div>
+        ) : hasTakeaway ? (
+          <div>
+            <p class="text-slate-500 mb-6 max-w-sm mx-auto text-center">Téléchargez la fiche mémo pour garder les points clés sous la main.</p>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+              <a href={takeawayPath} download class={`inline-flex items-center gap-2 px-6 py-3 rounded-lg ${progressColor} text-white text-sm font-semibold hover:opacity-90 transition-colors`}>
+                ↓ Télécharger la fiche mémo (PNG)
+              </a>
+              <a href={nextBlocUrl} class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:border-slate-300 hover:bg-slate-50 transition-colors">
+                Bloc suivant →
+              </a>
+            </div>
+          </div>
+        ) : (
+          <div class="text-center">
+            <a href={nextBlocUrl} class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:border-slate-300 hover:bg-slate-50 transition-colors">
+              Bloc suivant →
+            </a>
+          </div>
+        )}
+      </div>
+    ) : (
+      <!-- Fallback : bloc sans quiz final -->
+      <div class="py-8">
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center mx-auto mb-4">
+            <span class="text-white text-2xl">★</span>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900 mb-2">Vous avez terminé la formation Reflexe IA.</h2>
+          <p class="text-slate-500 max-w-md mx-auto">Vous disposez d'une méthode personnelle — S.F.O.I. — et d'une grille de lecture pour ce qui dépasse l'individu.</p>
+        </div>
+        <div class="mb-6 p-5 rounded-xl bg-slate-50 border border-slate-200">
+          <p class="text-sm font-semibold text-slate-700 mb-3">Partagez votre progression</p>
+          <p class="text-sm text-slate-500 mb-4">Vous avez acquis une méthode concrète pour utiliser l'IA de façon rigoureuse et responsable. Si ce parcours vous a été utile, vous pouvez le signaler sur votre profil LinkedIn.</p>
+          <a
+            href="https://www.linkedin.com/profile/add?startTask=CERTIFICATION&name=Pratique%20IA%20professionnelle%20%C2%B7%20Reflexe%20IA&organizationName=Reflexe%20IA&organizationId=112952006&issueYear=2026&issueMonth=4&certUrl=https%3A%2F%2Freflexe-ia.org%2Fformation%2F"
+            target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0A66C2] text-white text-sm font-semibold hover:bg-[#004182] transition-colors"
+          >
+            Partager sur LinkedIn
+          </a>
+        </div>
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Aller plus loin</p>
+          <h3 class="text-lg font-bold mb-2">Vos collaborateurs ont suivi la formation — mais les pratiques ne changent pas dans l'organisation ?</h3>
+          <p class="text-slate-300 text-sm mb-4 leading-relaxed">Ce n'est pas un problème de compétence. C'est un problème de système.</p>
+          <a href={`${base}framework/ai-practice-steward/`} class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-slate-900 text-sm font-semibold hover:bg-slate-100 transition-colors">
+            Découvrir le rôle →
+          </a>
+        </div>
+      </div>
+    )}
+  </div>
+
+  <!-- ── Navigation ────────────────────────────────────────────────── -->
+  <div id="nav-bar" class="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
+    <button
+      id="prev-btn"
+      data-action="prev"
+      disabled
+      class="px-5 py-2.5 rounded-lg border border-slate-200 text-slate-600 text-sm font-medium hover:border-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+    >
+      ← Précédent
+    </button>
+    <button
+      id="next-btn"
+      data-action="next"
+      class={`px-5 py-2.5 rounded-lg ${progressColor} text-white text-sm font-medium hover:opacity-90 transition-all`}
+    >
+      Suivant →
+    </button>
+  </div>
+
+  <!-- ── Pre-rendered scripts (hidden, referenced by JS) ──────────── -->
+  <div id="script-sections" style="display:none" aria-hidden="true">
+    {scriptHtmls.map((html, i) => (
+      <div id={`sp-script-${i}`} set:html={html}></div>
+    ))}
+  </div>
+
+</section>
+
+<!-- Lightbox -->
+<div
+  id="lightbox"
+  style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.88); align-items:center; justify-content:center;"
+  role="dialog"
+  aria-modal="true"
+>
+  <img id="lightbox-img" src="" alt="" style="max-width:92vw; max-height:90vh; object-fit:contain; border-radius:8px; box-shadow:0 8px 40px rgba(0,0,0,0.5);" />
+  <button
+    id="lightbox-close"
+    style="position:absolute;top:16px;right:20px;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);border-radius:50%;width:40px;height:40px;cursor:pointer;color:white;font-size:20px;display:flex;align-items:center;justify-content:center;"
+    aria-label="Fermer"
+  >✕</button>
+</div>
 
 <style>
-  /* ── Container ── */
-  .sp-player {
-    background: white;
-    border-radius: 1.25rem;
-    overflow: hidden;
-    box-shadow: 0 20px 48px rgba(0,0,0,0.10);
-    max-width: 880px;
-    margin: 0 auto;
-    font-family: 'Inter', system-ui, sans-serif;
-  }
-
-  /* ── Progress bar ── */
-  .sp-track { height: 3px; background: #e2e8f0; }
-  .sp-bar   {
-    height: 3px;
-    background: linear-gradient(90deg, #2563eb, #7c3aed);
-    transition: width 0.45s ease;
-  }
-
-  /* ── Meta row ── */
-  .sp-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.65rem 1.5rem;
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 0.78rem;
-    color: #94a3b8;
-  }
-  .sp-counter      { font-weight: 700; letter-spacing: 0.04em; }
-  .sp-cat-label    { font-style: italic; font-size: 0.72rem; }
-
-  /* ── Viewport ── */
-  .sp-viewport { min-height: 300px; }
-
-  /* ── Slide frame ── */
-  .sp-slide        { display: none; padding: 2rem 2.5rem 1.5rem; }
-  .sp-slide.active { display: block; }
-
-  /* ── Two-column content ── */
-  .sp-content {
-    display: flex;
-    gap: 2rem;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-  }
-
-  /* Illustration */
-  .sp-illu-wrap {
-    flex-shrink: 0;
-    width: 160px;
-    height: 160px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  .sp-illu-img {
-    width: 130px;
-    height: 130px;
-    object-fit: contain;
-  }
-
-  /* Text column */
-  .sp-text-col {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-top: 0.5rem;
-  }
-  .sp-slide-label {
-    font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.75rem;
-  }
-  .sp-key-message {
-    font-size: 1.05rem;
-    font-weight: 400;
-    color: #334155;
-    line-height: 1.75;
-    max-width: 420px;
-    margin: 0;
-  }
-
-  /* Mobile: stack vertically */
-  @media (max-width: 600px) {
-    .sp-content {
-      flex-direction: column;
-      align-items: center;
-      gap: 1.25rem;
-    }
-    .sp-illu-wrap { width: 120px; height: 120px; }
-    .sp-illu-img  { width: 96px; height: 96px; }
-    .sp-text-col  { padding-top: 0; text-align: center; }
-    .sp-key-message { max-width: 100%; }
-    .sp-slide { padding: 1.5rem 1.25rem 1rem; }
-  }
-
-  /* ── Narration toggle ── */
-  .sp-narration-wrap {
-    border-top: 1px solid #f1f5f9;
-    padding-top: 0.75rem;
-    margin-bottom: 1rem;
-  }
-  .sp-narration-toggle {
-    background: none;
-    border: none;
-    font-size: 0.75rem;
-    color: #94a3b8;
-    cursor: pointer;
-    padding: 0;
-    transition: color 0.2s;
-  }
-  .sp-narration-toggle:hover { color: #64748b; }
-  .sp-narration-body { margin-top: 0.75rem; }
-  .sp-narration-pre {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
-    padding: 1rem 1.25rem;
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 0.8rem;
-    color: #64748b;
-    line-height: 1.7;
-    white-space: pre-wrap;
-    word-break: break-word;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
-  /* ── Quiz ── */
-  .sp-quiz {
-    background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
-    padding: 1.25rem 1.5rem 1.5rem;
-    margin: 0 -2.5rem -1.5rem;
-  }
-  @media (max-width: 600px) {
-    .sp-quiz { margin: 0 -1.25rem -1rem; padding: 1rem 1.25rem; }
-  }
-  .sp-quiz-question {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #0f172a;
-    margin-bottom: 0.875rem;
-  }
-  .sp-quiz-options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .sp-quiz-feedback {
-    margin-top: 1rem;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-  }
-  .sp-quiz-expl {
-    font-size: 0.82rem;
-    color: #166534;
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  /* ── Nav ── */
-  .sp-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.875rem 1.5rem;
-    border-top: 1px solid #f1f5f9;
-    background: #fafafa;
-  }
-  .sp-btn {
-    padding: 0.5rem 1.25rem;
-    border-radius: 0.5rem;
-    border: 1px solid #e2e8f0;
-    background: white;
-    color: #334155;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .sp-btn:hover:not(:disabled) { background: #f1f5f9; border-color: #cbd5e1; }
-  .sp-btn:disabled { opacity: 0.3; cursor: default; }
-  .sp-btn-next { background: #2563eb; color: white; border-color: #2563eb; }
-  .sp-btn-next:hover:not(:disabled) { background: #1d4ed8; }
-
-  /* ── End screen ── */
-  .sp-end {
-    text-align: center;
-    padding: 3.5rem 2rem;
-    background: linear-gradient(135deg, #f0f9ff, #f5f3ff);
-  }
-  .sp-end-icon {
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: white;
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.25rem;
-  }
-  .sp-end-title { font-size: 1.4rem; font-weight: 700; color: #0f172a; margin: 0 0 0.5rem; }
-  .sp-end-sub   { color: #64748b; margin: 0 0 2rem; font-size: 0.9rem; }
-  .sp-end-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .quiz-opt.q-correct  { border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #15803d !important; }
+  .quiz-opt.q-wrong    { border-color: #f87171 !important; background-color: #fef2f2 !important; color: #dc2626 !important; }
+  .quiz-opt.q-inactive { opacity: 0.4; cursor: default; }
+  .zoom-btn:hover { opacity: 1; transform: scale(1.1); }
+  audio::-webkit-media-controls-panel { background: #f8fafc; }
+  details > summary::-webkit-details-marker { display: none; }
 </style>
 
-<script is:inline define:vars={{ blocId, total }}>
-(function () {
-  var current = 0;
+<script>
+  import { trackBlocCompletion, observeEndScreen, saveSlideProgress, loadSlideProgress } from '../lib/trackCompletion';
 
-  var container = document.getElementById('player-' + blocId);
-  var pb        = document.getElementById('pb-' + blocId);
-  var counter   = document.getElementById('counter-' + blocId);
-  var catLabel  = document.getElementById('cat-label-' + blocId);
-  var btnPrev   = document.getElementById('btn-prev-' + blocId);
-  var btnNext   = document.getElementById('btn-next-' + blocId);
-  var endScreen = document.getElementById('end-' + blocId);
+  // ── Read config from DOM ─────────────────────────────────────────────
+  const root = document.getElementById('sp-root') as HTMLElement;
+  const BLOC_ID       = root.dataset.blocId ?? '';
+  const NEXT_BLOC_URL = root.dataset.nextBlocUrl ?? '/formation/';
+  const TOTAL_QF      = parseInt(root.dataset.totalQf ?? '0');
 
-  function getSlide(i) { return document.getElementById('slide-' + blocId + '-' + i); }
+  interface SlideData {
+    audio: string;
+    titre: string;
+    visuels: { fichier: string; t_start: number }[];
+  }
+  interface QiData { after_slide: number; }
 
-  function hasUnansweredQuiz(slideEl) {
-    if (!slideEl) return false;
-    var q = slideEl.querySelector('.sp-quiz');
-    return q && !q.dataset.answered;
+  const SLIDES: SlideData[] = JSON.parse(root.dataset.slidesJson ?? '[]');
+  const QI: QiData[]        = JSON.parse(root.dataset.qiJson ?? '[]');
+
+  // ── DOM refs ─────────────────────────────────────────────────────────
+  const audio           = document.getElementById('bloc-audio') as HTMLAudioElement;
+  const mainVisuel      = document.getElementById('main-visuel') as HTMLImageElement;
+  const counterCurrent  = document.getElementById('counter-current') as HTMLElement;
+  const progressFill    = document.getElementById('progress-fill') as HTMLElement;
+  const slideTitleEl    = document.getElementById('slide-narrative-title') as HTMLElement;
+  const scriptBody      = document.getElementById('script-body') as HTMLElement;
+  const scriptAccordion = document.getElementById('script-accordion') as HTMLDetailsElement;
+  const slideArea       = document.getElementById('slide-area') as HTMLElement;
+  const qiZone          = document.getElementById('qi-zone') as HTMLElement;
+  const visuelZone      = document.getElementById('visuel-zone') as HTMLElement;
+  const qfArea          = document.getElementById('qf-area') as HTMLElement;
+  const doneArea        = document.getElementById('done-area') as HTMLElement;
+  const navBar          = document.getElementById('nav-bar') as HTMLElement;
+  const prevBtn         = document.getElementById('prev-btn') as HTMLButtonElement;
+  const nextBtn         = document.getElementById('next-btn') as HTMLButtonElement;
+
+  // ── State ─────────────────────────────────────────────────────────────
+  let currentSlideIdx  = 0;
+  let currentVisuelIdx = 0;
+  let showingQI        = false;
+  let qfIdx            = 0;
+  let quizScore        = 0;
+  type Phase = 'slides' | 'qf' | 'done';
+  let phase: Phase = 'slides';
+
+  // ── Helpers ───────────────────────────────────────────────────────────
+  const BASE = import.meta.env.BASE_URL;
+
+  function updateVisuel(fichier: string, altText: string) {
+    mainVisuel.src = `${BASE}assets/visuels/${fichier}`;
+    mainVisuel.alt = altText;
   }
 
-  function updateUI() {
-    var pct = total > 1 ? (current / (total - 1)) * 100 : 100;
-    if (pb) pb.style.width = pct + '%';
-    if (counter) counter.textContent = (current + 1) + ' / ' + total;
+  function updateScript(idx: number) {
+    const el = document.getElementById(`sp-script-${idx}`);
+    if (el) scriptBody.innerHTML = el.innerHTML;
+  }
 
-    var slideEl = getSlide(current);
+  // ── loadSlide ─────────────────────────────────────────────────────────
+  function loadSlide(idx: number, autoplay = true) {
+    currentSlideIdx  = idx;
+    currentVisuelIdx = 0;
+    showingQI        = false;
 
-    // Category label — read from illustration wrapper data
-    if (catLabel && slideEl) {
-      var illu = slideEl.querySelector('.sp-illu-wrap');
-      // show slide title label instead
-      var labelEl = slideEl.querySelector('.sp-slide-label');
-      catLabel.textContent = labelEl ? labelEl.textContent : '';
-    }
+    const slide = SLIDES[idx];
 
-    if (btnPrev) btnPrev.disabled = current === 0;
-    if (btnNext) {
-      btnNext.disabled    = hasUnansweredQuiz(slideEl);
-      btnNext.textContent = current === total - 1 ? 'Terminer →' : 'Suivant →';
+    // Audio
+    audio.src = slide.audio;
+    audio.load();
+    if (autoplay) audio.play().catch(() => {});
+
+    // Visuel
+    updateVisuel(slide.visuels[0].fichier, slide.titre);
+
+    // Script
+    updateScript(idx);
+    scriptAccordion.removeAttribute('open');
+
+    // Slide title
+    slideTitleEl.textContent = slide.titre;
+
+    // Counter + progress
+    counterCurrent.textContent = String(idx + 1);
+    progressFill.style.width = `${((idx + 1) / SLIDES.length * 100).toFixed(2)}%`;
+
+    // Show slide area, hide quiz inline
+    visuelZone.style.display = '';
+    qiZone.style.display = 'none';
+    slideArea.style.display = '';
+    qfArea.style.display = 'none';
+    doneArea.style.display = 'none';
+
+    // Nav
+    navBar.style.display = '';
+    prevBtn.disabled = idx === 0;
+    const isLast = idx === SLIDES.length - 1;
+    nextBtn.textContent = isLast && TOTAL_QF === 0 ? 'Bloc suivant →' : 'Suivant →';
+
+    // Progress save
+    saveSlideProgress(BLOC_ID, idx);
+  }
+
+  // ── Phase transitions ─────────────────────────────────────────────────
+  function advanceFromSlides() {
+    audio.pause();
+    if (TOTAL_QF > 0) {
+      phase = 'qf';
+      qfIdx = 0;
+      showQFPanel(0);
+    } else {
+      phase = 'done';
+      showDone();
     }
   }
 
-  function showSlide(i) {
-    for (var j = 0; j < total; j++) {
-      var s = getSlide(j);
-      if (s) s.classList.remove('active');
-    }
-    if (endScreen) endScreen.style.display = 'none';
+  function showQFPanel(idx: number) {
+    slideArea.style.display = 'none';
+    qfArea.style.display = '';
+    doneArea.style.display = 'none';
+    navBar.style.display = 'none';
+    document.querySelectorAll<HTMLElement>('.qf-panel').forEach((el, i) => {
+      el.style.display = i === idx ? '' : 'none';
+    });
+  }
 
-    if (i >= total) {
-      if (endScreen) endScreen.style.display = 'block';
-      if (pb) pb.style.width = '100%';
-      if (counter) counter.textContent = 'Terminé';
-      if (catLabel) catLabel.textContent = '';
-      if (btnPrev) btnPrev.disabled = false;
-      if (btnNext) { btnNext.disabled = true; btnNext.textContent = 'Suivant →'; }
-      current = total;
+  function showDone() {
+    slideArea.style.display = 'none';
+    qfArea.style.display = 'none';
+    doneArea.style.display = '';
+    navBar.style.display = 'none';
+    const scoreEl = document.getElementById('score-display');
+    if (scoreEl && TOTAL_QF > 0) scoreEl.textContent = `${quizScore} / ${TOTAL_QF}`;
+    // Trigger Supabase tracking via observeEndScreen pattern
+    document.querySelectorAll<HTMLElement>('[id^="end-"]').forEach(el => (el.style.display = 'block'));
+  }
+
+  // ── Audio: visuel switch on timeupdate ────────────────────────────────
+  audio.addEventListener('timeupdate', () => {
+    if (phase !== 'slides' || showingQI) return;
+    const slide = SLIDES[currentSlideIdx];
+    const t = audio.currentTime;
+    let newIdx = 0;
+    for (let i = slide.visuels.length - 1; i >= 0; i--) {
+      if (slide.visuels[i].t_start <= t) { newIdx = i; break; }
+    }
+    if (newIdx !== currentVisuelIdx) {
+      currentVisuelIdx = newIdx;
+      updateVisuel(slide.visuels[newIdx].fichier, slide.titre);
+    }
+  });
+
+  // ── Audio ended: show quiz inline if applicable ───────────────────────
+  audio.addEventListener('ended', () => {
+    if (phase !== 'slides' || showingQI) return;
+    const qiMatch = QI.find(q => q.after_slide === currentSlideIdx);
+    if (qiMatch) {
+      showingQI = true;
+      visuelZone.style.display = 'none';
+      document.querySelectorAll<HTMLElement>('.qi-panel').forEach(el => {
+        el.style.display = parseInt(el.dataset.afterSlide ?? '-1') === currentSlideIdx ? '' : 'none';
+      });
+      qiZone.style.display = '';
+    }
+  });
+
+  // ── Event delegation ──────────────────────────────────────────────────
+  document.addEventListener('click', e => {
+    const target = (e.target as HTMLElement).closest<HTMLElement>('[data-action]');
+    if (!target) return;
+    const action = target.dataset.action;
+
+    if (action === 'prev') {
+      if (currentSlideIdx > 0) {
+        loadSlide(currentSlideIdx - 1, true);
+      }
       return;
     }
 
-    var slideEl = getSlide(i);
-    if (slideEl) slideEl.classList.add('active');
-    current = i;
-    updateUI();
-  }
-
-  // Quiz click
-  container && container.addEventListener('click', function (e) {
-    var btn = e.target.closest('.quiz-option');
-    if (!btn) return;
-    var quizBlock = btn.closest('.sp-quiz');
-    if (!quizBlock || quizBlock.dataset.answered) return;
-
-    var correct = quizBlock.dataset.correct;
-    var chosen  = btn.dataset.letter;
-
-    quizBlock.querySelectorAll('.quiz-option').forEach(function (b) {
-      b.disabled = true;
-      var letter = b.querySelector('.quiz-letter');
-      if (b.dataset.letter === correct) {
-        b.classList.add('correct');
-        if (letter) { letter.style.background = '#22c55e'; letter.style.color = 'white'; }
-      } else if (b.dataset.letter === chosen && chosen !== correct) {
-        b.classList.add('wrong');
-        if (letter) { letter.style.background = '#ef4444'; letter.style.color = 'white'; }
+    if (action === 'next') {
+      if (showingQI) {
+        showingQI = false;
+        visuelZone.style.display = '';
+        qiZone.style.display = 'none';
       }
+      if (currentSlideIdx < SLIDES.length - 1) {
+        loadSlide(currentSlideIdx + 1, true);
+      } else {
+        advanceFromSlides();
+      }
+      return;
+    }
+
+    if (action === 'quiz-continue') {
+      showingQI = false;
+      visuelZone.style.display = '';
+      qiZone.style.display = 'none';
+      if (currentSlideIdx < SLIDES.length - 1) {
+        loadSlide(currentSlideIdx + 1, true);
+      } else {
+        advanceFromSlides();
+      }
+      return;
+    }
+
+    if (action === 'quiz-answer') {
+      handleQuizAnswer(target, 'inline');
+      return;
+    }
+
+    if (action === 'qf-answer') {
+      handleQuizAnswer(target, 'final');
+      return;
+    }
+
+    if (action === 'qf-next') {
+      if (qfIdx < TOTAL_QF - 1) {
+        qfIdx++;
+        showQFPanel(qfIdx);
+      } else {
+        phase = 'done';
+        showDone();
+      }
+      return;
+    }
+
+    if (action === 'zoom') {
+      openLightbox(mainVisuel.src, mainVisuel.alt);
+      return;
+    }
+  });
+
+  // ── Quiz answer handler ───────────────────────────────────────────────
+  function handleQuizAnswer(btn: HTMLElement, kind: 'inline' | 'final') {
+    const block = btn.closest<HTMLElement>('.quiz-block');
+    if (!block || block.dataset.answered) return;
+    block.dataset.answered = '1';
+
+    const correct = parseInt(block.dataset.answer ?? '0');
+    const chosen  = parseInt(btn.dataset.index ?? '-1');
+
+    if (kind === 'final' && chosen === correct) quizScore++;
+
+    block.querySelectorAll<HTMLButtonElement>('.quiz-opt').forEach((opt, i) => {
+      opt.disabled = true;
+      if (i === correct) opt.classList.add('q-correct');
+      else if (i === chosen && chosen !== correct) opt.classList.add('q-wrong');
+      else opt.classList.add('q-inactive');
     });
 
-    var feedback = quizBlock.querySelector('.sp-quiz-feedback');
-    if (feedback) feedback.style.display = 'block';
+    const expl = block.querySelector<HTMLElement>('.quiz-expl');
+    if (expl) expl.style.display = 'block';
 
-    quizBlock.dataset.answered = '1';
-    updateUI();
-  });
+    if (kind === 'inline') {
+      const continueBtn = btn.closest<HTMLElement>('.qi-panel')?.querySelector<HTMLElement>('[data-action="quiz-continue"]');
+      if (continueBtn) continueBtn.style.display = '';
+    }
 
-  // Narration toggle
-  container && container.addEventListener('click', function (e) {
-    var btn = e.target.closest('[data-narration-btn]');
-    if (!btn) return;
-    var body = btn.nextElementSibling;
-    if (!body) return;
-    var open = body.style.display !== 'none';
-    body.style.display = open ? 'none' : 'block';
-    body.setAttribute('aria-hidden', open ? 'true' : 'false');
-    btn.textContent = open ? 'Voir le script complet ▾' : 'Masquer le script ▴';
-    btn.setAttribute('aria-expanded', open ? 'false' : 'true');
-  });
+    if (kind === 'final') {
+      const panel = btn.closest<HTMLElement>('.qf-panel');
+      const nextBtn = panel?.querySelector<HTMLElement>('[data-action="qf-next"]');
+      if (nextBtn) nextBtn.style.display = '';
+    }
+  }
 
-  btnPrev && btnPrev.addEventListener('click', function () {
-    if (current === total) showSlide(total - 1);
-    else if (current > 0) showSlide(current - 1);
-  });
+  // ── Lightbox ──────────────────────────────────────────────────────────
+  function openLightbox(src: string, alt: string) {
+    const lb    = document.getElementById('lightbox') as HTMLElement;
+    const lbImg = document.getElementById('lightbox-img') as HTMLImageElement;
+    lbImg.src = src;
+    lbImg.alt = alt;
+    lb.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    (document.getElementById('lightbox') as HTMLElement).style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  document.getElementById('lightbox')?.addEventListener('click', e => { if (e.target === document.getElementById('lightbox')) closeLightbox(); });
+  document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-  btnNext && btnNext.addEventListener('click', function () {
-    showSlide(current + 1);
-  });
+  // ── Supabase + init ───────────────────────────────────────────────────
+  if (BLOC_ID) {
+    observeEndScreen(BLOC_ID, () => trackBlocCompletion(BLOC_ID));
+  }
 
-  showSlide(0);
-})();
+  (async () => {
+    const savedIdx = await loadSlideProgress(BLOC_ID);
+    loadSlide(savedIdx > 0 ? savedIdx : 0, false);
+  })();
 </script>

@@ -7,6 +7,7 @@ export async function trackBlocCompletion(blocId: string): Promise<void> {
   await supabase.from('formation_progress').upsert({
     user_id: session.user.id,
     bloc_id: blocId,
+    completed_at: new Date().toISOString(),
   });
 }
 
@@ -36,17 +37,33 @@ export async function saveSlideProgress(blocId: string, slideIndex: number): Pro
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) return;
 
-  await supabase.from('formation_progress').upsert({
-    user_id: session.user.id,
-    bloc_id: blocId,
-    current_slide: slideIndex,
-    last_visited_at: new Date().toISOString(),
-  });
+  const now = new Date().toISOString();
+
+  // Try UPDATE first — leaves completed_at untouched
+  const { data: updated } = await supabase
+    .from('formation_progress')
+    .update({ current_slide: slideIndex, last_visited_at: now })
+    .eq('user_id', session.user.id)
+    .eq('bloc_id', blocId)
+    .select('user_id');
+
+  // No row yet → INSERT with completed_at = null (avoid DEFAULT now())
+  if (!updated || updated.length === 0) {
+    await supabase.from('formation_progress').insert({
+      user_id: session.user.id,
+      bloc_id: blocId,
+      current_slide: slideIndex,
+      last_visited_at: now,
+      completed_at: null,
+    });
+  }
 }
 
 export async function loadSlideProgress(blocId: string): Promise<number> {
   const { data: { session } } = await supabase.auth.getSession();
   if (session) {
+    // Connecté : Supabase fait autorité. Si la ligne n'existe pas (ex : DELETE manuel),
+    // on repart de 0 — pas de fallback localStorage.
     const { data } = await supabase
       .from('formation_progress')
       .select('current_slide')
@@ -54,9 +71,10 @@ export async function loadSlideProgress(blocId: string): Promise<number> {
       .eq('bloc_id', blocId)
       .maybeSingle();
 
-    if (data?.current_slide != null) return data.current_slide;
+    return data?.current_slide ?? 0;
   }
 
+  // Non connecté : fallback localStorage
   try {
     const stored = localStorage.getItem(`${LS_KEY_PREFIX}${blocId}`);
     if (stored !== null) return Number.parseInt(stored, 10) || 0;

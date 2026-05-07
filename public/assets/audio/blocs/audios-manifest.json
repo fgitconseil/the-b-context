@@ -1,0 +1,114 @@
+{
+  "1.1": {
+    "duration": 57.783,
+    "size_bytes": 925225
+  },
+  "1.2": {
+    "duration": 209.946,
+    "size_bytes": 3359837
+  },
+  "1.3": {
+    "duration": 120.137,
+    "size_bytes": 1922894
+  },
+  "1.4": {
+    "duration": 153.861,
+    "size_bytes": 2462479
+  },
+  "1.5": {
+    "duration": 66.978,
+    "size_bytes": 1072347
+  },
+  "2.1": {
+    "duration": 52.767,
+    "size_bytes": 844977
+  },
+  "2.2": {
+    "duration": 161.384,
+    "size_bytes": 2582851
+  },
+  "2.3": {
+    "duration": 176.196,
+    "size_bytes": 2819834
+  },
+  "2.4": {
+    "duration": 198.557,
+    "size_bytes": 3177607
+  },
+  "2.5": {
+    "duration": 89.861,
+    "size_bytes": 1438479
+  },
+  "2.6": {
+    "duration": 41.691,
+    "size_bytes": 667762
+  },
+  "3.1": {
+    "duration": 70.426,
+    "size_bytes": 1127517
+  },
+  "3.2": {
+    "duration": 192.496,
+    "size_bytes": 3080641
+  },
+  "3.3": {
+    "duration": 106.893,
+    "size_bytes": 1710989
+  },
+  "3.4": {
+    "duration": 114.051,
+    "size_bytes": 1825509
+  },
+  "3.5": {
+    "duration": 141.035,
+    "size_bytes": 2257261
+  },
+  "3.6": {
+    "duration": 129.646,
+    "size_bytes": 2075031
+  },
+  "4.1": {
+    "duration": 83.174,
+    "size_bytes": 1331482
+  },
+  "4.2": {
+    "duration": 166.583,
+    "size_bytes": 2666025
+  },
+  "4.3": {
+    "duration": 73.117,
+    "size_bytes": 1170567
+  },
+  "4.4": {
+    "duration": 62.824,
+    "size_bytes": 1005891
+  },
+  "4.5": {
+    "duration": 90.697,
+    "size_bytes": 1451854
+  },
+  "5.1": {
+    "duration": 70.374,
+    "size_bytes": 1126682
+  },
+  "5.2": {
+    "duration": 31.06,
+    "size_bytes": 497653
+  },
+  "5.3": {
+    "duration": 125.701,
+    "size_bytes": 2011919
+  },
+  "5.4": {
+    "duration": 180.376,
+    "size_bytes": 2886708
+  },
+  "5.5": {
+    "duration": 217.234,
+    "size_bytes": 3476448
+  },
+  "5.6": {
+    "duration": 38.191,
+    "size_bytes": 611756
+  }
+}
