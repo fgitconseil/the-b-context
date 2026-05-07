@@ -14,10 +14,11 @@ const { slides, quiz_inline, quiz_final } = entry.data;
 const qi = quiz_inline ?? [];
 const qf = quiz_final ?? [];
 
-// Accent colors per bloc number
-const accent: Record<number, string> = {
-  1: '#2563eb', 2: '#2563eb', 3: '#16a34a', 4: '#d97706', 5: '#7c3aed',
-};
+const audioSrc = entry.data.audio ?? `${base}assets/audio/blocs/${blocId}.mp3`;
+const takeawayPath = entry.data.takeaway ?? null;
+const hasTakeaway = !!takeawayPath;
+
+// Per-bloc accent
 const accentClass: Record<number, string> = {
   1: 'bg-blue-600', 2: 'bg-blue-600', 3: 'bg-green-600', 4: 'bg-amber-500', 5: 'bg-purple-600',
 };
@@ -31,15 +32,11 @@ const quizOptHover: Record<number, string> = {
   4: 'hover:border-amber-400 hover:bg-amber-50',
   5: 'hover:border-purple-400 hover:bg-purple-50',
 };
+const progressColor = accentClass[entry.data.bloc] ?? 'bg-blue-600';
+const textAccent = accentTextClass[entry.data.bloc] ?? 'text-blue-600';
 const qHover = quizOptHover[entry.data.bloc] ?? quizOptHover[1];
-const qFinalHover = 'hover:border-blue-400 hover:bg-blue-50';
-const progressColor = accentClass[entry.data.bloc];
-const textAccent = accentTextClass[entry.data.bloc];
 
-const hasTakeaway = [2, 3, 4].includes(entry.data.bloc);
-const takeawayPath = hasTakeaway ? `${base}assets/takeaways/${blocId}.png` : null;
-
-// Build ordered panels list
+// Build ordered panels
 const panels: Array<
   | { kind: 'slide'; slide: typeof slides[0]; slideIdx: number }
   | { kind: 'quiz-inline'; quiz: typeof qi[0]; quizIdx: number }
@@ -50,46 +47,54 @@ const panels: Array<
 
 for (let i = 0; i < slides.length; i++) {
   panels.push({ kind: 'slide', slide: slides[i], slideIdx: i });
-  const quizForSlide = qi.find(q => q.after_slide === i);
-  if (quizForSlide) {
-    panels.push({ kind: 'quiz-inline', quiz: quizForSlide, quizIdx: qi.indexOf(quizForSlide) });
-  }
+  const q = qi.find(q => q.after_slide === i);
+  if (q) panels.push({ kind: 'quiz-inline', quiz: q, quizIdx: qi.indexOf(q) });
 }
-qf.forEach((q, idx) => {
-  panels.push({ kind: 'quiz-final', quiz: q, qNum: idx + 1 });
-});
+qf.forEach((q, idx) => panels.push({ kind: 'quiz-final', quiz: q, qNum: idx + 1 }));
 panels.push(qf.length > 0 ? { kind: 'score' } : { kind: 'endscreen' });
 
-const TOTAL = panels.length;
+const TOTAL_PANELS = panels.length;
+const SLIDES_COUNT = slides.length;
+const TOTAL_QF = qf.length;
 
-// Build TIMELINE for audio-driven playback
-// Each entry: when audio reaches t_seconds, either show a slide or pause for quiz
+// Build TIMELINE (audio timestamp → panel transition)
 const TIMELINE: Array<{
-  t: number;
-  type: 'slide' | 'quiz';
-  panelIdx: number;
-  nextPanelIdx?: number;
+  t: number; type: 'slide' | 'quiz';
+  panelIdx: number; nextPanelIdx?: number; slideIdx: number;
 }> = [];
 
 for (let i = 0; i < slides.length - 1; i++) {
   const nextSlide = slides[i + 1];
   const quizAfterI = qi.find(q => q.after_slide === i);
-
   if (quizAfterI) {
-    const quizPanelIdx = panels.findIndex(p => p.kind === 'quiz-inline' && (p as any).quizIdx === qi.indexOf(quizAfterI));
-    const nextContentPanelIdx = panels.findIndex(p => p.kind === 'slide' && (p as any).slideIdx === i + 1);
-    TIMELINE.push({ t: nextSlide.t_start, type: 'quiz', panelIdx: quizPanelIdx, nextPanelIdx: nextContentPanelIdx });
+    const quizPanelIdx = panels.findIndex(
+      p => p.kind === 'quiz-inline' && (p as { quizIdx: number }).quizIdx === qi.indexOf(quizAfterI)
+    );
+    const nextSlidePanelIdx = panels.findIndex(
+      p => p.kind === 'slide' && (p as { slideIdx: number }).slideIdx === i + 1
+    );
+    TIMELINE.push({ t: nextSlide.t_start, type: 'quiz', panelIdx: quizPanelIdx, nextPanelIdx: nextSlidePanelIdx, slideIdx: i });
   } else {
-    const nextContentPanelIdx = panels.findIndex(p => p.kind === 'slide' && (p as any).slideIdx === i + 1);
-    TIMELINE.push({ t: nextSlide.t_start, type: 'slide', panelIdx: nextContentPanelIdx });
+    const nextSlidePanelIdx = panels.findIndex(
+      p => p.kind === 'slide' && (p as { slideIdx: number }).slideIdx === i + 1
+    );
+    TIMELINE.push({ t: nextSlide.t_start, type: 'slide', panelIdx: nextSlidePanelIdx, slideIdx: i + 1 });
   }
 }
 
 const TIMELINE_JSON = JSON.stringify(TIMELINE);
-const TOTAL_QF = qf.length;
 ---
 
-<section class="max-w-2xl mx-auto px-4 py-8" id="sp-root" data-bloc-id={blocId}>
+<section
+  class="max-w-2xl mx-auto px-4 py-8"
+  id="sp-root"
+  data-bloc-id={blocId}
+  data-timeline={TIMELINE_JSON}
+  data-total-panels={String(TOTAL_PANELS)}
+  data-total-qf={String(TOTAL_QF)}
+  data-slides-count={String(SLIDES_COUNT)}
+  data-next-bloc-url={nextBlocUrl}
+>
 
   <!-- Breadcrumb -->
   <nav class="mb-5 text-sm text-slate-400">
@@ -100,148 +105,165 @@ const TOTAL_QF = qf.length;
 
   <h1 class="text-xl font-bold text-slate-900 mb-5">{entry.data.titre}</h1>
 
-  <!-- Progress bar -->
+  <!-- Slide counter + progress bar -->
   <div class="mb-6">
     <div class="flex items-center justify-between mb-2">
-      <span id="slide-counter" class="text-xs font-semibold text-slate-500 uppercase tracking-wide">1 / {TOTAL}</span>
-      <span id="slide-title-badge" class="text-xs text-slate-400 truncate max-w-[200px]"></span>
+      <span id="slide-counter" class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+        1 / {SLIDES_COUNT}
+      </span>
     </div>
     <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-      <div id="progress-fill" class={`h-full ${progressColor} rounded-full transition-all duration-300`} style={`width:${(1/TOTAL*100).toFixed(2)}%`}></div>
+      <div
+        id="progress-fill"
+        class={`h-full ${progressColor} rounded-full transition-all duration-300`}
+        style={`width:${(1 / SLIDES_COUNT * 100).toFixed(2)}%`}
+      ></div>
     </div>
   </div>
 
-  <!-- Single bloc-level audio element (hidden, driven by TIMELINE) -->
-  <audio
-    id="bloc-audio"
-    preload="metadata"
-    style="display:none"
-  >
-    <source src={`${base}assets/audio/blocs/${blocId}.mp3`} type="audio/mpeg" />
-  </audio>
+  <!-- Hidden audio element — src driven by frontmatter.audio -->
+  <audio id="bloc-audio" src={audioSrc} preload="metadata" style="display:none"></audio>
 
   <!-- Panels container -->
   <div id="panels-container">
-
     {panels.map((panel, i) => (
-      <div class="sp-panel" id={`panel-${i}`} style={i > 0 ? 'display:none' : ''}>
+      <div
+        class="sp-panel"
+        id={`panel-${i}`}
+        data-panel-kind={panel.kind}
+        data-slide-idx={panel.kind === 'slide' ? String((panel as { slideIdx: number }).slideIdx) : ''}
+        style={i > 0 ? 'display:none' : ''}
+      >
 
         {/* ── CONTENT SLIDE ── */}
-        {panel.kind === 'slide' && (
-          <div>
-            <h2 class={`text-base font-semibold ${textAccent} mb-4`}>{panel.slide.titre}</h2>
+        {panel.kind === 'slide' && (() => {
+          const s = (panel as { slide: typeof slides[0] }).slide;
+          return (
+            <div>
+              {/* Image — click on wrap toggles play/pause */}
+              <div
+                class="img-player-wrap mb-4 rounded-xl overflow-hidden border border-slate-100 bg-slate-50"
+                data-action="play-pause"
+                data-img-wrap
+                role="button"
+                tabindex="0"
+                style="position:relative; cursor:pointer;"
+              >
+                <img
+                  src={`${base}${s.visuel}`}
+                  alt={s.titre}
+                  style="width:100%; max-height:480px; object-fit:contain; display:block;"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                />
+                <div class="play-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+                  <div class="play-circle">
+                    <svg class="play-icon" width="30" height="30" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+                      <polygon points="7,3 21,12 7,21"/>
+                    </svg>
+                    <svg class="pause-icon" width="30" height="30" viewBox="0 0 24 24" fill="white" aria-hidden="true" style="display:none">
+                      <rect x="4" y="3" width="5" height="18" rx="1"/>
+                      <rect x="15" y="3" width="5" height="18" rx="1"/>
+                    </svg>
+                  </div>
+                </div>
+                <button
+                  class="zoom-btn"
+                  data-action="zoom"
+                  aria-label="Agrandir l'image"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15,3 21,3 21,9"/><polyline points="9,21 3,21 3,15"/>
+                    <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                  </svg>
+                </button>
+              </div>
 
-            {/* Image with play overlay */}
-            <div
-              class="img-player-wrap mb-4 rounded-xl overflow-hidden border border-slate-100 bg-slate-50"
-              onclick="imgPlayToggle()"
-              role="button" tabindex="0"
-              onkeydown="if(event.key==='Enter'||event.key===' ')imgPlayToggle()"
-              style="position:relative; cursor:pointer;"
-            >
-              <img
-                src={`${base}${panel.slide.visuel}`}
-                alt={panel.slide.titre}
-                style="width:100%; max-height:480px; object-fit:contain; display:block;"
-                loading={i === 0 ? 'eager' : 'lazy'}
-              />
-              <div class="play-overlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-                <div class="play-circle">
-                  <svg class="play-icon" width="30" height="30" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+              {/* Play button + time display */}
+              <div class="mb-4 flex items-center gap-3">
+                <button
+                  class={`flex items-center gap-2 px-4 py-2 rounded-lg ${progressColor} text-white text-sm font-medium hover:opacity-90 transition-opacity`}
+                  data-action="play-pause"
+                >
+                  <svg class="btn-play-icon" width="12" height="12" viewBox="0 0 24 24" fill="white" aria-hidden="true">
                     <polygon points="7,3 21,12 7,21"/>
                   </svg>
-                  <svg class="pause-icon" width="30" height="30" viewBox="0 0 24 24" fill="white" aria-hidden="true" style="display:none">
+                  <svg class="btn-pause-icon" width="12" height="12" viewBox="0 0 24 24" fill="white" aria-hidden="true" style="display:none">
                     <rect x="4" y="3" width="5" height="18" rx="1"/>
                     <rect x="15" y="3" width="5" height="18" rx="1"/>
                   </svg>
+                  <span class="btn-label">Écouter</span>
+                </button>
+                <span id="audio-time" class="text-xs text-slate-400 font-mono">0:00 / —</span>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* ── QUIZ INLINE ── */}
+        {panel.kind === 'quiz-inline' && (() => {
+          const p = panel as { quiz: typeof qi[0] };
+          return (
+            <div>
+              <div class="flex items-center gap-2 mb-5">
+                <span class="text-xs font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full uppercase tracking-wide">Pause réflexion</span>
+              </div>
+              <p class="text-base font-semibold text-slate-900 mb-5 leading-snug">{p.quiz.question}</p>
+              <div class="quiz-block space-y-2" data-answer={String(p.quiz.answer)} data-quiz-kind="inline">
+                {p.quiz.options.map((opt, j) => (
+                  <button
+                    type="button"
+                    class={`quiz-opt w-full text-left px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 ${qHover} transition-all`}
+                    data-index={String(j)}
+                    data-action="quiz-answer"
+                  >
+                    <span class="font-semibold text-amber-600 mr-2">{String.fromCharCode(65 + j)})</span>{opt}
+                  </button>
+                ))}
+                <div class="quiz-expl px-4 py-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 leading-relaxed mt-3" style="display:none">
+                  {p.quiz.explanation}
                 </div>
               </div>
               <button
-                class="zoom-btn"
-                onclick="event.stopPropagation();openLightbox(this.parentElement.querySelector('img'))"
-                aria-label="Agrandir l'image"
+                type="button"
+                id={`quiz-next-${i}`}
+                data-action="quiz-continue"
+                class="mt-5 px-5 py-2.5 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-900 transition-all"
+                style="display:none"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polyline points="15,3 21,3 21,9"/><polyline points="9,21 3,21 3,15"/>
-                  <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
-                </svg>
+                Continuer →
               </button>
             </div>
-
-            {/* Audio time display */}
-            <div class="mb-4 flex items-center gap-3">
-              <button
-                id={`play-btn-${i}`}
-                onclick="imgPlayToggle()"
-                class={`flex items-center gap-2 px-4 py-2 rounded-lg ${progressColor} text-white text-sm font-medium hover:opacity-90 transition-opacity`}
-              >
-                <svg class="btn-play-icon" width="12" height="12" viewBox="0 0 24 24" fill="white"><polygon points="7,3 21,12 7,21"/></svg>
-                <svg class="btn-pause-icon" width="12" height="12" viewBox="0 0 24 24" fill="white" style="display:none"><rect x="4" y="3" width="5" height="18" rx="1"/><rect x="15" y="3" width="5" height="18" rx="1"/></svg>
-                <span class="btn-label">Écouter</span>
-              </button>
-              <span id="audio-time" class="text-xs text-slate-400 font-mono">0:00 / —</span>
-            </div>
-          </div>
-        )}
-
-        {/* ── QUIZ INLINE ── */}
-        {panel.kind === 'quiz-inline' && (
-          <div>
-            <div class="flex items-center gap-2 mb-5">
-              <span class="text-xs font-semibold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full uppercase tracking-wide">Pause réflexion</span>
-            </div>
-            <p class="text-base font-semibold text-slate-900 mb-5 leading-snug">{panel.quiz.question}</p>
-            <div class="quiz-block space-y-2" data-answer={panel.quiz.answer} data-quiz-kind="inline">
-              {panel.quiz.options.map((opt, j) => (
-                <button
-                  type="button"
-                  class={`quiz-opt w-full text-left px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 ${qHover} transition-all`}
-                  data-index={String(j)}
-                  onclick="handleQuizAnswer(this)"
-                >
-                  <span class="font-semibold text-amber-600 mr-2">{String.fromCharCode(65 + j)})</span>{opt}
-                </button>
-              ))}
-              <div class="quiz-expl px-4 py-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 leading-relaxed mt-3" style="display:none">
-                {panel.quiz.explanation}
-              </div>
-            </div>
-            <button
-              id={`quiz-next-${i}`}
-              onclick={`quizContinue(${i})`}
-              class="mt-5 px-5 py-2.5 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-900 transition-all"
-              style="display:none"
-            >
-              Continuer →
-            </button>
-          </div>
-        )}
+          );
+        })()}
 
         {/* ── QUIZ FINAL ── */}
-        {panel.kind === 'quiz-final' && (
-          <div>
-            <div class="flex items-center gap-3 mb-5">
-              <span class={`text-xs font-semibold bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full uppercase tracking-wide`}>Quiz final</span>
-              <span class="text-xs text-slate-400">Question {panel.qNum} / {TOTAL_QF}</span>
-            </div>
-            <p class="text-base font-semibold text-slate-900 mb-5 leading-snug">{panel.quiz.question}</p>
-            <div class="quiz-block space-y-2" data-answer={panel.quiz.answer} data-quiz-kind="final">
-              {panel.quiz.options.map((opt, j) => (
-                <button
-                  type="button"
-                  class={`quiz-opt w-full text-left px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 ${qFinalHover} transition-all`}
-                  data-index={String(j)}
-                  onclick="handleQuizAnswer(this)"
-                >
-                  <span class="font-semibold text-blue-600 mr-2">{String.fromCharCode(65 + j)})</span>{opt}
-                </button>
-              ))}
-              <div class="quiz-expl px-4 py-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 leading-relaxed mt-3" style="display:none">
-                {panel.quiz.explanation}
+        {panel.kind === 'quiz-final' && (() => {
+          const p = panel as { quiz: typeof qf[0]; qNum: number };
+          return (
+            <div>
+              <div class="flex items-center gap-3 mb-5">
+                <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full uppercase tracking-wide">Quiz final</span>
+                <span class="text-xs text-slate-400">Question {p.qNum} / {TOTAL_QF}</span>
+              </div>
+              <p class="text-base font-semibold text-slate-900 mb-5 leading-snug">{p.quiz.question}</p>
+              <div class="quiz-block space-y-2" data-answer={String(p.quiz.answer)} data-quiz-kind="final">
+                {p.quiz.options.map((opt, j) => (
+                  <button
+                    type="button"
+                    class="quiz-opt w-full text-left px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-700 hover:border-blue-400 hover:bg-blue-50 transition-all"
+                    data-index={String(j)}
+                    data-action="quiz-answer"
+                  >
+                    <span class="font-semibold text-blue-600 mr-2">{String.fromCharCode(65 + j)})</span>{opt}
+                  </button>
+                ))}
+                <div class="quiz-expl px-4 py-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-600 leading-relaxed mt-3" style="display:none">
+                  {p.quiz.explanation}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* ── SCORE ── */}
         {panel.kind === 'score' && (
@@ -312,12 +334,19 @@ const TOTAL_QF = qf.length;
 
   <!-- Navigation -->
   <div id="nav-bar" class="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
-    <button id="prev-btn" onclick="slidePrev()" disabled
-      class="px-5 py-2.5 rounded-lg border border-slate-200 text-slate-600 text-sm font-medium hover:border-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+    <button
+      id="prev-btn"
+      data-action="prev"
+      disabled
+      class="px-5 py-2.5 rounded-lg border border-slate-200 text-slate-600 text-sm font-medium hover:border-slate-300 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+    >
       ← Précédent
     </button>
-    <button id="next-btn" onclick="slideNext()"
-      class={`px-5 py-2.5 rounded-lg ${progressColor} text-white text-sm font-medium hover:opacity-90 transition-all`}>
+    <button
+      id="next-btn"
+      data-action="next"
+      class={`px-5 py-2.5 rounded-lg ${progressColor} text-white text-sm font-medium hover:opacity-90 transition-all`}
+    >
       Suivant →
     </button>
   </div>
@@ -325,14 +354,23 @@ const TOTAL_QF = qf.length;
 </section>
 
 <!-- Lightbox -->
-<div id="lightbox" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.88); align-items:center; justify-content:center;" onclick="closeLightbox()" role="dialog" aria-modal="true">
+<div
+  id="lightbox"
+  style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.88); align-items:center; justify-content:center;"
+  role="dialog"
+  aria-modal="true"
+>
   <img id="lightbox-img" src="" alt="" style="max-width:92vw; max-height:90vh; object-fit:contain; border-radius:8px; box-shadow:0 8px 40px rgba(0,0,0,0.5);" />
-  <button onclick="event.stopPropagation();closeLightbox()" style="position:absolute;top:16px;right:20px;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);border-radius:50%;width:40px;height:40px;cursor:pointer;color:white;font-size:20px;display:flex;align-items:center;justify-content:center;" aria-label="Fermer">✕</button>
+  <button
+    id="lightbox-close"
+    style="position:absolute;top:16px;right:20px;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);border-radius:50%;width:40px;height:40px;cursor:pointer;color:white;font-size:20px;display:flex;align-items:center;justify-content:center;"
+    aria-label="Fermer"
+  >✕</button>
 </div>
 
 <style>
-  .quiz-opt.q-correct { border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #15803d !important; }
-  .quiz-opt.q-wrong   { border-color: #f87171 !important; background-color: #fef2f2 !important; color: #dc2626 !important; }
+  .quiz-opt.q-correct  { border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #15803d !important; }
+  .quiz-opt.q-wrong    { border-color: #f87171 !important; background-color: #fef2f2 !important; color: #dc2626 !important; }
   .quiz-opt.q-inactive { opacity: 0.4; cursor: default; }
   .play-circle {
     width: 68px; height: 68px; border-radius: 50%;
@@ -351,221 +389,246 @@ const TOTAL_QF = qf.length;
   .zoom-btn:hover { opacity: 1; transform: scale(1.1); }
 </style>
 
-<script is:inline define:vars={{ TIMELINE_JSON, TOTAL, TOTAL_QF, nextBlocUrl }}>
-  var TIMELINE = JSON.parse(TIMELINE_JSON);
-  var audio = document.getElementById('bloc-audio');
-  var current = 0;
-  var timelinePtr = 0;
-  var waitingForQuiz = false;
-  var pendingNextPanelIdx = -1;
-  var quizScore = 0;
-  var quizFinalStartIdx = -1; // panel index where quiz_final starts
+<script>
+  import { trackBlocCompletion, observeEndScreen, saveSlideProgress, loadSlideProgress } from '../lib/trackCompletion';
 
-  // Find quiz_final start panel index
-  for (var pi = 0; pi < TOTAL; pi++) {
-    var p = document.getElementById('panel-' + pi);
-    if (p && p.querySelector('[data-quiz-kind="final"]')) {
-      quizFinalStartIdx = pi;
-      break;
-    }
-  }
+  // ── Read data from DOM ──────────────────────────────────────────────────
+  const root = document.getElementById('sp-root') as HTMLElement;
+  const BLOC_ID       = root.dataset.blocId ?? '';
+  const TIMELINE      = JSON.parse(root.dataset.timeline ?? '[]') as Array<{
+    t: number; type: 'slide' | 'quiz';
+    panelIdx: number; nextPanelIdx?: number; slideIdx: number;
+  }>;
+  const TOTAL_PANELS  = parseInt(root.dataset.totalPanels ?? '0');
+  const TOTAL_QF      = parseInt(root.dataset.totalQf ?? '0');
+  const SLIDES_COUNT  = parseInt(root.dataset.slidesCount ?? '0');
 
-  function fmtTime(s) {
-    var m = Math.floor(s / 60);
-    var sec = Math.floor(s % 60);
-    return m + ':' + (sec < 10 ? '0' : '') + sec;
+  const audio = document.getElementById('bloc-audio') as HTMLAudioElement | null;
+
+  // ── State ───────────────────────────────────────────────────────────────
+  let currentPanelIdx  = 0;
+  let currentSlideIdx  = 0;
+  let timelinePtr      = 0;
+  let waitingForQuiz   = false;
+  let pendingNextPanel = -1;
+  let quizScore        = 0;
+
+  // ── Helpers ─────────────────────────────────────────────────────────────
+  function fmtTime(s: number) {
+    const m   = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec < 10 ? '0' : ''}${sec}`;
   }
 
   function updatePlayUI() {
-    var paused = !audio || audio.paused;
-    document.querySelectorAll('.play-icon').forEach(function(el) { el.style.display = paused ? 'block' : 'none'; });
-    document.querySelectorAll('.pause-icon').forEach(function(el) { el.style.display = paused ? 'none' : 'block'; });
-    document.querySelectorAll('.btn-play-icon').forEach(function(el) { el.style.display = paused ? 'block' : 'none'; });
-    document.querySelectorAll('.btn-pause-icon').forEach(function(el) { el.style.display = paused ? 'none' : 'block'; });
-    document.querySelectorAll('.btn-label').forEach(function(el) { el.textContent = paused ? 'Écouter' : 'Pause'; });
+    const paused = !audio || audio.paused;
+    document.querySelectorAll('.play-icon').forEach(
+      el => ((el as HTMLElement).style.display = paused ? 'block' : 'none')
+    );
+    document.querySelectorAll('.pause-icon').forEach(
+      el => ((el as HTMLElement).style.display = paused ? 'none' : 'block')
+    );
+    document.querySelectorAll('.btn-play-icon').forEach(
+      el => ((el as HTMLElement).style.display = paused ? 'block' : 'none')
+    );
+    document.querySelectorAll('.btn-pause-icon').forEach(
+      el => ((el as HTMLElement).style.display = paused ? 'none' : 'block')
+    );
+    document.querySelectorAll('.btn-label').forEach(
+      el => ((el as HTMLElement).textContent = paused ? 'Écouter' : 'Pause')
+    );
   }
 
-  function showPanel(n) {
-    document.querySelectorAll('.sp-panel').forEach(function(p, i) {
+  function updateTimeDisplay() {
+    const el = document.getElementById('audio-time');
+    if (!el || !audio) return;
+    const dur = isNaN(audio.duration) ? '—' : fmtTime(audio.duration);
+    el.textContent = `${fmtTime(audio.currentTime)} / ${dur}`;
+  }
+
+  // ── Core: show a panel by index ─────────────────────────────────────────
+  function showPanel(n: number) {
+    document.querySelectorAll<HTMLElement>('.sp-panel').forEach((p, i) => {
       p.style.display = i === n ? 'block' : 'none';
     });
-    current = n;
+    currentPanelIdx = n;
 
-    var pct = ((n + 1) / TOTAL * 100).toFixed(2) + '%';
-    document.getElementById('progress-fill').style.width = pct;
-    document.getElementById('slide-counter').textContent = (n + 1) + ' / ' + TOTAL;
-
-    var h2 = document.getElementById('panel-' + n)?.querySelector('h2');
-    var badge = document.getElementById('slide-title-badge');
-    if (badge) badge.textContent = h2 ? h2.textContent : '';
-
-    document.getElementById('prev-btn').disabled = n === 0;
-
-    // Hide nav on last panel (score/endscreen)
-    var isLast = n === TOTAL - 1;
-    // Also hide on quiz-inline panels (use their own "Continuer" button)
-    var isQuizInline = !!document.getElementById('panel-' + n)?.querySelector('[data-quiz-kind="inline"]');
-    var nav = document.getElementById('nav-bar');
-    if (nav) {
-      nav.style.display = (isLast || isQuizInline) ? 'none' : '';
+    // Track slide index from panel attribute
+    const panelEl = document.getElementById(`panel-${n}`);
+    const slideIdxAttr = panelEl?.dataset.slideIdx;
+    if (slideIdxAttr !== undefined && slideIdxAttr !== '') {
+      currentSlideIdx = parseInt(slideIdxAttr);
     }
 
-    // Score panel: display final score
-    if (isLast) {
-      var scoreEl = document.getElementById('score-display');
-      if (scoreEl && TOTAL_QF > 0) scoreEl.textContent = quizScore + ' / ' + TOTAL_QF;
-      var endEl = document.getElementById('end-bloc-' + document.getElementById('sp-root').dataset.blocId.replace('bloc-', '0'));
-      // Actually use the correct ID
-      var allEndEls = document.querySelectorAll('[id^="end-"]');
-      allEndEls.forEach(function(el) { el.style.display = 'block'; });
+    // Update counter (slides only)
+    const counterEl = document.getElementById('slide-counter');
+    if (counterEl) counterEl.textContent = `${currentSlideIdx + 1} / ${SLIDES_COUNT}`;
+
+    // Update progress bar (slide-based)
+    const fillEl = document.getElementById('progress-fill');
+    if (fillEl) fillEl.style.width = `${((currentSlideIdx + 1) / SLIDES_COUNT * 100).toFixed(2)}%`;
+
+    // Prev button
+    const prevBtn = document.getElementById('prev-btn') as HTMLButtonElement | null;
+    if (prevBtn) prevBtn.disabled = n === 0;
+
+    // Hide nav on last panel or quiz-inline (they have their own "Continuer")
+    const panelKind = panelEl?.dataset.panelKind;
+    const navBar = document.getElementById('nav-bar');
+    if (navBar) {
+      navBar.style.display = (n === TOTAL_PANELS - 1 || panelKind === 'quiz-inline') ? 'none' : '';
+    }
+
+    // Score / endscreen: show score + trigger end tracking
+    if (panelKind === 'score' || panelKind === 'endscreen') {
+      const scoreEl = document.getElementById('score-display');
+      if (scoreEl && TOTAL_QF > 0) scoreEl.textContent = `${quizScore} / ${TOTAL_QF}`;
+      document.querySelectorAll<HTMLElement>('[id^="end-"]').forEach(el => el.style.display = 'block');
     }
 
     updatePlayUI();
   }
 
+  // ── Navigation ──────────────────────────────────────────────────────────
   function slidePrev() {
-    if (current > 0) showPanel(current - 1);
+    if (currentPanelIdx > 0) showPanel(currentPanelIdx - 1);
   }
 
   function slideNext() {
-    if (current < TOTAL - 1) showPanel(current + 1);
-    // If we've entered quiz_final territory, stop audio
-    if (audio && quizFinalStartIdx >= 0 && current >= quizFinalStartIdx) {
-      audio.pause();
-    }
+    if (currentPanelIdx < TOTAL_PANELS - 1) showPanel(currentPanelIdx + 1);
+    // If entering quiz-final territory, stop audio
+    const nextPanel = document.getElementById(`panel-${currentPanelIdx}`);
+    if (audio && nextPanel?.dataset.panelKind === 'quiz-final') audio.pause();
   }
 
-  function imgPlayToggle() {
+  function handlePlayPause() {
     if (!audio) return;
-    if (audio.paused) {
-      audio.play().catch(function() {});
-    } else {
-      audio.pause();
-    }
+    if (audio.paused) audio.play().catch(() => {});
+    else audio.pause();
   }
 
-  // Quiz answer handler
-  function handleQuizAnswer(btn) {
-    var block = btn.closest('.quiz-block');
-    if (block.dataset.answered) return;
+  // ── Quiz ────────────────────────────────────────────────────────────────
+  function handleQuizAnswer(btn: HTMLElement) {
+    const block = btn.closest<HTMLElement>('.quiz-block');
+    if (!block || block.dataset.answered) return;
     block.dataset.answered = '1';
-    var correct = parseInt(block.dataset.answer, 10);
-    var chosen = parseInt(btn.dataset.index, 10);
-    var kind = block.dataset.quizKind;
+
+    const correct = parseInt(block.dataset.answer ?? '0');
+    const chosen  = parseInt(btn.dataset.index ?? '-1');
+    const kind    = block.dataset.quizKind;
 
     if (kind === 'final' && chosen === correct) quizScore++;
 
-    block.querySelectorAll('.quiz-opt').forEach(function(opt, i) {
+    block.querySelectorAll<HTMLButtonElement>('.quiz-opt').forEach((opt, i) => {
       opt.disabled = true;
       if (i === correct) opt.classList.add('q-correct');
       else if (i === chosen && chosen !== correct) opt.classList.add('q-wrong');
       else opt.classList.add('q-inactive');
     });
-    var expl = block.querySelector('.quiz-expl');
+    const expl = block.querySelector<HTMLElement>('.quiz-expl');
     if (expl) expl.style.display = 'block';
 
-    // Show "Continuer" for inline quizzes
     if (kind === 'inline') {
-      var nextBtn = document.getElementById('quiz-next-' + current);
-      if (nextBtn) nextBtn.style.display = '';
+      // Show the "Continuer" button in this panel
+      const continueBtn = document.getElementById(`panel-${currentPanelIdx}`)
+        ?.querySelector<HTMLElement>('[data-action="quiz-continue"]');
+      if (continueBtn) continueBtn.style.display = '';
     }
-    // For quiz_final: auto-advance to next panel after short delay
     if (kind === 'final') {
-      setTimeout(function() {
-        if (current < TOTAL - 1) showPanel(current + 1);
+      setTimeout(() => {
+        if (currentPanelIdx < TOTAL_PANELS - 1) showPanel(currentPanelIdx + 1);
       }, 1200);
     }
   }
 
-  // Called when user clicks "Continuer" on an inline quiz
-  function quizContinue(panelIdx) {
+  function quizContinue() {
     waitingForQuiz = false;
-    if (pendingNextPanelIdx >= 0) {
-      showPanel(pendingNextPanelIdx);
-      pendingNextPanelIdx = -1;
-    } else {
-      showPanel(panelIdx + 1);
-    }
-    if (audio) audio.play().catch(function() {});
+    const nextIdx = pendingNextPanel >= 0 ? pendingNextPanel : currentPanelIdx + 1;
+    pendingNextPanel = -1;
+    showPanel(nextIdx);
+    audio?.play().catch(() => {});
   }
 
-  // Audio event listeners
+  // ── Lightbox ────────────────────────────────────────────────────────────
+  function openLightbox(src: string, alt: string) {
+    const lb    = document.getElementById('lightbox') as HTMLElement;
+    const lbImg = document.getElementById('lightbox-img') as HTMLImageElement;
+    lbImg.src = src;
+    lbImg.alt = alt;
+    lb.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    (document.getElementById('lightbox') as HTMLElement).style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  // Lightbox direct listeners (background click + close button)
+  const lightboxEl = document.getElementById('lightbox');
+  const lbClose    = document.getElementById('lightbox-close');
+  lightboxEl?.addEventListener('click', e => { if (e.target === lightboxEl) closeLightbox(); });
+  lbClose?.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // ── Event delegation ────────────────────────────────────────────────────
+  document.addEventListener('click', e => {
+    const target = (e.target as HTMLElement).closest<HTMLElement>('[data-action]');
+    if (!target) return;
+    switch (target.dataset.action) {
+      case 'play-pause': handlePlayPause(); break;
+      case 'prev':       slidePrev(); break;
+      case 'next':       slideNext(); break;
+      case 'zoom': {
+        const wrap = target.closest<HTMLElement>('[data-img-wrap]');
+        const img  = wrap?.querySelector<HTMLImageElement>('img');
+        if (img) openLightbox(img.src, img.alt);
+        break;
+      }
+      case 'quiz-answer':   handleQuizAnswer(target); break;
+      case 'quiz-continue': quizContinue(); break;
+    }
+  });
+
+  // ── Audio event listeners ────────────────────────────────────────────────
   if (audio) {
-    audio.addEventListener('timeupdate', function() {
+    audio.addEventListener('loadedmetadata', updateTimeDisplay);
+
+    audio.addEventListener('timeupdate', () => {
+      updateTimeDisplay();
       if (waitingForQuiz || audio.paused) return;
       if (timelinePtr >= TIMELINE.length) return;
 
-      var entry = TIMELINE[timelinePtr];
+      const entry = TIMELINE[timelinePtr];
       if (audio.currentTime >= entry.t) {
         timelinePtr++;
         if (entry.type === 'quiz') {
           audio.pause();
-          waitingForQuiz = true;
-          pendingNextPanelIdx = entry.nextPanelIdx;
+          waitingForQuiz   = true;
+          pendingNextPanel = entry.nextPanelIdx ?? -1;
           showPanel(entry.panelIdx);
         } else {
           showPanel(entry.panelIdx);
         }
       }
-
-      // Update time display
-      var timeEl = document.getElementById('audio-time');
-      if (timeEl) {
-        var dur = isNaN(audio.duration) ? '—' : fmtTime(audio.duration);
-        timeEl.textContent = fmtTime(audio.currentTime) + ' / ' + dur;
-      }
     });
 
-    audio.addEventListener('ended', function() {
+    audio.addEventListener('ended', () => {
       updatePlayUI();
-      // Advance to quiz_final or endscreen
-      if (current < TOTAL - 1) {
-        showPanel(current + 1);
-      }
+      if (currentPanelIdx < TOTAL_PANELS - 1) showPanel(currentPanelIdx + 1);
     });
 
-    audio.addEventListener('play', updatePlayUI);
+    audio.addEventListener('play',  updatePlayUI);
     audio.addEventListener('pause', updatePlayUI);
   }
 
-  // Lightbox
-  function openLightbox(imgEl) {
-    var lb = document.getElementById('lightbox');
-    document.getElementById('lightbox-img').src = imgEl.src;
-    document.getElementById('lightbox-img').alt = imgEl.alt || '';
-    lb.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  }
-  function closeLightbox() {
-    document.getElementById('lightbox').style.display = 'none';
-    document.body.style.overflow = '';
-  }
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLightbox(); });
-
-  // Init
-  showPanel(0);
-</script>
-
-<script>
-  import { trackBlocCompletion, observeEndScreen, saveSlideProgress, loadSlideProgress } from '../lib/trackCompletion';
-
-  const root = document.getElementById('sp-root') as HTMLElement;
-  const BLOC_ID = root?.dataset.blocId ?? '';
-
+  // ── Supabase tracking ────────────────────────────────────────────────────
   if (BLOC_ID) {
     observeEndScreen(BLOC_ID, () => trackBlocCompletion(BLOC_ID));
-
-    loadSlideProgress(BLOC_ID).then((savedIdx) => {
-      function setup() {
-        if (typeof (window as any).showPanel !== 'function') { setTimeout(setup, 50); return; }
-        const orig = (window as any).showPanel as (n: number) => void;
-        (window as any).showPanel = (n: number) => {
-          orig(n);
-          saveSlideProgress(BLOC_ID, n);
-        };
-        if (savedIdx > 0) (window as any).showPanel(savedIdx);
-      }
-      setup();
+    loadSlideProgress(BLOC_ID).then(savedIdx => {
+      if (savedIdx > 0) showPanel(savedIdx);
     });
   }
+
+  // ── Init ─────────────────────────────────────────────────────────────────
+  showPanel(0);
 </script>

@@ -7,6 +7,8 @@ const formation = defineCollection({
     bloc: z.number().int().min(1).max(5),
     titre: z.string(),
     duree_estimee: z.string().optional(),
+    audio: z.string().optional(),
+    takeaway: z.string().optional(),
     slides: z.array(z.object({
       index: z.number(),
       titre: z.string(),
