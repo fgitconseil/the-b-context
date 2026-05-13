@@ -154,60 +154,20 @@ const base = import.meta.env.BASE_URL;
       </div>
     </section>
 
-    <!-- IMIA — la carte de maturité -->
-    <section id="imia">
-      <h2 class="text-2xl font-bold text-slate-900 mb-4">De la méthode à la maturité — l'IMIA</h2>
-      <p class="text-slate-600 text-base leading-relaxed mb-8">
-        S.F.O.I. répond à une question : <em>comment je travaille, moi, avec un assistant ?</em> L'IMIA répond à une autre : <em>où en est mon organisation, collectivement ?</em>
-      </p>
-      <p class="text-slate-600 text-base leading-relaxed mb-8">
-        L'IMIA — Indice de Maturité IA Organisationnelle — est un score composite sur 100 points, construit pour être observable, auditable et mesurable dans le temps. Il mesure ce que l'organisation <em>sait faire</em>, pas ce qu'elle fait. Mesuré à T0, à T+90 jours, puis chaque trimestre.
-      </p>
-      <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="bg-slate-50 border-b border-slate-200">
-              <th class="text-left px-4 py-3 font-semibold text-slate-700">Dimension</th>
-              <th class="text-left px-4 py-3 font-semibold text-slate-700">Ce qu'elle mesure</th>
-              <th class="text-right px-4 py-3 font-semibold text-slate-700">Poids</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="border-b border-slate-100 bg-blue-50">
-              <td class="px-4 py-3 font-semibold" style="color:var(--primary-600)">Gouvernance et cadre</td>
-              <td class="px-4 py-3 text-slate-600">Rôle APS défini, règles d'usage formalisées, conformité tracée</td>
-              <td class="px-4 py-3 text-right font-semibold" style="color:var(--primary-600)">30</td>
-            </tr>
-            <tr class="border-b border-slate-100">
-              <td class="px-4 py-3 font-semibold text-slate-800">Pratique de la méthode S.F.O.I.</td>
-              <td class="px-4 py-3 text-slate-600">Adoption mesurée des 4 actes S.F.O.I. à l'échelle de l'équipe</td>
-              <td class="px-4 py-3 text-right font-semibold">20</td>
-            </tr>
-            <tr class="border-b border-slate-100">
-              <td class="px-4 py-3 font-semibold text-slate-800">Capital intellectuel</td>
-              <td class="px-4 py-3 text-slate-600">Prompts réutilisables, templates, bibliothèque d'usages documentée</td>
-              <td class="px-4 py-3 text-right font-semibold">20</td>
-            </tr>
-            <tr class="border-b border-slate-100">
-              <td class="px-4 py-3 font-semibold text-slate-800">Capacités humaines</td>
-              <td class="px-4 py-3 text-slate-600">Compétences IA formées, maintenues, diffusées dans l'organisation</td>
-              <td class="px-4 py-3 text-right font-semibold">20</td>
-            </tr>
-            <tr class="border-b border-slate-100">
-              <td class="px-4 py-3 font-semibold text-slate-500">Infrastructure et outils</td>
-              <td class="px-4 py-3 text-slate-600">Outils déployés, intégrés et accessibles aux équipes concernées</td>
-              <td class="px-4 py-3 text-right font-semibold text-slate-500">10</td>
-            </tr>
-            <tr class="bg-slate-50">
-              <td class="px-4 py-3 font-bold text-slate-900" colspan="2">Total</td>
-              <td class="px-4 py-3 text-right font-bold text-slate-900">100</td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- Au-delà de la méthode -->
+    <section>
+      <h2 class="text-2xl font-bold text-slate-900 mb-6">Au-delà de la méthode : la maturité organisationnelle</h2>
+      <div class="space-y-4 text-slate-700 text-base leading-relaxed">
+        <p>
+          S.F.O.I. répond à une question : <em>comment je travaille, moi, avec un assistant ?</em> L'IMIA répond à une autre : <em>où en est mon organisation, collectivement ?</em>
+        </p>
+        <p>
+          L'IMIA — Indice de Maturité IA Organisationnelle — est un score composite sur 100 points, mesuré à T0, T+90 jours, puis chaque trimestre. Il mesure ce que l'organisation <em>sait faire</em>, pas ce qu'elle fait.
+        </p>
+        <div class="pt-2">
+          <a href={`${base}framework/imia/`} class="btn-primary inline-block">Découvrir l'IMIA →</a>
+        </div>
       </div>
-      <p class="text-slate-500 text-sm leading-relaxed">
-        Les cinq dimensions sont indépendantes de S.F.O.I. — elles mesurent la <em>capacité installée</em> de l'organisation, pas la méthode individuelle. La gouvernance pèse le plus (30) parce que sans cadre collectif, la méthode individuelle ne se diffuse pas et ne se maintient pas.
-      </p>
     </section>
 
     <!-- Principe directeur -->
