@@ -33,17 +33,6 @@ const base = import.meta.env.BASE_URL;
     >
       Télécharger le PDF
     </a>
-    <!-- Lien secondaire — visible uniquement si connecté (fichier .htm à déposer dans public/assets/) -->
-    <a
-      data-arbre="consulter"
-      href={`${base}assets/arbre-decision-reflexe-ia.htm`}
-      target="_blank"
-      rel="noopener"
-      class="text-xs text-slate-400 hover:text-slate-600 underline"
-      style="display:none"
-    >
-      Consulter en ligne
-    </a>
   </div>
 </div>
 
@@ -59,7 +48,6 @@ const base = import.meta.env.BASE_URL;
       el.querySelector<HTMLElement>('[data-arbre="anon"]')?.style.setProperty('display', 'none');
       el.querySelector<HTMLElement>('[data-arbre="mention"]')?.style.setProperty('display', 'none');
       el.querySelector<HTMLElement>('[data-arbre="auth"]')?.style.removeProperty('display');
-      el.querySelector<HTMLElement>('[data-arbre="consulter"]')?.style.removeProperty('display');
     });
   })();
 </script>
