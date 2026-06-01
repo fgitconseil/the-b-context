@@ -1,0 +1,23 @@
+---
+interface Props {
+  lead?: string;
+}
+const { lead = '' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!-- Bloc téléchargement arbre de décision — lead magnet public, sans gate -->
+<div class="rounded-xl border border-slate-200 bg-slate-50 p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+  <div class="flex-1 min-w-0">
+    {lead && <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-2">{lead}</p>}
+    <p class="font-bold text-slate-900 mb-1">L'arbre de décision Reflexe IA</p>
+    <p class="text-slate-500 text-sm leading-relaxed">2 questions pour situer un usage d'IA générative et choisir jusqu'où aller.</p>
+  </div>
+  <a
+    href={`${base}assets/arbre-decision-reflexe-ia.pdf`}
+    download
+    class="btn-primary text-sm whitespace-nowrap flex-shrink-0"
+  >
+    Télécharger le PDF
+  </a>
+</div>

@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import BlocCard from '../../components/BlocCard.astro';
+import ArbreDecisionDownload from '../../components/ArbreDecisionDownload.astro';
 import { getCollection } from 'astro:content';
 const base = import.meta.env.BASE_URL;
 
@@ -19,6 +20,10 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
       <p class="text-slate-500 text-base max-w-2xl">
         De la compréhension à la maturité organisationnelle. Audio + visuels + quiz par bloc.
       </p>
+    </div>
+
+    <div class="mb-6">
+      <ArbreDecisionDownload />
     </div>
 
     <!-- Barre de progression — affichée si connecté -->
