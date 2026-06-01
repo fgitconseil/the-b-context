@@ -7,7 +7,7 @@ const base = import.meta.env.BASE_URL;
 const blocs = await getCollection('formation');
 blocs.sort((a, b) => a.data.bloc - b.data.bloc);
 ---
-<Layout title="Créer un compte" description="Créez un compte gratuit pour accéder à la formation AI Practice Steward et sauvegarder votre progression.">
+<Layout title="L'arbre de décision et la formation gratuite - Reflexe IA" description="Créez votre accès gratuit pour télécharger l'arbre de décision Reflexe IA et suivre la formation au prompting en 5 blocs.">
 
   <div class="min-h-screen bg-slate-50">
     <div class="max-w-5xl mx-auto px-4 py-12 md:py-20">
@@ -30,41 +30,29 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
           </a>
 
           <div>
-            <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Formation gratuite · Reflexe IA</p>
+            <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Accès gratuit · Reflexe IA</p>
             <h1 class="text-3xl font-bold text-slate-900 leading-tight mb-4">
-              Maîtrisez l'IA générative<br/>dans votre contexte professionnel
+              L'arbre de décision et la formation, en accès gratuit
             </h1>
             <p class="text-slate-600 text-base leading-relaxed">
-              Une méthode en 4 niveaux pour passer d'un usage conversationnel à une pratique professionnelle — sans prendre ses réponses pour argent comptant.
+              Créez votre accès gratuit pour télécharger l'arbre de décision Reflexe IA et suivre la formation au prompting, cinq blocs, environ 55 minutes. De quoi situer chaque usage d'IA générative et savoir, à chaque fois, jusqu'où aller.
             </p>
           </div>
 
-          <blockquote class="border-l-4 pl-5 py-1" style="border-color:var(--accent-500)">
-            <p class="text-slate-700 text-sm leading-relaxed italic">
-              "Vous n'êtes pas le produit. La connaissance est le seul bien de valeur qu'on ne perd pas en le partageant."
-            </p>
-          </blockquote>
-
           <div class="space-y-4">
+            <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Ce que l'inscription débloque</p>
             <div class="flex items-start gap-3">
-              <span class="text-xl flex-shrink-0 mt-0.5">🎯</span>
+              <span class="font-bold flex-shrink-0 mt-0.5" style="color:var(--primary-600)">·</span>
               <div>
-                <p class="font-semibold text-slate-900 text-sm">Opérationnel dès le premier bloc</p>
-                <p class="text-slate-500 text-sm leading-relaxed">Chaque bloc de 20 minutes vous donne un réflexe concret à appliquer dans votre travail.</p>
+                <p class="font-semibold text-slate-900 text-sm">L'arbre de décision (PDF)</p>
+                <p class="text-slate-500 text-sm leading-relaxed">Trois questions, cinq sorties calibrées, à diffuser dans vos équipes et vos comités.</p>
               </div>
             </div>
             <div class="flex items-start gap-3">
-              <span class="text-xl flex-shrink-0 mt-0.5">🏗️</span>
+              <span class="font-bold flex-shrink-0 mt-0.5" style="color:var(--primary-600)">·</span>
               <div>
-                <p class="font-semibold text-slate-900 text-sm">Une méthode, pas des astuces</p>
-                <p class="text-slate-500 text-sm leading-relaxed">S.F.O.I. structure votre pratique de l'IA pour qu'elle soit rigoureuse, fiable et reproductible.</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-3">
-              <span class="text-xl flex-shrink-0 mt-0.5">✓</span>
-              <div>
-                <p class="font-semibold text-slate-900 text-sm">Entièrement gratuit</p>
-                <p class="text-slate-500 text-sm leading-relaxed">Un compte pour sauvegarder votre progression. Aucune donnée vendue. Aucune contrepartie cachée.</p>
+                <p class="font-semibold text-slate-900 text-sm">La formation</p>
+                <p class="text-slate-500 text-sm leading-relaxed">Les intentions de prompt et la méthode S.F.O.I., pour des usages structurés, fiables et exploitables.</p>
               </div>
             </div>
           </div>
@@ -140,8 +128,9 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
               </div>
 
               <button type="submit" id="submit-btn" class="btn-primary w-full justify-center py-3 mt-2">
-                Accéder à la formation →
+                Créer mon accès gratuit
               </button>
+              <p class="text-center text-xs text-slate-400 mt-2">Gratuit, accès immédiat.</p>
 
             </form>
 
@@ -283,7 +272,7 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
       }
       showGlobalError(msg);
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Accéder à la formation →';
+      submitBtn.textContent = 'Créer mon accès gratuit';
       return;
     }
 
