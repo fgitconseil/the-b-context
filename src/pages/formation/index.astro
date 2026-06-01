@@ -10,8 +10,7 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
 ---
 <Layout title="Formation Reflexe IA" description="5 blocs gratuits pour maîtriser la méthode S.F.O.I. et comprendre le rôle d'AI Practice Steward.">
 
-  <!-- Section publique — toujours visible, teaser avant le mur d'inscription -->
-  <section class="max-w-3xl mx-auto px-4 pt-16 pb-8">
+  <section class="max-w-3xl mx-auto px-4 py-16" id="formation-content" style="visibility:hidden">
     <div class="mb-4">
       <a href={base} class="text-sm text-slate-400 hover:text-slate-600 no-underline">← Accueil</a>
     </div>
@@ -22,11 +21,10 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
         De la compréhension à la maturité organisationnelle. Audio + visuels + quiz par bloc.
       </p>
     </div>
-    <ArbreDecisionDownload />
-  </section>
 
-  <!-- Section formation — masquée, révélée si connecté -->
-  <section class="max-w-3xl mx-auto px-4 pb-16" id="formation-content" style="display:none">
+    <div class="mb-6">
+      <ArbreDecisionDownload />
+    </div>
 
     <!-- Barre de progression — affichée si connecté -->
     <div id="progress-bar-section" class="mb-8 rounded-xl border border-slate-200 bg-slate-50 px-5 py-4" style="display:none">
@@ -55,12 +53,14 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
   (async () => {
     const { data: { session } } = await supabase.auth.getSession();
 
-    // Anonyme : le teaser public reste visible, pas de redirection
-    if (!session) return;
+    if (!session) {
+      window.location.href = '/inscription/?source=formation';
+      return;
+    }
 
-    // Révéler le contenu de formation si connecté
+    // Révéler le contenu seulement si connecté
     const content = document.getElementById('formation-content');
-    if (content) content.style.display = '';
+    if (content) content.style.visibility = '';
 
     // Charger la progression — uniquement les blocs avec completed_at non nul
     const { data: progress } = await supabase
