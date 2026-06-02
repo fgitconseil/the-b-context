@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import SystemeArticulation from '../components/SystemeArticulation.astro';
 const base = import.meta.env.BASE_URL;
 ---
 <Layout title="Transformer l'usage de l'IA en pratique d'équipe" description="Reflexe IA aide les entreprises à transformer un usage individuel de l'IA générative en une pratique organisationnelle fiable, sécurisée et pilotable.">
@@ -49,35 +50,8 @@ const base = import.meta.env.BASE_URL;
     </div>
   </section>
 
-  <!-- ── Les 3 niveaux ── -->
-  <section class="bg-slate-50 py-20">
-    <div class="max-w-5xl mx-auto px-6">
-      <div class="text-center mb-12">
-        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-3">Trois niveaux de réponse</h2>
-        <p class="text-slate-500 text-base max-w-xl mx-auto">Une intervention peut agir à un seul niveau ou à plusieurs, selon ce que la situation demande.</p>
-      </div>
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="card animate-fade-up animate-fade-up-1 flex flex-col">
-          <div class="w-8 h-8 rounded-full flex items-center justify-center mb-4 text-sm font-bold text-white" style="background:var(--sfoi-o)">C</div>
-          <h3 class="font-semibold text-slate-900 mb-2">Collaborateurs</h3>
-          <p class="text-slate-500 text-sm leading-relaxed flex-1">La méthode S.F.O.I. — quatre actes pour travailler avec un assistant IA au quotidien. Chaque collaborateur acquiert des réflexes vérifiables, pas des astuces.</p>
-          <a href={`${base}interventions/#cas-1`} class="text-blue-600 text-xs font-medium mt-4 hover:underline">Formation équipe →</a>
-        </div>
-        <div class="card animate-fade-up animate-fade-up-2 flex flex-col">
-          <div class="w-8 h-8 rounded-full flex items-center justify-center mb-4 text-sm font-bold text-white" style="background:var(--accent-600)">E</div>
-          <h3 class="font-semibold text-slate-900 mb-2">Équipes</h3>
-          <p class="text-slate-500 text-sm leading-relaxed flex-1">Des normes partagées, une vérification collective. Les dérives sont diagnostiquées et interrompues avant qu'elles ne deviennent des problèmes systémiques.</p>
-          <a href={`${base}interventions/#cas-2`} class="text-blue-600 text-xs font-medium mt-4 hover:underline">Revue des pratiques →</a>
-        </div>
-        <div class="card animate-fade-up animate-fade-up-3 flex flex-col">
-          <div class="w-8 h-8 rounded-full flex items-center justify-center mb-4 text-sm font-bold text-white" style="background:var(--sfoi-i)">O</div>
-          <h3 class="font-semibold text-slate-900 mb-2">Organisation</h3>
-          <p class="text-slate-500 text-sm leading-relaxed flex-1">Des savoirs capitalisés en actifs réutilisables. La gouvernance est distribuée, légère, mesurable, pas un framework de 200 pages.</p>
-          <a href={`${base}interventions/#cas-3`} class="text-blue-600 text-xs font-medium mt-4 hover:underline">Capitalisation skill →</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- ── Système d'articulation ── -->
+  <SystemeArticulation />
 
   <!-- ── Méthode S.F.O.I. ── -->
   <section class="py-20">

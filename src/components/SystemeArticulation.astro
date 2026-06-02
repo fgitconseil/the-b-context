@@ -1,0 +1,126 @@
+---
+const base = import.meta.env.BASE_URL;
+
+const cartes = [
+  {
+    situation: "Une équipe se lance",
+    reponse:   "Formation",
+    niveau:    "Individuel",
+    actives:   new Set(["S", "F"]),
+    imia:      "IMIA · repère (T0)",
+    lien:      `${base}interventions/#cas-1`,
+  },
+  {
+    situation: "Des dérives s'installent",
+    reponse:   "Identification & accompagnement",
+    niveau:    "Collectif",
+    actives:   new Set(["S", "F", "O"]),
+    imia:      "IMIA · évolution",
+    lien:      `${base}interventions/#cas-2`,
+  },
+  {
+    situation: "Un savoir critique en risque",
+    reponse:   "Capitalisation",
+    niveau:    "Collectif",
+    actives:   new Set(["S", "F", "O", "I"]),
+    imia:      "IMIA · évolution",
+    lien:      `${base}interventions/#cas-3`,
+  },
+  {
+    situation: "Gouvernance à installer",
+    reponse:   "Gouvernance",
+    niveau:    "Organisation",
+    actives:   new Set(["S", "F", "O", "I"]),
+    imia:      "IMIA · globale",
+    lien:      `${base}interventions/#cas-4`,
+  },
+];
+
+const sfoi = [
+  { lettre: "S", css: "var(--sfoi-s)" },
+  { lettre: "F", css: "var(--sfoi-f)" },
+  { lettre: "O", css: "var(--sfoi-o)" },
+  { lettre: "I", css: "var(--sfoi-i)" },
+];
+---
+
+<section aria-label="Quatre situations, un même système" class="bg-slate-50 py-20">
+  <div class="max-w-5xl mx-auto px-6">
+
+    <!-- En-tête centré -->
+    <div class="text-center mb-10">
+      <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-3">
+        Quatre situations, un même système
+      </h2>
+      <p class="text-slate-500 text-base max-w-2xl mx-auto">
+        L'AI Practice Steward installe, fiabilise, diffuse, puis se retire. Selon votre situation, il intervient au bon niveau de maturité, sans créer de dépendance.
+      </p>
+    </div>
+
+    <!-- Axe de maturité — desktop uniquement -->
+    <div class="hidden md:block relative mb-3" aria-hidden="true">
+      <div class="absolute top-1/2 left-0 right-0 h-px -translate-y-1/2 bg-slate-200"></div>
+      <div class="relative flex justify-between text-xs font-semibold uppercase tracking-widest text-slate-400">
+        <span class="bg-slate-50 pr-2">Individu</span>
+        <span class="bg-slate-50 px-2">Équipe</span>
+        <span class="bg-slate-50 pl-2">Organisation</span>
+      </div>
+    </div>
+
+    <!-- Bande AI Practice Steward — lien vers la page rôle -->
+    <a
+      href={`${base}framework/ai-practice-steward/`}
+      class="flex items-center justify-between px-6 py-4 rounded-xl mb-5 no-underline text-white hover:opacity-90 transition-opacity"
+      style="background:var(--accent-600)"
+    >
+      <span class="font-bold text-sm">AI Practice Steward</span>
+      <span class="text-xs opacity-75">installe · fiabilise · diffuse · se retire</span>
+    </a>
+
+    <!-- Quatre cartes situationnelles -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+      {cartes.map((carte) => (
+        <a
+          href={carte.lien}
+          class="card flex flex-col gap-2 no-underline"
+          style="padding:1.25rem"
+        >
+          <!-- Situation -->
+          <p class="text-xs text-slate-500">{carte.situation}</p>
+
+          <!-- Réponse — élément le plus visible -->
+          <p class="font-bold text-slate-900 text-sm leading-snug">{carte.reponse}</p>
+
+          <!-- Niveau de maturité -->
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-400">
+            {carte.niveau}
+          </p>
+
+          <!-- Lettres S F O I : colorées si actives, slate-300 sinon -->
+          <div class="flex gap-2 text-sm font-bold" aria-hidden="true">
+            {sfoi.map(({ lettre, css }) => (
+              <span style={carte.actives.has(lettre) ? `color:${css}` : "color:#cbd5e1"}>
+                {lettre}
+              </span>
+            ))}
+          </div>
+
+          <!-- Tag IMIA -->
+          <p class="text-xs text-slate-500 mt-auto pt-1">{carte.imia}</p>
+        </a>
+      ))}
+    </div>
+
+    <!-- Phrase de synthèse -->
+    <p class="text-center text-slate-500 text-sm mt-8">
+      Une situation, une réponse. Le rôle reste constant sur tout l'axe, puis se retire.
+    </p>
+
+    <!-- Légende — rend le schéma auto-porteur, ne dépend pas de la seule couleur -->
+    <div class="mt-5 space-y-1 text-center text-xs text-slate-400">
+      <p>S Structurer · F Fiabiliser · O Optimiser · I Industrialiser — lettres colorées = profondeur de la méthode atteinte</p>
+      <p>IMIA : indice de maturité IA sur 100, mesuré à T0, T+90 jours puis chaque trimestre</p>
+    </div>
+
+  </div>
+</section>
