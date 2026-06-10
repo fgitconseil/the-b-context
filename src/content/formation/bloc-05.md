@@ -124,7 +124,7 @@ quiz_final:
       - "Le consultant intervient sur les outils, le steward sur les personnes"
     answer: 1
     explanation: "Un consultant arrive avec une analyse, repart avec un livrable. Sa mission est ponctuelle, son périmètre est limité. Un AI Practice Steward assume un périmètre, il en répond, il en prend soin, il fait évoluer les pratiques dans la durée. C'est une différence de nature."
-  - question: "Le succès d'une mission Reflexe IA se mesure à..."
+  - question: "Le succès d'une mission The B Context se mesure à..."
     options:
       - "La durée de la relation contractuelle avec le client"
       - "Le nombre de collaborateurs formés"
@@ -299,7 +299,7 @@ Concrètement, ce qu'il livre :
 
 Ce qu'il ne fait pas : prendre la place de l'organisation. Centraliser. Devenir indispensable.
 
-Le succès d'une mission Reflexe IA ne se mesure pas à sa reconduction. Il se mesure à la capacité du client à se passer du steward.
+Le succès d'une mission The B Context ne se mesure pas à sa reconduction. Il se mesure à la capacité du client à se passer du steward.
 
 ## Clôture
 

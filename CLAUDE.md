@@ -2,7 +2,7 @@
 
 ## Ce projet
 
-Site Astro pour **reflexe-ia.org** — vitrine commerciale Reflexe IA.
+Site Astro pour **the-b-context.com** — vitrine commerciale The B Context.
 
 Le frontstage commercial est : Home · Formation · Interventions · Contact.
 Le backstage (crédibilité / communauté) est : Framework · Mainteneurs.
@@ -18,7 +18,7 @@ Ce repo est **séparé** de `Formation_prompting` (contenu formation) et de `kno
 → Ne pas adopter le dark theme Lovable.
 
 **Structure/organisation** : celle du design Lovable (screenshots dans `03-website/design lovable/`)
-→ Logo "Reflexe IA" (pas "FGIT Conseil — Formation IA")
+→ Logo "The B Context" (pas "FGIT Conseil — Formation IA")
 → Navigation et footer : voir section dédiée ci-dessous
 
 **Résumé** : charte graphique Formation_prompting + structure Lovable.
@@ -27,9 +27,8 @@ Ce repo est **séparé** de `Formation_prompting` (contenu formation) et de `kno
 
 ## Logo
 
-Texte `Reflexe IA` en lieu et place du logo FGIT Conseil.
-- "Reflexe" : couleur `--primary-600` ou blanc selon le fond
-- "IA" : couleur `--accent-500` (violet) ou teal selon le contexte
+Texte `The B Context` en lieu et place du logo FGIT Conseil.
+- "The B Context" : "B" en couleur `--accent-500` (violet), reste selon le fond
 
 ---
 
@@ -38,8 +37,8 @@ Texte `Reflexe IA` en lieu et place du logo FGIT Conseil.
 - Astro + Tailwind v4 (identique à `Formation_prompting/site`)
 - `package.json` et `astro.config.mjs` : copier depuis `Formation_prompting/site` et adapter
 - GitHub Pages via GitHub Actions
-- Domaine : reflexe-ia.org
-- `site: 'https://reflexe-ia.org'` dans `astro.config.mjs`
+- Domaine : the-b-context.com
+- `site: 'https://the-b-context.com'` dans `astro.config.mjs`
 
 ---
 
@@ -54,7 +53,7 @@ Copier depuis `Formation_prompting/site/src/` :
 - `lib/slideData.ts` · `lib/slides.ts` · `lib/modules.ts`
 
 **Seul changement sur la formation** :
-- Logo et navigation mis à jour (Reflexe IA, pas FGIT Conseil)
+- Logo et navigation mis à jour (The B Context, pas FGIT Conseil)
 - `bloc-06.astro` : terminologie Coach IA → AI Practice Steward (script déjà mis à jour dans `audios_et_illustrations/`)
 - Mettre à jour les liens `/coach-ia/` → `/ai-practice-steward/`
 
@@ -109,7 +108,7 @@ Copier depuis `Formation_prompting/site/src/` :
 
 ```
 Header :
-  Logo : "Reflexe IA"
+  Logo : "The B Context"
   Nav  : Formation · Interventions · Framework ▾ · Mainteneurs · LinkedIn · [auth]
   CTA  : "Discuter →" → /contact
 
@@ -119,11 +118,11 @@ Header :
     AI Practice Steward      → /framework/ai-practice-steward
 
 Footer (3 colonnes) :
-  Col 1 — Brand : logo "Reflexe IA" + description proposition de valeur
+  Col 1 — Brand : logo "The B Context" + description proposition de valeur
   Col 2 — Navigation : Accueil · Formation · Interventions · Framework · Mainteneurs
   (Pas de lien LinkedIn dans le header — uniquement dans le footer)
   Col 3 — Légal : Mentions légales · CGU · Politique de confidentialité
-  Bottom : © 2026 Reflexe IA. Tous droits réservés.
+  Bottom : © 2026 The B Context. Tous droits réservés.
 ```
 
 ---
@@ -263,4 +262,4 @@ Table `public.contact_messages` pour les formulaires de contact anonymes.
 # .github/workflows/deploy.yml — identique à Formation_prompting/site/.github/workflows/deploy.yml
 ```
 
-`public/CNAME` : `reflexe-ia.org`
+`public/CNAME` : `the-b-context.com`
