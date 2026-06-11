@@ -449,9 +449,14 @@ const qiForJs = qi.map(q => ({ after_slide: q.after_slide }));
   // ── Helpers ───────────────────────────────────────────────────────────
   const BASE = import.meta.env.BASE_URL;
 
+  const lightbox    = document.getElementById('lightbox') as HTMLElement;
+  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+
   function updateVisuel(fichier: string, altText: string) {
-    mainVisuel.src = `${BASE}assets/visuels/${fichier}`;
+    const src = `${BASE}assets/visuels/${fichier}`;
+    mainVisuel.src = src;
     mainVisuel.alt = altText;
+    if (lightbox.style.display !== 'none') lightboxImg.src = src;
   }
 
   function updateScript(idx: number) {
