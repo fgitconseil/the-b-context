@@ -11,34 +11,34 @@ slides:
     audio: "/assets/audio/blocs/4.1.mp3"
     duration: 83.176
     visuels:
-      - { fichier: "Diapositive31.PNG", t_start: 0,  marqueurs: ["methode-titre"] }
-      - { fichier: "Diapositive30.PNG", t_start: 23, marqueurs: ["sfoi-acronyme"] }
+      - { fichier: "Diapositive31.png", t_start: 0,  marqueurs: ["methode-titre"] }
+      - { fichier: "Diapositive30.png", t_start: 23, marqueurs: ["sfoi-acronyme"] }
   - index: 1
     titre: "Les quatre actes"
     audio: "/assets/audio/blocs/4.2.mp3"
     duration: 166.576
     visuels:
-      - { fichier: "Diapositive32.PNG", t_start: 0, marqueurs: ["acte-S", "acte-F", "acte-O", "acte-I"] }
+      - { fichier: "Diapositive32.png", t_start: 0, marqueurs: ["acte-S", "acte-F", "acte-O", "acte-I"] }
   - index: 2
     titre: "Marc applique Structurer puis Fiabiliser"
     audio: "/assets/audio/blocs/4.3.mp3"
     duration: 73.110
     visuels:
-      - { fichier: "Diapositive33.PNG", t_start: 0,  marqueurs: ["marc-applique-titre", "marc-structurer"] }
-      - { fichier: "Diapositive34.PNG", t_start: 25, marqueurs: ["marc-fiabiliser"] }
+      - { fichier: "Diapositive33.png", t_start: 0,  marqueurs: ["marc-applique-titre", "marc-structurer"] }
+      - { fichier: "Diapositive34.png", t_start: 25, marqueurs: ["marc-fiabiliser"] }
   - index: 3
     titre: "Les trois erreurs qui font sauter les niveaux"
     audio: "/assets/audio/blocs/4.4.mp3"
     duration: 62.827
     visuels:
-      - { fichier: "Diapositive35.PNG", t_start: 0, marqueurs: ["3-erreurs-titre", "erreur-confusion-structurer", "erreur-saut-fiabiliser", "erreur-saut-optimiser"] }
+      - { fichier: "Diapositive35.png", t_start: 0, marqueurs: ["3-erreurs-titre", "erreur-confusion-structurer", "erreur-saut-fiabiliser", "erreur-saut-optimiser"] }
   - index: 4
     titre: "Clôture · de la méthode à la maturité"
     audio: "/assets/audio/blocs/4.5.mp3"
     duration: 90.710
     visuels:
-      - { fichier: "Diapositive36.PNG", t_start: 0,  marqueurs: ["cloture-marc-livre", "sfoi-universel-livrables", "sfoi-question-quotidien"] }
-      - { fichier: "Diapositive37.PNG", t_start: 41, marqueurs: ["bascule-echelle-organisation", "bascule-quatre-questions-org", "imia-acronyme", "sfoi-imia-conclusion"] }
+      - { fichier: "Diapositive36.png", t_start: 0,  marqueurs: ["cloture-marc-livre", "sfoi-universel-livrables", "sfoi-question-quotidien"] }
+      - { fichier: "Diapositive37.png", t_start: 41, marqueurs: ["bascule-echelle-organisation", "bascule-quatre-questions-org", "imia-acronyme", "sfoi-imia-conclusion"] }
 quiz_inline:
   - after_slide: 1
     question: "🟢 Structurer signifie..."

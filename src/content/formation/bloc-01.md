@@ -11,34 +11,34 @@ slides:
     audio: "/assets/audio/blocs/1.1.mp3"
     duration: 57.776
     visuels:
-      - { fichier: "Diapositive1.PNG", t_start: 0 }
+      - { fichier: "Diapositive1.png", t_start: 0 }
   - index: 1
     titre: "Ce qu'est un LLM, ce qu'est une plateforme"
     audio: "/assets/audio/blocs/1.2.mp3"
     duration: 209.947
     visuels:
-      - { fichier: "Diapositive2.PNG", t_start: 0,   marqueurs: ["llm-acronym", "llm-definition", "llm-predicts-not-understands"] }
-      - { fichier: "Diapositive3.PNG", t_start: 38,  marqueurs: ["metaphore-stagiaire"] }
-      - { fichier: "Diapositive4.PNG", t_start: 86,  marqueurs: ["plateforme-vs-llm", "plateforme-mecanismes"] }
-      - { fichier: "Diapositive5.PNG", t_start: 148, marqueurs: ["hallucination-concept", "hallucination-exemple"] }
+      - { fichier: "Diapositive2.png", t_start: 0,   marqueurs: ["llm-acronym", "llm-definition", "llm-predicts-not-understands"] }
+      - { fichier: "Diapositive3.png", t_start: 38,  marqueurs: ["metaphore-stagiaire"] }
+      - { fichier: "Diapositive4.png", t_start: 86,  marqueurs: ["plateforme-vs-llm", "plateforme-mecanismes"] }
+      - { fichier: "Diapositive5.png", t_start: 148, marqueurs: ["hallucination-concept", "hallucination-exemple"] }
   - index: 2
     titre: "Trois limites à connaître"
     audio: "/assets/audio/blocs/1.3.mp3"
     duration: 120.110
     visuels:
-      - { fichier: "Diapositive6.PNG", t_start: 0, marqueurs: ["limite-1-cutoff", "limite-2-fichiers", "limite-3-incertitude"] }
+      - { fichier: "Diapositive6.png", t_start: 0, marqueurs: ["limite-1-cutoff", "limite-2-fichiers", "limite-3-incertitude"] }
   - index: 3
     titre: "Les quatre implications"
     audio: "/assets/audio/blocs/1.4.mp3"
     duration: 153.843
     visuels:
-      - { fichier: "Diapositive7.PNG", t_start: 0, marqueurs: ["implication-1-qualite-demande", "implication-2-verifier-faits", "implication-3-responsabilite", "implication-4-bons-outils"] }
+      - { fichier: "Diapositive7.png", t_start: 0, marqueurs: ["implication-1-qualite-demande", "implication-2-verifier-faits", "implication-3-responsabilite", "implication-4-bons-outils"] }
   - index: 4
     titre: "Clôture"
     audio: "/assets/audio/blocs/1.5.mp3"
     duration: 66.976
     visuels:
-      - { fichier: "Diapositive8.PNG", t_start: 0 }
+      - { fichier: "Diapositive8.png", t_start: 0 }
 quiz_inline:
   - after_slide: 1
     question: "Un LLM génère ses réponses en..."

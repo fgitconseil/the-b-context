@@ -11,45 +11,45 @@ slides:
     audio: "/assets/audio/blocs/2.1.mp3"
     duration: 52.776
     visuels:
-      - { fichier: "Diapositive9.PNG", t_start: 0 }
+      - { fichier: "Diapositive9.png", t_start: 0 }
   - index: 1
     titre: "Le risque d'exfiltration"
     audio: "/assets/audio/blocs/2.2.mp3"
     duration: 161.371
     visuels:
-      - { fichier: "Diapositive10.PNG", t_start: 0,   marqueurs: ["exfiltration-definition"] }
-      - { fichier: "Diapositive11.PNG", t_start: 25,  marqueurs: ["4-categories-donnees", "categorie-clients", "categorie-rh", "categorie-strategiques", "categorie-code"] }
-      - { fichier: "Diapositive12.PNG", t_start: 70,  marqueurs: ["3-questions-regle", "question-1-public", "question-2-personnes", "question-3-strategique"] }
-      - { fichier: "Diapositive13.PNG", t_start: 100, marqueurs: ["3-niveaux-protection", "niveau-public", "niveau-pro", "niveau-enterprise"] }
+      - { fichier: "Diapositive10.png", t_start: 0,   marqueurs: ["exfiltration-definition"] }
+      - { fichier: "Diapositive11.png", t_start: 25,  marqueurs: ["4-categories-donnees", "categorie-clients", "categorie-rh", "categorie-strategiques", "categorie-code"] }
+      - { fichier: "Diapositive12.png", t_start: 70,  marqueurs: ["3-questions-regle", "question-1-public", "question-2-personnes", "question-3-strategique"] }
+      - { fichier: "Diapositive13.png", t_start: 100, marqueurs: ["3-niveaux-protection", "niveau-public", "niveau-pro", "niveau-enterprise"] }
   - index: 2
     titre: "Le risque réputationnel et l'usurpation"
     audio: "/assets/audio/blocs/2.3.mp3"
     duration: 176.176
     visuels:
-      - { fichier: "Diapositive14.PNG", t_start: 0,   marqueurs: ["4-zones-reputation", "zone-dates", "zone-chiffres", "zone-citations", "zone-engagements"] }
-      - { fichier: "Diapositive15.PNG", t_start: 65,  marqueurs: ["usurpation-deepfakes", "deepfakes-exemples"] }
-      - { fichier: "Diapositive16.PNG", t_start: 139, marqueurs: ["protocole-3-temps", "etape-identifier", "etape-verifier", "etape-relire"] }
+      - { fichier: "Diapositive14.png", t_start: 0,   marqueurs: ["4-zones-reputation", "zone-dates", "zone-chiffres", "zone-citations", "zone-engagements"] }
+      - { fichier: "Diapositive15.png", t_start: 65,  marqueurs: ["usurpation-deepfakes", "deepfakes-exemples"] }
+      - { fichier: "Diapositive16.png", t_start: 139, marqueurs: ["protocole-3-temps", "etape-identifier", "etape-verifier", "etape-relire"] }
   - index: 3
     titre: "Le risque d'industrialisation prématurée"
     audio: "/assets/audio/blocs/2.4.mp3"
     duration: 198.547
     visuels:
-      - { fichier: "Diapositive17.PNG", t_start: 0,   marqueurs: ["industrialisation-prematuree", "scenario-commercial", "scenario-erreur-multipliee"] }
-      - { fichier: "Diapositive18.PNG", t_start: 45,  marqueurs: ["progression-sfoi-apercu", "sfoi-S", "sfoi-F", "sfoi-O", "sfoi-I", "sfoi-regle-absolue"] }
-      - { fichier: "Diapositive19.PNG", t_start: 81,  marqueurs: ["3-questions-automatiser", "q-validation-humaine", "q-erreurs-corrigees", "q-supervision"] }
-      - { fichier: "Diapositive20.PNG", t_start: 108, marqueurs: ["ai-act-article-4"] }
+      - { fichier: "Diapositive17.png", t_start: 0,   marqueurs: ["industrialisation-prematuree", "scenario-commercial", "scenario-erreur-multipliee"] }
+      - { fichier: "Diapositive18.png", t_start: 45,  marqueurs: ["progression-sfoi-apercu", "sfoi-S", "sfoi-F", "sfoi-O", "sfoi-I", "sfoi-regle-absolue"] }
+      - { fichier: "Diapositive19.png", t_start: 81,  marqueurs: ["3-questions-automatiser", "q-validation-humaine", "q-erreurs-corrigees", "q-supervision"] }
+      - { fichier: "Diapositive20.png", t_start: 108, marqueurs: ["ai-act-article-4"] }
   - index: 4
     titre: "Clôture · les trois règles"
     audio: "/assets/audio/blocs/2.5.mp3"
     duration: 89.843
     visuels:
-      - { fichier: "Diapositive21.PNG", t_start: 0 }
+      - { fichier: "Diapositive21.png", t_start: 0 }
   - index: 5
     titre: "Un mot sur l'impact environnemental"
     audio: "/assets/audio/blocs/2.6.mp3"
     duration: 41.707
     visuels:
-      - { fichier: "Diapositive22.PNG", t_start: 0 }
+      - { fichier: "Diapositive22.png", t_start: 0 }
 quiz_inline:
   - after_slide: 1
     question: "Vous recevez une demande urgente d'un client. Pour rédiger rapidement votre réponse, vous copiez-collez son email complet, avec ses coordonnées, le montant du contrat et ses conditions particulières, dans l'interface gratuite d'un assistant. Quel risque avez-vous pris ?"

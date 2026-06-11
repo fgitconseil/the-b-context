@@ -11,42 +11,42 @@ slides:
     audio: "/assets/audio/blocs/5.1.mp3"
     duration: 70.363
     visuels:
-      - { fichier: "Diapositive38.PNG", t_start: 0, marqueurs: ["recap-chemin"] }
+      - { fichier: "Diapositive38.png", t_start: 0, marqueurs: ["recap-chemin"] }
   - index: 1
     titre: "Ce que la formation ne peut pas résoudre"
     audio: "/assets/audio/blocs/5.2.mp3"
     duration: 31.043
     visuels:
-      - { fichier: "Diapositive39.PNG", t_start: 0 }
+      - { fichier: "Diapositive39.png", t_start: 0 }
   - index: 2
     titre: "Les deux boucles"
     audio: "/assets/audio/blocs/5.3.mp3"
     duration: 125.707
     visuels:
-      - { fichier: "Diapositive40.PNG", t_start: 0 }
-      - { fichier: "Diapositive41.PNG", t_start: 55, marqueurs: ["boucle-amplificatrice", "ampli-etape-1", "ampli-etape-2", "ampli-etape-3", "ampli-etape-4", "ampli-choc"] }
-      - { fichier: "Diapositive42.PNG", t_start: 78, marqueurs: ["reddition-cognitive", "reddition-jalon-1", "reddition-jalon-2", "reddition-jalon-3", "reddition-question"] }
+      - { fichier: "Diapositive40.png", t_start: 0 }
+      - { fichier: "Diapositive41.png", t_start: 55, marqueurs: ["boucle-amplificatrice", "ampli-etape-1", "ampli-etape-2", "ampli-etape-3", "ampli-etape-4", "ampli-choc"] }
+      - { fichier: "Diapositive42.png", t_start: 78, marqueurs: ["reddition-cognitive", "reddition-jalon-1", "reddition-jalon-2", "reddition-jalon-3", "reddition-question"] }
   - index: 3
     titre: "De la méthode à la maturité · l'IMIA"
     audio: "/assets/audio/blocs/5.4.mp3"
     duration: 180.355
     visuels:
-      - { fichier: "Diapositive43.PNG", t_start: 0, marqueurs: ["imia-pentagone", "imia-trace-organisation"] }
+      - { fichier: "Diapositive43.png", t_start: 0, marqueurs: ["imia-pentagone", "imia-trace-organisation"] }
   - index: 4
     titre: "Le rôle que ça crée · l'AI Practice Steward"
     audio: "/assets/audio/blocs/5.5.mp3"
     duration: 217.219
     visuels:
-      - { fichier: "Diapositive44.PNG", t_start: 0 }
-      - { fichier: "Diapositive45.PNG", t_start: 35,  marqueurs: ["steward-titre"] }
-      - { fichier: "Diapositive46.PNG", t_start: 119, marqueurs: ["capacite-voir-boucles", "capacite-niveaux", "steward-niveau-individu", "steward-niveau-equipe", "steward-niveau-organisation", "capacite-resistance"] }
-      - { fichier: "Diapositive47.PNG", t_start: 143, marqueurs: ["skills-expert", "skills-capture", "skills-cartouche", "skills-cas-usage"] }
+      - { fichier: "Diapositive44.png", t_start: 0 }
+      - { fichier: "Diapositive45.png", t_start: 35,  marqueurs: ["steward-titre"] }
+      - { fichier: "Diapositive46.png", t_start: 119, marqueurs: ["capacite-voir-boucles", "capacite-niveaux", "steward-niveau-individu", "steward-niveau-equipe", "steward-niveau-organisation", "capacite-resistance"] }
+      - { fichier: "Diapositive47.png", t_start: 143, marqueurs: ["skills-expert", "skills-capture", "skills-cartouche", "skills-cas-usage"] }
   - index: 5
     titre: "Clôture"
     audio: "/assets/audio/blocs/5.6.mp3"
     duration: 38.176
     visuels:
-      - { fichier: "Diapositive48.PNG", t_start: 0 }
+      - { fichier: "Diapositive48.png", t_start: 0 }
 quiz_inline:
   - after_slide: 2
     question: "Ce qui distingue fondamentalement la reddition cognitive de la boucle amplificatrice, c'est que..."

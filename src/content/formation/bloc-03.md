@@ -11,38 +11,38 @@ slides:
     audio: "/assets/audio/blocs/3.1.mp3"
     duration: 70.411
     visuels:
-      - { fichier: "Diapositive23.PNG", t_start: 0 }
-      - { fichier: "Diapositive24.PNG", t_start: 58, marqueurs: ["4-intentions", "intention-exploration", "intention-structuration", "intention-production", "intention-verification"] }
+      - { fichier: "Diapositive23.png", t_start: 0 }
+      - { fichier: "Diapositive24.png", t_start: 58, marqueurs: ["4-intentions", "intention-exploration", "intention-structuration", "intention-production", "intention-verification"] }
   - index: 1
     titre: "Le prompt d'exploration"
     audio: "/assets/audio/blocs/3.2.mp3"
     duration: 192.510
     visuels:
-      - { fichier: "Diapositive25.PNG", t_start: 0, marqueurs: ["gabarit-exploration"] }
+      - { fichier: "Diapositive25.png", t_start: 0, marqueurs: ["gabarit-exploration"] }
   - index: 2
     titre: "Le prompt de structuration"
     audio: "/assets/audio/blocs/3.3.mp3"
     duration: 106.891
     visuels:
-      - { fichier: "Diapositive26.PNG", t_start: 0, marqueurs: ["gabarit-structuration"] }
+      - { fichier: "Diapositive26.png", t_start: 0, marqueurs: ["gabarit-structuration"] }
   - index: 3
     titre: "Le prompt de production"
     audio: "/assets/audio/blocs/3.4.mp3"
     duration: 114.043
     visuels:
-      - { fichier: "Diapositive27.PNG", t_start: 0, marqueurs: ["gabarit-production"] }
+      - { fichier: "Diapositive27.png", t_start: 0, marqueurs: ["gabarit-production"] }
   - index: 4
     titre: "Le prompt de vérification"
     audio: "/assets/audio/blocs/3.5.mp3"
     duration: 141.019
     visuels:
-      - { fichier: "Diapositive28.PNG", t_start: 0, marqueurs: ["gabarit-verification"] }
+      - { fichier: "Diapositive28.png", t_start: 0, marqueurs: ["gabarit-verification"] }
   - index: 5
     titre: "Synthèse · la carte mentale"
     audio: "/assets/audio/blocs/3.6.mp3"
     duration: 129.643
     visuels:
-      - { fichier: "Diapositive29.PNG", t_start: 0, marqueurs: ["synthese-4-types"] }
+      - { fichier: "Diapositive29.png", t_start: 0, marqueurs: ["synthese-4-types"] }
 quiz_inline:
   - after_slide: 1
     question: "Vous avez besoin d'une analyse des forces et faiblesses de trois offres fournisseurs avant une réunion de décision. Quel type de prompt est adapté ?"
