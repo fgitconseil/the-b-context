@@ -32,7 +32,7 @@ const base = import.meta.env.BASE_URL;
   <section class="bg-gradient-to-br from-slate-900 to-slate-800 text-white py-20">
     <div class="max-w-3xl mx-auto px-6">
       <div class="mb-4">
-        <a href={`${base}framework/`} class="text-slate-400 text-sm hover:text-slate-200 no-underline">← Framework</a>
+        <a href={base} class="text-slate-400 text-sm hover:text-slate-200 no-underline">← Accueil</a>
       </div>
       <p class="text-sm font-bold tracking-widest uppercase text-blue-400 mb-4">Thèse</p>
       <h1 class="text-4xl md:text-5xl font-bold mb-6">Aligner l'exécution IA sur l'intention stratégique</h1>
@@ -234,7 +234,7 @@ const base = import.meta.env.BASE_URL;
       <div class="space-y-4 text-slate-700 text-base leading-relaxed mb-8">
         <p>On ne pilote pas ce qu'on ne mesure pas. Et on ne mesure pas une maturité dans l'absolu.</p>
         <p>
-          L'<a href={`${base}framework/imia/`} class="text-blue-600 underline underline-offset-2 hover:no-underline"><strong>IMIA</strong></a> n'est pas un score de maturité générique. IMIA, l'instrument qui mesure <strong>l'écart entre l'intention stratégique de la direction et les pratiques IA réelles</strong>.
+          L'<strong>IMIA</strong> n'est pas un score de maturité générique. IMIA, l'instrument qui mesure <strong>l'écart entre l'intention stratégique de la direction et les pratiques IA réelles</strong>.
         </p>
         <p>Deux organisations au même niveau d'usage peuvent avoir des scores opposés, parce que leurs intentions diffèrent. C'est le point.</p>
         <p>Cinq dimensions composent l'indice :</p>
@@ -278,16 +278,20 @@ const base = import.meta.env.BASE_URL;
         </p>
         <p>La mesure est faite à T0, à T+90 jours, puis trimestriellement. <strong>L'engagement porte sur l'écart comblé, pas sur le temps passé.</strong></p>
         <p>
-          Ce que produit un <a href={`${base}interventions/#diagnostic-imia`} class="text-blue-600 underline underline-offset-2 hover:no-underline">diagnostic IMIA</a> : un score d'écart, une cartographie des boucles systémiques actives, un diagnostic des pratiques, une recommandation d'intervention. Ce qu'il ne produit jamais : une feuille de route de projets, un portefeuille de pilotes, une liste de POC. Le problème n'est pas le manque de projets IA. C'est l'absence de pratiques fiables pour les soutenir.
+          Ce que produit un <a href={base} class="text-blue-600 underline underline-offset-2 hover:no-underline">diagnostic IMIA</a> : un score d'écart, une cartographie des boucles systémiques actives, un diagnostic des pratiques, une recommandation d'intervention. Ce qu'il ne produit jamais : une feuille de route de projets, un portefeuille de pilotes, une liste de POC. Le problème n'est pas le manque de projets IA. C'est l'absence de pratiques fiables pour les soutenir.
         </p>
       </div>
+      <!-- Note de mise à jour (pivot Mission Savoir Critique) : la section d'origine est conservée telle quelle -->
+      <aside class="rounded-xl border border-slate-200 bg-slate-50 p-5 text-slate-600 text-sm leading-relaxed" style="margin-top:2rem">
+        <p><strong class="text-slate-900">Note de mise à jour (septembre 2026).</strong> Cette section décrit l'IMIA telle que conçue à l'origine : un score composite sur 100 points, cinq dimensions pondérées, un suivi trimestriel formalisé. En pratique de mission, l'instrument s'est révélé plus utile sous une forme plus légère : une grille de qualification d'environ 15 minutes, remplie à l'entrée et rejouée à la sortie de chaque Mission Savoir Critique, sans scoring publié ni suivi continu. Le principe reste inchangé (mesurer l'écart entre intention et pratique) ; la lourdeur de l'instrument a été retirée. Détail sur <a href={base} class="text-blue-600 underline underline-offset-2 hover:no-underline">la home</a> et dans le déroulé de l'offre.</p>
+      </aside>
     </section>
 
     <!-- VI. La méthode S.F.O.I. -->
     <section>
       <h2 class="text-2xl font-bold text-slate-900 mb-6">VI. La méthode : S.F.O.I.</h2>
       <div class="space-y-4 text-slate-700 text-base leading-relaxed mb-8">
-        <p><a href={`${base}framework/methode-sfoi/`} class="text-blue-600 underline underline-offset-2 hover:no-underline">S.F.O.I.</a> n'est pas une carte de maturité. C'est une <strong>méthode de chaînage des prompts dans une pratique de travail</strong>. Quatre actes séquentiels.</p>
+        <p>S.F.O.I. n'est pas une carte de maturité. C'est une <strong>méthode de chaînage des prompts dans une pratique de travail</strong>. Quatre actes séquentiels.</p>
       </div>
       <div class="space-y-3 mb-8">
         <div class="rounded-xl border border-slate-200 p-4 flex items-start gap-4">
@@ -327,6 +331,9 @@ const base = import.meta.env.BASE_URL;
           <strong>Règle de distinction.</strong> S.F.O.I. décrit comment on travaille. L'IMIA mesure l'écart entre l'intention et les pratiques. Ce sont deux objets de nature différente. Les confondre revient à confondre une méthode de travail et un instrument de mesure.
         </p>
       </div>
+      <aside class="rounded-xl border border-slate-200 bg-slate-50 p-5 text-slate-600 text-sm leading-relaxed" style="margin-top:2rem">
+        <p><strong class="text-slate-900">Note de mise à jour.</strong> S.F.O.I. n'est plus enseignée sur ce site : le contenu est repensé pour une diffusion publique, une chaîne YouTube The B Context est en préparation. Elle reste la méthode de référence pour le travail individuel avec un assistant IA, mais n'est plus une condition d'accès à la Mission Savoir Critique.</p>
+      </aside>
     </section>
 
     <!-- VII. Le retrait -->
@@ -394,7 +401,7 @@ const base = import.meta.env.BASE_URL;
     <!-- Pour aller plus loin -->
     <section>
       <h2 class="text-2xl font-bold text-slate-900 mb-8">Pour aller plus loin</h2>
-      <div class="grid md:grid-cols-3 gap-6">
+      <div class="grid md:grid-cols-2 gap-6 items-center">
         <a href={`${base}framework/ai-practice-steward/`} class="card group no-underline flex flex-col">
           <div class="flex items-center gap-3 mb-4">
             <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold" style="background:var(--primary-600)">R</div>
@@ -403,27 +410,7 @@ const base = import.meta.env.BASE_URL;
           <p class="text-slate-500 text-sm leading-relaxed flex-1 mb-4">AI Practice Steward : définition, capacités structurelles et positionnement.</p>
           <span class="text-blue-600 text-sm font-semibold group-hover:underline">Découvrir le rôle →</span>
         </a>
-        <a href={`${base}framework/imia/`} class="card group no-underline flex flex-col">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold" style="background:var(--accent-500)">I</div>
-            <h3 class="font-bold text-slate-900">L'instrument</h3>
-          </div>
-          <p class="text-slate-500 text-sm leading-relaxed flex-1 mb-4">IMIA : cinq dimensions, un score sur 100, mesuré dans le temps.</p>
-          <span class="text-blue-600 text-sm font-semibold group-hover:underline">Découvrir l'IMIA →</span>
-        </a>
-        <a href={`${base}framework/methode-sfoi/`} class="card group no-underline flex flex-col">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="flex gap-1">
-              <span class="w-5 h-5 rounded-full text-xs font-bold text-white flex items-center justify-center" style="background:var(--sfoi-s)">S</span>
-              <span class="w-5 h-5 rounded-full text-xs font-bold text-white flex items-center justify-center" style="background:var(--sfoi-f)">F</span>
-              <span class="w-5 h-5 rounded-full text-xs font-bold text-white flex items-center justify-center" style="background:var(--sfoi-o)">O</span>
-              <span class="w-5 h-5 rounded-full text-xs font-bold text-white flex items-center justify-center" style="background:var(--sfoi-i)">I</span>
-            </div>
-            <h3 class="font-bold text-slate-900">La méthode</h3>
-          </div>
-          <p class="text-slate-500 text-sm leading-relaxed flex-1 mb-4">S.F.O.I. : quatre actes séquentiels pour travailler avec un assistant IA au quotidien.</p>
-          <span class="text-blue-600 text-sm font-semibold group-hover:underline">Découvrir la méthode →</span>
-        </a>
+        <a href={base} class="text-blue-600 font-semibold hover:underline">Voir comment ça marche en mission →</a>
       </div>
     </section>
 
