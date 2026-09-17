@@ -18,11 +18,6 @@ dist/
 # Pages retirées du site
 src/_retired/
 
-# Archives d'assets — conservées en local, hors du repo
-public/assets/_archive/
-public/assets/takeaways/old/
-public/assets/visuels/old/
-
 # Sources binaires de production des supports (PPTX, PDF export)
 *.pptx
 
