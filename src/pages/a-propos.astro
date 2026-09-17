@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { CALENDLY_URL } from '../lib/links';
 const base = import.meta.env.BASE_URL;
 ---
 <Layout title="À propos" description="The B Context, marque de FGIT Conseil, cabinet indépendant depuis 2009. Le rôle d'AI Practice Steward, la méthode S.F.O.I. et l'instrument IMIA.">
@@ -25,7 +26,7 @@ const base = import.meta.env.BASE_URL;
         The B Context est la marque de conseil de <strong>FGIT Conseil</strong>, cabinet indépendant actif depuis 2009. Elle intervient auprès des PME et ETI françaises qui ont déployé l'IA générative et veulent que cet usage serve leur stratégie, pas qu'il parte dans tous les sens.
       </p>
       <p>
-        Son approche repose sur un rôle, l'<a href={`${base}framework/ai-practice-steward/`} class="text-blue-600 hover:underline">AI Practice Steward</a>, une méthode, <a href={`${base}framework/methode-sfoi/`} class="text-blue-600 hover:underline">S.F.O.I.</a>, et <a href={`${base}framework/imia/`} class="text-blue-600 hover:underline">IMIA</a>, l'instrument qui mesure l'écart entre l'intention stratégique de la direction et les pratiques IA réelles, à l'entrée, à 90 jours, puis chaque trimestre.
+        Son approche repose sur un rôle, l'<a href={`${base}framework/ai-practice-steward/`} class="text-blue-600 underline underline-offset-2 hover:no-underline">AI Practice Steward</a>, une méthode, S.F.O.I., et IMIA, l'instrument qui mesure l'écart entre l'intention stratégique de la direction et les pratiques IA réelles, à l'entrée et à la livraison de la mission.
       </p>
       <p>
         Sa signature : The B Context se retire, le rôle reste. Une personne de l'organisation tient le rôle, les savoir-faire critiques sont capitalisés en skills, les usages sensibles tournent dans des agents tracés. L'accompagnement s'engage sur l'écart comblé, pas sur le temps passé.
@@ -58,13 +59,13 @@ const base = import.meta.env.BASE_URL;
 
             <div class="space-y-3 text-slate-600 text-sm leading-relaxed">
               <p>
-                Fayaz Goulam est le fondateur de The B Context et le premier praticien du rôle d'AI Practice Steward. Son parcours couvre deux décennies à la croisée de la gestion de la connaissance, des technologies sémantiques, du pilotage de programmes de transformation et de la direction de fonctions Data &amp; IA, chez Moët Hennessy, Kering, France Télévisions, Bpifrance et dernièrement ARiSTiD, en tant que Head of Data &amp; AI.
+                Fayaz Goulam est le fondateur de The B Context et le concepteur de sa méthode. Son parcours couvre deux décennies à la croisée de la gestion de la connaissance, des technologies sémantiques, du pilotage de programmes de transformation et de la direction de fonctions Data &amp; IA, chez Moët Hennessy, Kering, France Télévisions, Bpifrance et dernièrement ARiSTiD, en tant que Head of Data &amp; AI.
               </p>
               <p>
                 Cette trajectoire a nourri la conviction qui anime The B Context : les pratiques IA en organisation ne sont pas un problème d'outils ni de formations isolées. Elles sont un problème d'alignement entre l'intention stratégique de la direction et l'exécution sur le terrain, de savoirs à capitaliser et de boucles systémiques à interrompre. Ce qu'aucun dispositif traditionnel ne traite de front.
               </p>
               <p>
-                Fayaz conduit aujourd'hui la construction du framework The B Context et intervient en mission d'AI Practice Steward auprès d'organisations qui veulent une exécution IA fiable, durable et alignée sur leur stratégie.
+                Fayaz conduit aujourd'hui la construction de la méthode The B Context et intervient en Mission Savoir Critique auprès d'organisations qui veulent capitaliser leur savoir critique avant qu'il ne parte avec un expert.
               </p>
             </div>
 
@@ -90,7 +91,7 @@ const base = import.meta.env.BASE_URL;
 
     <!-- Le rôle et le framework -->
     <section class="rounded-xl border border-slate-200 bg-slate-50 p-6">
-      <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-4">Le rôle et le framework</p>
+      <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-4">Le rôle et le framework</p>
       <div class="space-y-3 text-slate-600 text-sm leading-relaxed">
         <p>
           L'AI Practice Steward est un rôle de marché : celui que les organisations développent en interne, avec l'accompagnement de The B Context, pour relier durablement leur intention stratégique à l'exécution de leurs pratiques IA.
@@ -99,14 +100,14 @@ const base = import.meta.env.BASE_URL;
           Le framework qui outille ce rôle (méthode S.F.O.I., IMIA, définition du rôle) est construit et maintenu par The B Context, éprouvé en conditions réelles de mission.
         </p>
       </div>
-      <a href={`${base}framework/`} class="inline-block mt-4 text-blue-600 text-sm font-medium hover:underline">Découvrir le framework →</a>
+      <a href={`${base}framework/these/`} class="inline-block mt-4 text-blue-600 text-sm font-medium hover:underline">Découvrir le framework →</a>
     </section>
 
     <!-- CTA -->
     <section class="text-center py-6">
       <h2 class="text-xl font-bold text-slate-900 mb-3">Parlons de votre situation</h2>
       <p class="text-slate-500 text-base mb-6 leading-relaxed">Un appel de cadrage gratuit de 30 minutes, sans engagement.</p>
-      <a href={`${base}contact/`} class="btn-primary text-base px-6 py-3">Réserver un appel de cadrage →</a>
+      <a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary text-base px-6 py-3">Réserver un appel de cadrage →</a>
     </section>
 
   </div>

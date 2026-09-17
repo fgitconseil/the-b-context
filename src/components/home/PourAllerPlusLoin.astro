@@ -1,0 +1,22 @@
+---
+/* Home — Pour aller plus loin : doctrine (Thèse, AI Practice Steward). Jamais LPBIA ici.
+   Les mêmes liens restent aussi dans le footer. */
+const base = import.meta.env.BASE_URL;
+const cards = [
+  { title: 'Thèse', href: `${base}framework/these/` },
+  { title: 'AI Practice Steward', href: `${base}framework/ai-practice-steward/` },
+];
+---
+<section id="pour-aller-plus-loin" aria-labelledby="pour-aller-plus-loin-title" class="bg-slate-50 py-16">
+  <div class="max-w-3xl mx-auto px-6">
+    <h2 id="pour-aller-plus-loin-title" class="text-xl font-semibold text-slate-900 mb-6">Pour aller plus loin</h2>
+    <div class="grid sm:grid-cols-2 gap-4">
+      {cards.map(({ title, href }) => (
+        <a href={href} class="flex items-center justify-between bg-white border border-slate-200 rounded-xl px-6 py-5 font-semibold text-slate-900 no-underline hover:border-primary-600 hover:text-primary-700 transition-colors">
+          {title}
+          <span aria-hidden="true" class="text-primary-600">→</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

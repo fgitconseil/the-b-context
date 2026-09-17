@@ -18,17 +18,8 @@ dist/
 # Pages retirées du site
 src/_retired/
 
-# Archives d'assets — conservées en local, hors du repo
-public/assets/_archive/
-public/assets/takeaways/old/
-public/assets/visuels/old/
-src/content/formation/_archive/
-src/content/formation/visuels/
-src/content/formation/audios/
-
 # Sources binaires de production des supports (PPTX, PDF export)
 *.pptx
-src/content/formation/reflexe-pptx/*.pdf
 
 # OS
 .DS_Store

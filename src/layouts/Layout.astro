@@ -1,6 +1,9 @@
 ---
 import '@fontsource-variable/inter';
 import '../styles/global.css';
+// Fichier latin d'Inter, préchargé pour limiter le décalage de mise en page à l'arrivée de la police
+import { CALENDLY_URL } from '../lib/links';
+import interLatinWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 interface Props {
   title: string;
@@ -8,7 +11,7 @@ interface Props {
 }
 const {
   title,
-  description = "Aligner l'exécution des pratiques IA sur l'intention stratégique. Méthode S.F.O.I. — AI Practice Steward — IMIA.",
+  description = "Formation gratuite pour aligner vos pratiques IA sur votre stratégie, sans jargon ni engagement.",
 } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
@@ -20,6 +23,7 @@ const titleFull  = `${title} · The B Context`;
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
+    <link rel="preload" href={interLatinWoff2} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
     <link rel="icon" href={`${base}favicon-32.png`} type="image/png" sizes="32x32" />
     <link rel="icon" href={`${base}favicon-16.png`} type="image/png" sizes="16x16" />
@@ -36,6 +40,8 @@ const titleFull  = `${title} · The B Context`;
 
     <!-- Open Graph : partages LinkedIn et réseaux sociaux -->
     <meta property="og:type"        content="website" />
+    <meta property="og:locale"      content="fr_FR" />
+    <meta property="og:site_name"   content="The B Context" />
     <meta property="og:url"         content={canonical} />
     <meta property="og:title"       content={titleFull} />
     <meta property="og:description" content={description} />
@@ -63,24 +69,12 @@ const titleFull  = `${title} · The B Context`;
     <slot name="head" />
 
     <style is:global>
-      /* ── Design tokens ── */
-      :root {
-        --primary-600: #2563eb;
-        --primary-700: #1d4ed8;
-        --primary-500: #3b82f6;
-        --accent-500:  #8b5cf6;
-        --accent-600:  #7c3aed;
-        --slate-900:   #0f172a;
-        --slate-800:   #1e293b;
-
-        /* S.F.O.I. palette */
-        --sfoi-s: #22c55e;
-        --sfoi-f: #eab308;
-        --sfoi-o: #3b82f6;
-        --sfoi-i: #a855f7;
-      }
+      /* Design tokens : voir src/styles/tokens.css */
 
       body { font-family: 'Inter Variable', sans-serif; }
+
+      /* Focus clavier visible sur tous les éléments interactifs (fonds clairs et sombres) */
+      :focus-visible { outline: 2px solid var(--primary-500); outline-offset: 2px; border-radius: 2px; }
 
       .gradient-text {
         background: linear-gradient(135deg, var(--primary-600), var(--accent-500));
@@ -183,43 +177,6 @@ const titleFull  = `${title} · The B Context`;
         z-index: 100;
       }
 
-      /* ── Dropdown ── */
-      .nav-dropdown { position: relative; }
-      .nav-dropdown-menu {
-        visibility: hidden;
-        opacity: 0;
-        position: absolute;
-        top: calc(100% + 0.5rem);
-        left: 50%;
-        transform: translateX(-50%);
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 0.625rem;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.10);
-        min-width: 13rem;
-        list-style: none;
-        margin: 0;
-        padding: 0.375rem;
-        z-index: 200;
-        transition: opacity 0.15s ease, visibility 0s linear 0.4s;
-      }
-      .nav-dropdown:hover .nav-dropdown-menu {
-        visibility: visible;
-        opacity: 1;
-        transition: opacity 0.15s ease, visibility 0s;
-      }
-      .nav-dropdown-menu li a {
-        display: block;
-        padding: 0.5rem 0.875rem;
-        color: #334155;
-        font-size: 0.825rem;
-        font-weight: 500;
-        text-decoration: none;
-        border-radius: 0.375rem;
-        transition: background 0.15s, color 0.15s;
-      }
-      .nav-dropdown-menu li a:hover { background: #f1f5f9; color: #0f172a; }
-      .nav-dropdown-menu li + li { margin-top: 0.125rem; }
       .site-header .header-inner {
         max-width: 1280px;
         margin: 0 auto;
@@ -251,6 +208,7 @@ const titleFull  = `${title} · The B Context`;
         padding: 0;
       }
       .site-header .nav-link {
+        white-space: nowrap;
         color: #475569;
         font-size: 0.875rem;
         font-weight: 500;
@@ -272,7 +230,8 @@ const titleFull  = `${title} · The B Context`;
         margin-left: 0.5rem;
       }
       .site-header .nav-cta:hover { background: linear-gradient(135deg, var(--primary-700), var(--accent-600)); transform: translateY(-1px); }
-      @media (max-width: 767px) {
+      /* Menu complet à partir de 1024 px : entre 768 et 1023 px, les liens passaient sur deux lignes */
+      @media (max-width: 1023px) {
         .site-header .nav-desktop { display: none; }
       }
 
@@ -302,7 +261,7 @@ const titleFull  = `${title} · The B Context`;
       .hamburger-btn[aria-expanded="true"] .hline:nth-child(1) { transform: translateY(7px) rotate(45deg); }
       .hamburger-btn[aria-expanded="true"] .hline:nth-child(2) { opacity: 0; }
       .hamburger-btn[aria-expanded="true"] .hline:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-      @media (max-width: 767px) { .hamburger-btn { display: flex; } }
+      @media (max-width: 1023px) { .hamburger-btn { display: flex; } }
 
       /* ── Mobile menu ── */
       .mobile-menu {
@@ -320,7 +279,7 @@ const titleFull  = `${title} · The B Context`;
         overflow-y: auto;
       }
       .mobile-menu.open { display: block; }
-      @media (min-width: 768px) { .mobile-menu { display: none !important; } }
+      @media (min-width: 1024px) { .mobile-menu { display: none !important; } }
       .mobile-menu .mobile-nav-link {
         display: block;
         padding: 0.75rem 0;
@@ -333,28 +292,6 @@ const titleFull  = `${title} · The B Context`;
       }
       .mobile-menu .mobile-nav-link:hover { color: var(--primary-600); }
       .mobile-menu .mobile-nav-link:last-child { border-bottom: none; }
-      .mobile-menu .mobile-sub {
-        padding-left: 1rem;
-        margin-top: 0.25rem;
-        margin-bottom: 0.25rem;
-      }
-      .mobile-menu .mobile-sub a {
-        display: block;
-        padding: 0.45rem 0;
-        color: #64748b;
-        font-size: 0.875rem;
-        text-decoration: none;
-        transition: color 0.2s;
-      }
-      .mobile-menu .mobile-sub a:hover { color: var(--primary-600); }
-      .mobile-menu .mobile-section-label {
-        font-size: 0.7rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: #94a3b8;
-        padding: 0.75rem 0 0.25rem;
-      }
       .mobile-menu .mobile-cta {
         display: block;
         margin-top: 1rem;
@@ -366,20 +303,6 @@ const titleFull  = `${title} · The B Context`;
         font-weight: 600;
         font-size: 0.875rem;
         text-decoration: none;
-      }
-      .mobile-menu .mobile-signout {
-        display: block;
-        width: 100%;
-        margin-top: 0.5rem;
-        padding: 0.75rem 0;
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: #ef4444;
-        font-size: 0.875rem;
-        font-weight: 500;
-        font-family: inherit;
-        text-align: left;
       }
 
       /* ── Footer ── */
@@ -456,7 +379,7 @@ const titleFull  = `${title} · The B Context`;
           text-align: left;
         }
       }
-      .site-footer .footer-bottom p { color: #475569; font-size: 0.8rem; margin: 0; }
+      .site-footer .footer-bottom p { color: #94a3b8; font-size: 0.8rem; margin: 0; }
       .site-footer .footer-bottom a { color: #60a5fa; text-decoration: none; font-size: 0.8rem; }
       .site-footer .footer-bottom a:hover { text-decoration: underline; }
 
@@ -556,22 +479,9 @@ const titleFull  = `${title} · The B Context`;
 
         <nav aria-label="Navigation principale">
           <ul class="nav-list nav-desktop">
-            <li><a href={`${base}formation/`} class="nav-link">Formation</a></li>
-            <li><a href={`${base}interventions/`} class="nav-link">Interventions</a></li>
-            <li class="nav-dropdown">
-              <a href={`${base}framework/`} class="nav-link">Framework ▾</a>
-              <ul class="nav-dropdown-menu">
-                <li><a href={`${base}framework/these/`}>La thèse</a></li>
-                <li><a href={`${base}framework/manifeste/`}>Manifeste</a></li>
-                <li><a href={`${base}framework/methode-sfoi/`}>Méthode S.F.O.I.</a></li>
-                <li><a href={`${base}framework/imia/`}>IMIA</a></li>
-                <li><a href={`${base}framework/ai-practice-steward/`}>AI Practice Steward</a></li>
-              </ul>
-            </li>
             <li><a href={`${base}a-propos/`} class="nav-link">À propos</a></li>
-            <!-- Auth slot desktop — populated by client JS -->
-            <li id="auth-nav-slot"></li>
-            <li id="nav-cta-item"><a href={`${base}contact/`} class="nav-cta">Discuter →</a></li>
+            <li><a href={`${base}faq/`} class="nav-link">FAQ</a></li>
+            <li><a href={CALENDLY_URL} target="_blank" rel="noopener" class="nav-cta">Discuter →</a></li>
           </ul>
         </nav>
 
@@ -587,20 +497,9 @@ const titleFull  = `${title} · The B Context`;
 
     <!-- Menu mobile -->
     <div id="mobile-menu" class="mobile-menu" aria-hidden="true">
-      <a href={`${base}formation/`} class="mobile-nav-link">Formation</a>
-      <a href={`${base}interventions/`} class="mobile-nav-link">Interventions</a>
-      <div class="mobile-nav-link" style="cursor:default;padding-bottom:0">Framework</div>
-      <div class="mobile-sub">
-        <a href={`${base}framework/these/`}>La thèse</a>
-        <a href={`${base}framework/manifeste/`}>Manifeste</a>
-        <a href={`${base}framework/methode-sfoi/`}>Méthode S.F.O.I.</a>
-        <a href={`${base}framework/imia/`}>IMIA</a>
-        <a href={`${base}framework/ai-practice-steward/`}>AI Practice Steward</a>
-      </div>
       <a href={`${base}a-propos/`} class="mobile-nav-link">À propos</a>
       <a href={`${base}faq/`} class="mobile-nav-link">FAQ</a>
-      <!-- Auth slot mobile — populated by client JS -->
-      <div id="auth-mobile-slot"></div>
+      <a href={CALENDLY_URL} target="_blank" rel="noopener" class="mobile-cta">Discuter →</a>
     </div>
 
     <main>
@@ -621,7 +520,7 @@ const titleFull  = `${title} · The B Context`;
               </svg>
             </div>
             <p class="footer-desc">
-              Aligner l'exécution des pratiques IA sur l'intention stratégique. Pour les PME et ETI.
+              Nous transformons le savoir de vos experts en actif d'entreprise durable. Pour les PME et ETI.
             </p>
           </div>
 
@@ -629,12 +528,16 @@ const titleFull  = `${title} · The B Context`;
             <p class="footer-heading">Navigation</p>
             <ul class="footer-links">
               <li><a href={base}>Accueil</a></li>
-              <li><a href={`${base}formation/`}>Formation</a></li>
-              <li><a href={`${base}interventions/`}>Interventions</a></li>
-              <li><a href={`${base}framework/`}>Framework</a></li>
               <li><a href={`${base}a-propos/`}>À propos</a></li>
               <li><a href={`${base}faq/`}>FAQ</a></li>
             </ul>
+            <div style="margin-top:1.5rem">
+              <p class="footer-heading">Pour aller plus loin</p>
+              <ul class="footer-links">
+                <li><a href={`${base}framework/these/`}>Thèse</a></li>
+                <li><a href={`${base}framework/ai-practice-steward/`}>AI Practice Steward</a></li>
+              </ul>
+            </div>
           </div>
 
           <div>
@@ -706,8 +609,6 @@ const titleFull  = `${title} · The B Context`;
 </html>
 
 <script>
-  import { supabase } from '../lib/supabase';
-
   // ── Hamburger toggle ──
   const hamburgerBtn  = document.getElementById('hamburger-btn')!;
   const mobileMenu    = document.getElementById('mobile-menu')!;
@@ -726,43 +627,4 @@ const titleFull  = `${title} · The B Context`;
       mobileMenu.setAttribute('aria-hidden', 'true');
     })
   );
-
-  // ── Auth state ──
-  const desktopSlot = document.getElementById('auth-nav-slot')!;
-  const ctaItem     = document.getElementById('nav-cta-item')!;
-  const mobileSlot  = document.getElementById('auth-mobile-slot')!;
-
-  async function signOut() {
-    try { await supabase.auth.signOut({ scope: 'local' }); } catch (_) {}
-    window.location.href = '/';
-  }
-
-  supabase.auth.getSession().then(({ data: { session } }) => {
-    if (session) {
-      // Desktop — Mon parcours + Se déconnecter
-      desktopSlot.innerHTML = `<a href="/formation/" class="nav-link" style="color:var(--primary-600);font-weight:600">Mon parcours</a>`;
-      ctaItem.style.display = 'none';
-      const logoutLi  = document.createElement('li');
-      const logoutBtn = document.createElement('button');
-      logoutBtn.textContent = 'Se déconnecter';
-      logoutBtn.className   = 'nav-link';
-      logoutBtn.style.cssText = 'background:none;border:none;cursor:pointer;color:#ef4444;font-family:inherit';
-      logoutLi.appendChild(logoutBtn);
-      ctaItem.insertAdjacentElement('afterend', logoutLi);
-      logoutBtn.addEventListener('click', signOut);
-
-      // Mobile — Mon parcours + Se déconnecter
-      const mobileLogoutBtn = document.createElement('button');
-      mobileLogoutBtn.textContent = 'Se déconnecter';
-      mobileLogoutBtn.className   = 'mobile-signout';
-      mobileSlot.innerHTML = `<a href="/formation/" class="mobile-cta">Mon parcours →</a>`;
-      mobileSlot.appendChild(mobileLogoutBtn);
-      mobileLogoutBtn.addEventListener('click', signOut);
-    } else {
-      // Desktop — Se connecter
-      desktopSlot.innerHTML = `<a href="/connexion/" class="nav-link">Se connecter</a>`;
-      // Mobile — Se connecter + Formation →
-      mobileSlot.innerHTML = `<a href="/connexion/" class="mobile-nav-link" style="color:var(--primary-600);font-weight:600">Se connecter</a><a href="/contact/" class="mobile-cta">Discuter →</a>`;
-    }
-  });
 </script>

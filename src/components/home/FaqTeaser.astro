@@ -1,0 +1,37 @@
+---
+/* Home — Teaser FAQ. Questions et réponses : nouvelle FAQ, _chantier-pivot/the-b-context-contenus-etape3.md §3
+   (à garder identiques à src/pages/faq.astro une fois celle-ci mise à jour). */
+const base = import.meta.env.BASE_URL;
+const questions = [
+  {
+    q: "J'ai accès gratuitement à la formation S.F.O.I. sur YouTube, pourquoi faire appel à The B Context ?",
+    a: "La formation S.F.O.I. transmet une méthode individuelle pour mieux utiliser l'IA au quotidien. La Mission Savoir Critique est une intervention de conseil : nous venons extraire le savoir tacite de vos experts, construire le document pivot et livrer des compétences IA immédiatement opérationnelles. Nous formons également un référent (un AI Practice Steward) au sein de votre équipe pour maintenir ces actifs et garantir qu'ils restent fiables dans le temps. Vous ne payez pas pour un cours, mais pour la capitalisation et la sécurisation d'un patrimoine intellectuel.",
+  },
+  {
+    q: 'Est-ce compatible avec les IA que nous utilisons déjà ?',
+    a: 'Oui. Les compétences IA livrées s\'injectent directement dans ChatGPT, Claude, Mistral ou tout autre assistant que vos équipes utilisent déjà. Aucun outil supplémentaire à déployer.',
+  },
+  {
+    q: 'Que reste-t-il après votre départ ?',
+    a: "C'est le critère de réussite de chaque mission : The B Context se retire, le rôle reste. Un référent interne est formé à tenir le cadre, les savoir-faire critiques sont capitalisés dans des actifs qui appartiennent à l'organisation.",
+  },
+  {
+    q: "À qui s'adresse la Mission Savoir Critique ?",
+    a: "Aux PME et ETI françaises dont un savoir métier critique repose sur une ou deux personnes, ou dont l'intégration de nouveaux collaborateurs prend six mois à un an. La formation méthodologique publique (S.F.O.I.) est disponible gratuitement sur YouTube, sans lien avec la mission.",
+  },
+];
+---
+<section id="faq-teaser" aria-labelledby="faq-teaser-title" class="py-20">
+  <div class="max-w-3xl mx-auto px-6">
+    <h2 id="faq-teaser-title" class="text-3xl font-bold text-slate-900 mb-8">Questions fréquentes</h2>
+    <div class="divide-y divide-slate-200 border-y border-slate-200">
+      {questions.map(({ q, a }) => (
+        <details class="py-4">
+          <summary class="font-medium text-slate-900 cursor-pointer">{q}</summary>
+          <p class="mt-3 text-slate-600 leading-relaxed">{a}</p>
+        </details>
+      ))}
+    </div>
+    <a href={`${base}faq/`} class="inline-block mt-6 text-primary-600 font-medium hover:text-primary-700">Voir toutes les questions →</a>
+  </div>
+</section>
