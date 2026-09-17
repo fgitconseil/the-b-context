@@ -1,0 +1,22 @@
+---
+/* Home — Deux piliers. Pas de titre de section fourni : chaque pilier porte son propre titre. */
+const base = import.meta.env.BASE_URL;
+---
+<section id="piliers" class="bg-slate-50 py-20">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-6">
+      <article class="bg-white border border-slate-200 rounded-2xl p-8 flex flex-col">
+        <h2 class="text-2xl font-bold text-slate-900">The B Context</h2>
+        <p class="text-sm font-semibold text-primary-600 mt-1 mb-4">L'Ingénierie du Savoir Expert</p>
+        <p class="text-slate-600 leading-relaxed mb-6">Nous extrayons le savoir tacite de vos experts pour produire un document pivot de référence, universel et durable.</p>
+        <a href={`${base}interventions/#cas-3`} class="mt-auto text-primary-600 font-medium hover:text-primary-700">Voir un cas concret</a>
+      </article>
+      <article class="bg-white border border-slate-200 rounded-2xl p-8 flex flex-col">
+        <h2 class="text-2xl font-bold text-slate-900">La Petite Boîte IA</h2>
+        <p class="text-sm font-semibold text-primary-600 mt-1 mb-4">Le Middleware de Connaissances Vivantes</p>
+        <p class="text-slate-600 leading-relaxed">L'infrastructure souveraine qui héberge vos documents pivots. Sans remplacer vos outils, elle distribue à vos IA une réponse sourcée, jamais inventée.</p>
+        <!-- Lien à ajouter quand la landing LPBIA existera (piste séparée) -->
+      </article>
+    </div>
+  </div>
+</section>

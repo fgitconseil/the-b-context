@@ -30,7 +30,7 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
           </a>
 
           <div>
-            <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Accès gratuit · The B Context</p>
+            <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Accès gratuit · The B Context</p>
             <h1 class="text-3xl font-bold text-slate-900 leading-tight mb-4">
               L'arbre de décision et la formation, en accès gratuit
             </h1>
@@ -40,7 +40,7 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
           </div>
 
           <div class="space-y-4">
-            <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Ce que l'inscription débloque</p>
+            <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Ce que l'inscription débloque</p>
             <div class="flex items-start gap-3">
               <span class="font-bold flex-shrink-0 mt-0.5" style="color:var(--primary-600)">·</span>
               <div>
@@ -96,7 +96,7 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
               </div>
 
               <div>
-                <label for="entreprise" class="block text-sm font-medium text-slate-700 mb-1">Entreprise <span class="text-slate-400 font-normal">(optionnel)</span></label>
+                <label for="entreprise" class="block text-sm font-medium text-slate-700 mb-1">Entreprise <span class="text-slate-500 font-normal">(optionnel)</span></label>
                 <input type="text" id="entreprise" name="entreprise" autocomplete="organization"
                   class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition" />
               </div>
@@ -105,7 +105,7 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
                 <label for="password" class="block text-sm font-medium text-slate-700 mb-1">Mot de passe <span class="text-red-500">*</span></label>
                 <input type="password" id="password" name="password" required autocomplete="new-password" minlength="8"
                   class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition" />
-                <p class="text-xs text-slate-400 mt-1">8 caractères minimum</p>
+                <p class="text-xs text-slate-500 mt-1">8 caractères minimum</p>
                 <p class="field-error text-xs text-red-600 mt-1" style="display:none"></p>
               </div>
 
@@ -121,7 +121,7 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
                   <input type="checkbox" id="consent-cgu" name="consent-cgu" required
                     class="mt-0.5 w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 flex-shrink-0" />
                   <span class="text-sm text-slate-600 leading-relaxed">
-                    J'ai lu et j'accepte les <a href="/cgu/" class="text-blue-600 hover:underline" target="_blank">Conditions Générales d'Utilisation</a> et la <a href="/politique-confidentialite/" class="text-blue-600 hover:underline" target="_blank">Politique de confidentialité</a>. <span class="text-red-500">*</span>
+                    J'ai lu et j'accepte les <a href="/cgu/" class="text-blue-600 underline underline-offset-2 hover:no-underline" target="_blank">Conditions Générales d'Utilisation</a> et la <a href="/politique-confidentialite/" class="text-blue-600 underline underline-offset-2 hover:no-underline" target="_blank">Politique de confidentialité</a>. <span class="text-red-500">*</span>
                   </span>
                 </label>
                 <p id="consent-error" class="text-xs text-red-600 mt-1 ml-7" style="display:none">Vous devez accepter les CGU pour créer un compte.</p>
@@ -130,11 +130,11 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
               <button type="submit" id="submit-btn" class="btn-primary w-full justify-center py-3 mt-2">
                 Créer mon accès gratuit
               </button>
-              <p class="text-center text-xs text-slate-400 mt-2">Gratuit, accès immédiat.</p>
+              <p class="text-center text-xs text-slate-500 mt-2">Gratuit, accès immédiat.</p>
 
             </form>
 
-            <p class="text-xs text-slate-400 leading-relaxed mt-5 border-t border-slate-100 pt-4">
+            <p class="text-xs text-slate-500 leading-relaxed mt-5 border-t border-slate-100 pt-4">
               Les données collectées permettent la gestion de votre compte et la sauvegarde de votre progression. Les inscrits ayant fourni un email professionnel peuvent recevoir des informations sur les offres d'accompagnement et de formation d'équipe de The B Context, conformément à notre <a href="/politique-confidentialite/" class="hover:underline" target="_blank">Politique de confidentialité</a> — un lien de désinscription figure dans chaque message.
             </p>
 
@@ -149,7 +149,7 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
       <!-- Syllabus pleine largeur -->
       <div class="mt-16">
         <div class="mb-6">
-          <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-1">Programme</p>
+          <p class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-1">Programme</p>
           <p class="text-slate-500 text-sm">5 blocs · ~1h · Parcours distanciel · De la compréhension à la maturité organisationnelle — à votre rythme.</p>
         </div>
         <div class="space-y-2">
@@ -161,7 +161,7 @@ blocs.sort((a, b) => a.data.bloc - b.data.bloc);
         <div class="mt-8 text-center">
           <button
             type="button"
-            onclick="document.getElementById('email').scrollIntoView({behavior:'smooth'}); document.getElementById('email').focus();"
+            onclick="document.getElementById('email').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); document.getElementById('email').focus();"
             class="btn-primary px-8 py-3 text-base"
           >
             Commencer maintenant →

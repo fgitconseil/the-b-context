@@ -1,8 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { CALENDLY_URL } from '../../lib/links';
 const base = import.meta.env.BASE_URL;
 ---
-<Layout title="Manifeste The B Context" description="Pour des pratiques IA fiables, alignées sur l'intention stratégique et diffusées dans la durée. Le manifeste The B Context.">
+<Layout title="Manifeste" description="Pour des pratiques IA fiables, alignées sur l'intention stratégique et diffusées dans la durée. Le manifeste The B Context.">
 
   <!-- Hero -->
   <section class="bg-gradient-to-br from-slate-900 to-slate-800 text-white py-20">
@@ -106,8 +107,8 @@ const base = import.meta.env.BASE_URL;
 
     <!-- Signature -->
     <section class="pt-4 border-t border-slate-200">
-      <p class="text-slate-400 text-xs mb-6">Ce manifeste est un document vivant. Il évolue avec la pratique.</p>
-      <a href="/contact/" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-900 text-white text-sm font-semibold hover:bg-slate-700 transition-colors">Nous contacter →</a>
+      <p class="text-slate-500 text-xs mb-6">Ce manifeste est un document vivant. Il évolue avec la pratique.</p>
+      <a href={CALENDLY_URL} target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-900 text-white text-sm font-semibold hover:bg-slate-700 transition-colors">Nous contacter →</a>
     </section>
 
   </div>

@@ -1,0 +1,16 @@
+---
+/* Home — Hero. */
+import { CALENDLY_URL } from '../../lib/links';
+const base = import.meta.env.BASE_URL;
+---
+<section id="hero" aria-labelledby="hero-title" class="bg-slate-900 text-white">
+  <div class="max-w-4xl mx-auto px-6 py-24 md:py-32">
+    <h1 id="hero-title" class="text-4xl md:text-5xl font-bold leading-tight mb-6">L'IA produit du générique. Capitalisez votre vérité métier.</h1>
+    <p class="text-slate-300 text-lg leading-relaxed max-w-2xl mb-10">Nous extrayons le raisonnement de vos experts pour en faire un actif d'entreprise permanent, distribué à vos IA habituelles (ChatGPT, Claude, Mistral) via La Petite Boîte IA. Une vérité certifiée, sans risque d'hallucination.</p>
+    <div class="flex flex-wrap gap-4">
+      <a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary text-base px-6 py-3">Discuter de votre situation</a>
+      <!-- /formation/ redirige vers l'inscription si pas de session ; l'arbre de décision s'y télécharge une fois connecté -->
+      <a href={`${base}formation/`} class="inline-flex items-center px-6 py-3 rounded-lg border-2 border-slate-600 text-white font-semibold text-sm hover:border-white transition-colors">Télécharger l'Arbre de Décision + Formation S.F.O.I.</a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,27 @@
+---
+/* Home — Gouvernance / retrait. Version condensée : les versions longues sont sur
+   /framework/ai-practice-steward/ et /framework/imia/.
+   ADR-016 : pas de nom « AI Practice Steward » en titre sur la home. ADR-013 : glose IMIA canonique à la première occurrence. */
+const base = import.meta.env.BASE_URL;
+---
+<section id="gouvernance" class="bg-slate-900 text-white py-20">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="grid md:grid-cols-2 gap-6 mb-16">
+      <article class="border border-slate-700 rounded-2xl p-8">
+        <h2 class="text-xl font-semibold mb-3">
+          <a href={`${base}framework/ai-practice-steward/`} class="hover:text-primary-500">Un rôle tenu en interne <span aria-hidden="true">→</span></a>
+        </h2>
+        <p class="text-slate-300 leading-relaxed">Nous ne vendons pas une dépendance de conseil. Nous formons l'un de vos collaborateurs à tenir ce rôle pour faire vivre le cadre en interne.</p>
+      </article>
+      <article class="border border-slate-700 rounded-2xl p-8">
+        <h2 class="text-xl font-semibold mb-3">
+          <a href={`${base}framework/imia/`} class="hover:text-primary-500">L'IMIA (score sur 100) <span aria-hidden="true">→</span></a>
+        </h2>
+        <p class="text-slate-300 leading-relaxed">IMIA, l'instrument qui mesure l'écart entre l'intention stratégique de la direction et les pratiques IA réelles, à T0, 90 jours et chaque trimestre.</p>
+      </article>
+    </div>
+
+    <!-- Devise : signature de marque, le « B » reprend le violet du logo -->
+    <p class="text-3xl md:text-5xl font-bold leading-tight text-center">The <span class="text-accent-500">B</span> Context se retire, le rôle reste.</p>
+  </div>
+</section>

@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { CALENDLY_URL } from '../../lib/links';
 const base = import.meta.env.BASE_URL;
 ---
 <Layout
@@ -74,7 +75,7 @@ const base = import.meta.env.BASE_URL;
 
       <div class="space-y-6">
         <div class="card">
-          <h3 class="font-semibold text-slate-900 mb-3" style="color:var(--sfoi-f)">La boucle amplificatrice</h3>
+          <h3 class="font-semibold text-slate-900 mb-3 flex items-center gap-2"><span class="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:var(--sfoi-f)" aria-hidden="true"></span>La boucle amplificatrice</h3>
           <div class="space-y-3 text-slate-600 text-sm leading-relaxed">
             <p>
               L'usage quotidien produit de la confiance dans les sorties. La confiance réduit la vigilance critique. La vigilance réduite augmente l'usage. À chaque itération, l'organisation croit progresser. Elle progresse effectivement, jusqu'au choc correcteur : l'erreur non détectée qui cause un tort réel.
@@ -86,7 +87,7 @@ const base = import.meta.env.BASE_URL;
         </div>
 
         <div class="card">
-          <h3 class="font-semibold text-slate-900 mb-3" style="color:var(--sfoi-i)">La reddition cognitive</h3>
+          <h3 class="font-semibold text-slate-900 mb-3 flex items-center gap-2"><span class="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:var(--sfoi-i)" aria-hidden="true"></span>La reddition cognitive</h3>
           <p class="text-slate-600 text-sm leading-relaxed">
             Plus lente, plus profonde. Le jugement s'atrophie par délégation progressive. On ne cesse pas de penser d'un coup : on cesse de reconstruire le raisonnement, puis de le vérifier, puis de savoir qu'il fallait le vérifier. Ce qui disparaît en dernier, c'est la capacité de savoir que quelque chose a disparu.
           </p>
@@ -126,7 +127,7 @@ const base = import.meta.env.BASE_URL;
           <h3 class="text-lg font-semibold text-slate-900 mb-4">La définition</h3>
           <div class="space-y-4 text-slate-700 text-base leading-relaxed">
             <p>
-              L'<a href={`${base}framework/ai-practice-steward/`} class="text-blue-600 hover:underline"><strong>AI Practice Steward</strong></a> est le rôle qui relie l'intention stratégique de la direction à l'exécution des pratiques IA, mesurée et pilotée sur le terrain.
+              L'<a href={`${base}framework/ai-practice-steward/`} class="text-blue-600 underline underline-offset-2 hover:no-underline"><strong>AI Practice Steward</strong></a> est le rôle qui relie l'intention stratégique de la direction à l'exécution des pratiques IA, mesurée et pilotée sur le terrain.
             </p>
             <p>
               Son point de départ n'est ni la maturité IA, ni l'outil. C'est la Vision, la Mission, les valeurs et la cible à trois ou cinq ans que la direction a posées. Tout le reste en découle.
@@ -233,7 +234,7 @@ const base = import.meta.env.BASE_URL;
       <div class="space-y-4 text-slate-700 text-base leading-relaxed mb-8">
         <p>On ne pilote pas ce qu'on ne mesure pas. Et on ne mesure pas une maturité dans l'absolu.</p>
         <p>
-          L'<a href={`${base}framework/imia/`} class="text-blue-600 hover:underline"><strong>IMIA</strong></a> n'est pas un score de maturité générique. IMIA, l'instrument qui mesure <strong>l'écart entre l'intention stratégique de la direction et les pratiques IA réelles</strong>.
+          L'<a href={`${base}framework/imia/`} class="text-blue-600 underline underline-offset-2 hover:no-underline"><strong>IMIA</strong></a> n'est pas un score de maturité générique. IMIA, l'instrument qui mesure <strong>l'écart entre l'intention stratégique de la direction et les pratiques IA réelles</strong>.
         </p>
         <p>Deux organisations au même niveau d'usage peuvent avoir des scores opposés, parce que leurs intentions diffèrent. C'est le point.</p>
         <p>Cinq dimensions composent l'indice :</p>
@@ -277,7 +278,7 @@ const base = import.meta.env.BASE_URL;
         </p>
         <p>La mesure est faite à T0, à T+90 jours, puis trimestriellement. <strong>L'engagement porte sur l'écart comblé, pas sur le temps passé.</strong></p>
         <p>
-          Ce que produit un <a href={`${base}interventions/#diagnostic-imia`} class="text-blue-600 hover:underline">diagnostic IMIA</a> : un score d'écart, une cartographie des boucles systémiques actives, un diagnostic des pratiques, une recommandation d'intervention. Ce qu'il ne produit jamais : une feuille de route de projets, un portefeuille de pilotes, une liste de POC. Le problème n'est pas le manque de projets IA. C'est l'absence de pratiques fiables pour les soutenir.
+          Ce que produit un <a href={`${base}interventions/#diagnostic-imia`} class="text-blue-600 underline underline-offset-2 hover:no-underline">diagnostic IMIA</a> : un score d'écart, une cartographie des boucles systémiques actives, un diagnostic des pratiques, une recommandation d'intervention. Ce qu'il ne produit jamais : une feuille de route de projets, un portefeuille de pilotes, une liste de POC. Le problème n'est pas le manque de projets IA. C'est l'absence de pratiques fiables pour les soutenir.
         </p>
       </div>
     </section>
@@ -286,7 +287,7 @@ const base = import.meta.env.BASE_URL;
     <section>
       <h2 class="text-2xl font-bold text-slate-900 mb-6">VI. La méthode : S.F.O.I.</h2>
       <div class="space-y-4 text-slate-700 text-base leading-relaxed mb-8">
-        <p><a href={`${base}framework/methode-sfoi/`} class="text-blue-600 hover:underline">S.F.O.I.</a> n'est pas une carte de maturité. C'est une <strong>méthode de chaînage des prompts dans une pratique de travail</strong>. Quatre actes séquentiels.</p>
+        <p><a href={`${base}framework/methode-sfoi/`} class="text-blue-600 underline underline-offset-2 hover:no-underline">S.F.O.I.</a> n'est pas une carte de maturité. C'est une <strong>méthode de chaînage des prompts dans une pratique de travail</strong>. Quatre actes séquentiels.</p>
       </div>
       <div class="space-y-3 mb-8">
         <div class="rounded-xl border border-slate-200 p-4 flex items-start gap-4">
@@ -430,7 +431,7 @@ const base = import.meta.env.BASE_URL;
     <section class="bg-slate-50 rounded-2xl p-8 text-center">
       <p class="text-slate-700 font-medium text-lg mb-6">Vous reconnaissez cet écart dans votre organisation ?</p>
       <div class="flex flex-wrap gap-4 justify-center">
-        <a href={`${base}contact/`} class="btn-primary">Discuter de votre situation →</a>
+        <a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Discuter de votre situation →</a>
         <a href={`${base}framework/ai-practice-steward/`} class="btn-secondary">Découvrir le rôle d'AI Practice Steward →</a>
       </div>
     </section>

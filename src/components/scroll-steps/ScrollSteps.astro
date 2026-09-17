@@ -1,0 +1,215 @@
+---
+/* ScrollSteps — liste d'étapes avec panneau visuel, pilotée par le défilement (mécanique « Comment ça marche »).
+
+   Composant autonome, recopiable tel quel dans un autre projet Astro (dossier scroll-steps/ entier).
+   Dépend seulement des variables CSS --primary-600, --primary-700, --slate-900 (valeurs de repli incluses).
+
+   Comportement :
+   - Desktop (≥ 1024 px) avec JS et sans prefers-reduced-motion : une scène (liste compacte + panneau visuel)
+     reste épinglée pendant que le lecteur défile. Des zones de déclenchement invisibles, une par étape,
+     découpent ce défilement ; l'IntersectionObserver active l'étape dont la zone croise le milieu de l'écran.
+     Seule l'étape active déploie son texte ; les autres n'affichent que numéro et titre.
+   - Mobile, prefers-reduced-motion ou JS indisponible : liste statique complète, chaque visuel sous son étape.
+
+   Slot « heading » (optionnel) : titre de la section, rendu dans la scène épinglée pour rester visible
+   pendant toute l'interaction.
+
+   Réglages CSS (sur .sx) : --sx-top (position d'épinglage sous le header), --sx-step (défilement par étape). */
+import StepVisual, { type StepVisualKind } from './StepVisual.astro';
+
+export interface ScrollStep {
+  /** Nom interne de l'étape (non affiché, exposé en data-step-name) */
+  name?: string;
+  /** Titre affiché */
+  title: string;
+  /** Texte de l'étape */
+  text: string;
+  /** Micro-détail : affiché avec le texte de l'étape active (toujours visible en mode statique) */
+  detail?: string;
+  /** Badge optionnel affiché sous le texte */
+  badge?: string;
+  /** Forme du visuel placeholder */
+  visual: StepVisualKind;
+}
+
+interface Props {
+  steps: ScrollStep[];
+  /** Libellé accessible de la liste d'étapes */
+  label: string;
+}
+
+const { steps, label } = Astro.props;
+const pad = (i: number) => String(i + 1).padStart(2, '0');
+---
+<div class="sx" data-sx style={`--sx-count: ${steps.length}`}>
+  <!-- Zones de déclenchement : découpent la hauteur de défilement en une tranche par étape -->
+  <div class="sx-triggers" aria-hidden="true">
+    {steps.map((_, i) => <div class="sx-trigger" data-sx-trigger={i} style={`--i: ${i}`}></div>)}
+  </div>
+
+  <div class="sx-stage">
+    {Astro.slots.has('heading') && <div class="sx-heading"><slot name="heading" /></div>}
+    <div class="sx-body">
+      <ol class="sx-steps" aria-label={label}>
+        {steps.map((step, i) => (
+          <li class:list={['sx-step', { 'is-active': i === 0 }]} data-sx-step={i} data-step-name={step.name}>
+            <div class="sx-step-head">
+              <span class="sx-num" aria-hidden="true">{pad(i)}</span>
+              <h3 class="sx-title">{step.title}</h3>
+            </div>
+            <div class="sx-step-content">
+              <div class="sx-step-inner">
+                <p class="sx-text">{step.text}</p>
+                {step.detail && <p class="sx-detail">{step.detail}</p>}
+                {step.badge && <p class="sx-badge">{step.badge}</p>}
+              </div>
+            </div>
+            <div class="sx-step-visual" aria-hidden="true">
+              <StepVisual kind={step.visual} index={i} />
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="sx-panel" aria-hidden="true">
+        {steps.map((step, i) => (
+          <div class:list={['sx-panel-visual', { 'is-active': i === 0 }]} data-sx-visual={i}>
+            <StepVisual kind={step.visual} index={i} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Active le mode animé avant le premier rendu de ce bloc (évite un saut de mise en page) -->
+<script is:inline>
+  document.currentScript.previousElementSibling.classList.add('sx--js');
+</script>
+
+<script>
+  function initScrollSteps(root: HTMLElement) {
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-sx-step]'));
+    const visuals = Array.from(root.querySelectorAll<HTMLElement>('[data-sx-visual]'));
+    const triggers = Array.from(root.querySelectorAll<HTMLElement>('[data-sx-trigger]'));
+    if (steps.length === 0 || !('IntersectionObserver' in window)) {
+      root.classList.remove('sx--js');
+      return;
+    }
+
+    let active = 0;
+    const setActive = (index: number) => {
+      if (index === active) return;
+      active = index;
+      steps.forEach((el, i) => {
+        el.classList.toggle('is-active', i === index);
+        if (i === index) el.setAttribute('aria-current', 'step');
+        else el.removeAttribute('aria-current');
+      });
+      visuals.forEach((el, i) => el.classList.toggle('is-active', i === index));
+    };
+    steps[0].setAttribute('aria-current', 'step');
+
+    // Bande d'activation fine au milieu de l'écran. Les zones sont contiguës :
+    // la bande n'est jamais entre deux zones, l'état actif ne clignote donc pas.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(Number((entry.target as HTMLElement).dataset.sxTrigger));
+        }
+      },
+      { rootMargin: '-50% 0px -49% 0px' },
+    );
+    triggers.forEach((el) => observer.observe(el));
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-sx]').forEach(initScrollSteps);
+</script>
+
+<style>
+  /* ── Mode statique (par défaut : mobile, reduced motion, sans JS) ── */
+  .sx-triggers, .sx-panel { display: none; }
+  .sx-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 2.5rem; }
+  .sx-step-head { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .sx-num { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; color: var(--primary-600, #2563eb); }
+  .sx-title { font-size: 1.25rem; font-weight: 700; color: var(--slate-900, #0f172a); margin: 0; }
+  .sx-text { color: #475569; line-height: 1.65; margin: 0; }
+  .sx-detail { margin: 0.75rem 0 0; font-size: 0.875rem; font-weight: 600; color: var(--slate-900, #0f172a); }
+  .sx-badge {
+    display: inline-block; margin: 0.75rem 0 0; padding: 0.35rem 0.75rem;
+    font-size: 0.8rem; font-weight: 500; line-height: 1.4;
+    color: var(--primary-700, #1d4ed8); border: 1px solid var(--primary-600, #2563eb); border-radius: 0.5rem;
+  }
+  .sx-step-visual {
+    margin-top: 1.25rem; aspect-ratio: 4 / 3; max-width: 24rem;
+    background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem;
+  }
+
+  /* ── Mode animé : desktop + JS + mouvement autorisé ── */
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .sx.sx--js {
+      --sx-top: 6rem;
+      --sx-step: 18vh;
+      --sx-stage: min(30rem, calc(100vh - var(--sx-top) - 2rem));
+      position: relative;
+      /* Hauteur = scène + une tranche de défilement par étape */
+      height: calc(var(--sx-stage) + var(--sx-count) * var(--sx-step));
+    }
+
+    /* Zones de déclenchement. La bande d'activation est au milieu de l'écran (50vh) ;
+       l'étape i s'active quand la scène épinglée a défilé de i tranches. */
+    .sx--js .sx-triggers { display: block; position: absolute; inset: 0; pointer-events: none; }
+    .sx--js .sx-trigger {
+      position: absolute; left: 0; width: 1px;
+      top: calc(50vh - var(--sx-top) + var(--i) * var(--sx-step));
+      height: var(--sx-step);
+    }
+    /* La première zone couvre aussi l'approche, la dernière va jusqu'au bout du bloc */
+    .sx--js .sx-trigger:first-child { top: 0; height: calc(50vh - var(--sx-top) + var(--sx-step)); }
+    .sx--js .sx-trigger:last-child { height: auto; bottom: 0; }
+
+    .sx--js .sx-stage {
+      position: sticky; top: var(--sx-top); height: var(--sx-stage);
+      display: flex; flex-direction: column;
+    }
+    /* Titre de section dans la scène épinglée : reste lisible sous le header pendant tout le défilement */
+    .sx--js .sx-heading { flex: none; margin-bottom: 1.25rem; }
+    .sx--js .sx-heading > :global(*) { font-size: 1.5rem; line-height: 1.3; margin: 0; }
+    .sx--js .sx-body {
+      flex: 1; min-height: 0;
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4rem; align-items: start;
+    }
+
+    /* Liste compacte : numéro + titre sur une ligne, seule l'étape active se déploie */
+    .sx--js .sx-steps { gap: 0; }
+    .sx--js .sx-step {
+      padding: 0.75rem 0 0.75rem 1.25rem; border-left: 2px solid #e2e8f0;
+      transition: border-color 0.3s ease;
+    }
+    .sx--js .sx-step.is-active { border-left-color: var(--primary-600, #2563eb); }
+    /* Étape inactive : gris lisible (#64748b, 4,8:1 sur blanc) plutôt qu'une opacité réduite qui passe sous AA */
+    .sx--js .sx-step:not(.is-active) .sx-num,
+    .sx--js .sx-step:not(.is-active) .sx-title { color: #64748b; }
+    .sx--js .sx-num, .sx--js .sx-title { transition: color 0.3s ease; }
+    .sx--js .sx-step-head { flex-direction: row; align-items: baseline; gap: 0.75rem; margin: 0; }
+    .sx--js .sx-title { font-size: 1.125rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Déploiement en hauteur animé (0fr → 1fr) : la liste glisse, elle ne saute pas */
+    .sx--js .sx-step-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.35s ease; }
+    .sx--js .sx-step.is-active .sx-step-content { grid-template-rows: 1fr; }
+    .sx--js .sx-step-inner { min-height: 0; overflow: hidden; opacity: 0; transition: opacity 0.3s ease; }
+    .sx--js .sx-step.is-active .sx-step-inner { opacity: 1; padding-top: 0.625rem; }
+    .sx--js .sx-step-visual { display: none; }
+
+    .sx--js .sx-panel {
+      display: block; position: relative; height: 100%;
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem;
+    }
+    /* Tous les visuels sont déjà rendus et superposés : le changement est un fondu, sans chargement */
+    .sx--js .sx-panel-visual { position: absolute; inset: 2rem; opacity: 0; transition: opacity 0.4s ease; }
+    .sx--js .sx-panel-visual.is-active { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sx * { transition: none !important; }
+  }
+</style>

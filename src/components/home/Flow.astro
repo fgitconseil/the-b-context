@@ -1,0 +1,47 @@
+---
+/* Home — Comment ça marche. Mécanique : ScrollSteps. */
+import ScrollSteps, { type ScrollStep } from '../scroll-steps/ScrollSteps.astro';
+
+const steps: ScrollStep[] = [
+  {
+    name: 'Le Savoir Tacite',
+    title: 'Le Savoir Brut',
+    text: "80% de la valeur stratégique de votre entreprise vit uniquement dans la tête de vos experts clés. Il n'est écrit nulle part.",
+    detail: 'Risque de départ : savoir en danger.',
+    visual: 'scatter',
+  },
+  {
+    name: "L'Ingénierie The B Context",
+    title: "L'Extraction Méthodologique",
+    text: 'Entretiens guidés en 2 ateliers de 1h30. Structuration du raisonnement en 6 natures typées de connaissances : Fait, Procédure, Raisonnement, Récit, Signal, Décision.',
+    visual: 'grid',
+  },
+  {
+    name: "L'Actif Certifié",
+    title: 'Le Patrimoine Transmissible',
+    text: 'Le Document Pivot / SKILL.md certifié. Relisable par un humain, indépendant des modèles de langage, transmissible et durable.',
+    badge: 'Score de qualité visé supérieur à 9/12 (norme SkillsBench, arXiv 2602.12670).',
+    visual: 'document',
+  },
+  {
+    name: 'Le Middleware LPBIA',
+    title: 'Le Coffre-Fort de Contexte',
+    text: "La Petite Boîte IA héberge votre savoir structuré. Chaque fait porte un statut et une date, et une contradiction n'écrase jamais ce qui est déjà validé.",
+    visual: 'lock',
+  },
+  {
+    name: 'Vos IA Habituelles',
+    title: 'Vos IA Augmentées & Opposables',
+    text: "Vos équipes gardent ChatGPT, Claude ou Mistral. Mais l'IA répond désormais avec une vérité opposable, jamais inventée.",
+    visual: 'network',
+  },
+];
+---
+<section id="flow" aria-labelledby="flow-title" class="py-20">
+  <div class="max-w-5xl mx-auto px-6">
+    <ScrollSteps steps={steps} label="Étapes : comment ça marche">
+      <!-- Titre rendu dans le bloc épinglé du composant : reste visible pendant le défilement -->
+      <h2 slot="heading" id="flow-title" class="text-3xl font-bold text-slate-900 mb-10">Comment ça marche</h2>
+    </ScrollSteps>
+  </div>
+</section>

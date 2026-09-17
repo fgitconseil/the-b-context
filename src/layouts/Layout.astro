@@ -1,6 +1,9 @@
 ---
 import '@fontsource-variable/inter';
 import '../styles/global.css';
+// Fichier latin d'Inter, préchargé pour limiter le décalage de mise en page à l'arrivée de la police
+import { CALENDLY_URL } from '../lib/links';
+import interLatinWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 interface Props {
   title: string;
@@ -8,7 +11,7 @@ interface Props {
 }
 const {
   title,
-  description = "Aligner l'exécution des pratiques IA sur l'intention stratégique. Méthode S.F.O.I. — AI Practice Steward — IMIA.",
+  description = "Formation gratuite pour aligner vos pratiques IA sur votre stratégie, sans jargon ni engagement.",
 } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
@@ -20,6 +23,7 @@ const titleFull  = `${title} · The B Context`;
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
+    <link rel="preload" href={interLatinWoff2} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href={`${base}favicon.svg`} type="image/svg+xml" />
     <link rel="icon" href={`${base}favicon-32.png`} type="image/png" sizes="32x32" />
     <link rel="icon" href={`${base}favicon-16.png`} type="image/png" sizes="16x16" />
@@ -36,6 +40,8 @@ const titleFull  = `${title} · The B Context`;
 
     <!-- Open Graph : partages LinkedIn et réseaux sociaux -->
     <meta property="og:type"        content="website" />
+    <meta property="og:locale"      content="fr_FR" />
+    <meta property="og:site_name"   content="The B Context" />
     <meta property="og:url"         content={canonical} />
     <meta property="og:title"       content={titleFull} />
     <meta property="og:description" content={description} />
@@ -63,24 +69,12 @@ const titleFull  = `${title} · The B Context`;
     <slot name="head" />
 
     <style is:global>
-      /* ── Design tokens ── */
-      :root {
-        --primary-600: #2563eb;
-        --primary-700: #1d4ed8;
-        --primary-500: #3b82f6;
-        --accent-500:  #8b5cf6;
-        --accent-600:  #7c3aed;
-        --slate-900:   #0f172a;
-        --slate-800:   #1e293b;
-
-        /* S.F.O.I. palette */
-        --sfoi-s: #22c55e;
-        --sfoi-f: #eab308;
-        --sfoi-o: #3b82f6;
-        --sfoi-i: #a855f7;
-      }
+      /* Design tokens : voir src/styles/tokens.css */
 
       body { font-family: 'Inter Variable', sans-serif; }
+
+      /* Focus clavier visible sur tous les éléments interactifs (fonds clairs et sombres) */
+      :focus-visible { outline: 2px solid var(--primary-500); outline-offset: 2px; border-radius: 2px; }
 
       .gradient-text {
         background: linear-gradient(135deg, var(--primary-600), var(--accent-500));
@@ -203,7 +197,8 @@ const titleFull  = `${title} · The B Context`;
         z-index: 200;
         transition: opacity 0.15s ease, visibility 0s linear 0.4s;
       }
-      .nav-dropdown:hover .nav-dropdown-menu {
+      .nav-dropdown:hover .nav-dropdown-menu,
+      .nav-dropdown:focus-within .nav-dropdown-menu {
         visibility: visible;
         opacity: 1;
         transition: opacity 0.15s ease, visibility 0s;
@@ -251,6 +246,7 @@ const titleFull  = `${title} · The B Context`;
         padding: 0;
       }
       .site-header .nav-link {
+        white-space: nowrap;
         color: #475569;
         font-size: 0.875rem;
         font-weight: 500;
@@ -272,7 +268,8 @@ const titleFull  = `${title} · The B Context`;
         margin-left: 0.5rem;
       }
       .site-header .nav-cta:hover { background: linear-gradient(135deg, var(--primary-700), var(--accent-600)); transform: translateY(-1px); }
-      @media (max-width: 767px) {
+      /* Menu complet à partir de 1024 px : entre 768 et 1023 px, les liens passaient sur deux lignes */
+      @media (max-width: 1023px) {
         .site-header .nav-desktop { display: none; }
       }
 
@@ -302,7 +299,7 @@ const titleFull  = `${title} · The B Context`;
       .hamburger-btn[aria-expanded="true"] .hline:nth-child(1) { transform: translateY(7px) rotate(45deg); }
       .hamburger-btn[aria-expanded="true"] .hline:nth-child(2) { opacity: 0; }
       .hamburger-btn[aria-expanded="true"] .hline:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-      @media (max-width: 767px) { .hamburger-btn { display: flex; } }
+      @media (max-width: 1023px) { .hamburger-btn { display: flex; } }
 
       /* ── Mobile menu ── */
       .mobile-menu {
@@ -320,7 +317,7 @@ const titleFull  = `${title} · The B Context`;
         overflow-y: auto;
       }
       .mobile-menu.open { display: block; }
-      @media (min-width: 768px) { .mobile-menu { display: none !important; } }
+      @media (min-width: 1024px) { .mobile-menu { display: none !important; } }
       .mobile-menu .mobile-nav-link {
         display: block;
         padding: 0.75rem 0;
@@ -456,7 +453,7 @@ const titleFull  = `${title} · The B Context`;
           text-align: left;
         }
       }
-      .site-footer .footer-bottom p { color: #475569; font-size: 0.8rem; margin: 0; }
+      .site-footer .footer-bottom p { color: #94a3b8; font-size: 0.8rem; margin: 0; }
       .site-footer .footer-bottom a { color: #60a5fa; text-decoration: none; font-size: 0.8rem; }
       .site-footer .footer-bottom a:hover { text-decoration: underline; }
 
@@ -571,7 +568,7 @@ const titleFull  = `${title} · The B Context`;
             <li><a href={`${base}a-propos/`} class="nav-link">À propos</a></li>
             <!-- Auth slot desktop — populated by client JS -->
             <li id="auth-nav-slot"></li>
-            <li id="nav-cta-item"><a href={`${base}contact/`} class="nav-cta">Discuter →</a></li>
+            <li id="nav-cta-item"><a href={CALENDLY_URL} target="_blank" rel="noopener" class="nav-cta">Discuter →</a></li>
           </ul>
         </nav>
 
@@ -621,7 +618,7 @@ const titleFull  = `${title} · The B Context`;
               </svg>
             </div>
             <p class="footer-desc">
-              Aligner l'exécution des pratiques IA sur l'intention stratégique. Pour les PME et ETI.
+              Nous transformons le savoir de vos experts en actif d'entreprise durable. Pour les PME et ETI.
             </p>
           </div>
 
@@ -707,6 +704,7 @@ const titleFull  = `${title} · The B Context`;
 
 <script>
   import { supabase } from '../lib/supabase';
+  import { CALENDLY_URL } from '../lib/links';
 
   // ── Hamburger toggle ──
   const hamburgerBtn  = document.getElementById('hamburger-btn')!;
@@ -762,7 +760,7 @@ const titleFull  = `${title} · The B Context`;
       // Desktop — Se connecter
       desktopSlot.innerHTML = `<a href="/connexion/" class="nav-link">Se connecter</a>`;
       // Mobile — Se connecter + Formation →
-      mobileSlot.innerHTML = `<a href="/connexion/" class="mobile-nav-link" style="color:var(--primary-600);font-weight:600">Se connecter</a><a href="/contact/" class="mobile-cta">Discuter →</a>`;
+      mobileSlot.innerHTML = `<a href="/connexion/" class="mobile-nav-link" style="color:var(--primary-600);font-weight:600">Se connecter</a><a href="${CALENDLY_URL}" target="_blank" rel="noopener" class="mobile-cta">Discuter →</a>`;
     }
   });
 </script>

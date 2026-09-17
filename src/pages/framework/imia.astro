@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { CALENDLY_URL } from '../../lib/links';
 const base = import.meta.env.BASE_URL;
 ---
 <Layout title="IMIA" description="IMIA, l'instrument qui mesure l'écart entre l'intention stratégique de la direction et les pratiques IA réelles. Cinq dimensions, un score sur 100, suivi à T0, 90 jours, puis chaque trimestre.">
@@ -95,7 +96,7 @@ const base = import.meta.env.BASE_URL;
         <div class="rounded-2xl border border-slate-200 overflow-hidden">
           <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
             <h3 class="font-bold text-slate-800">Infrastructure et outils</h3>
-            <span class="text-sm font-bold px-3 py-1 rounded-full bg-slate-400 text-white">10 pts</span>
+            <span class="text-sm font-bold px-3 py-1 rounded-full bg-slate-500 text-white">10 pts</span>
           </div>
           <div class="px-6 py-5">
             <p class="text-slate-700 text-sm leading-relaxed">Outils déployés, intégrés et accessibles aux équipes concernées.</p>
@@ -122,7 +123,7 @@ const base = import.meta.env.BASE_URL;
         </div>
 
         <div class="rounded-2xl border border-slate-200 p-6">
-          <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:var(--accent-500)">T+90 jours</p>
+          <p class="text-xs font-bold uppercase tracking-widest mb-3" style="color:var(--accent-600)">T+90 jours</p>
           <h3 class="font-bold text-slate-900 mb-3">Première mesure d'impact</h3>
           <p class="text-sm text-slate-600 leading-relaxed">
             Réévaluation après la première phase d'installation. Permet de vérifier la traction des actions engagées et d'ajuster la trajectoire.
@@ -130,7 +131,7 @@ const base = import.meta.env.BASE_URL;
         </div>
 
         <div class="rounded-2xl border border-slate-200 p-6">
-          <p class="text-xs font-bold uppercase tracking-widest mb-3 text-slate-400">Trimestriel</p>
+          <p class="text-xs font-bold uppercase tracking-widest mb-3 text-slate-500">Trimestriel</p>
           <h3 class="font-bold text-slate-900 mb-3">Suivi récurrent</h3>
           <p class="text-sm text-slate-600 leading-relaxed">
             Mesure régulière en régime de croisière. Permet de tracer la réduction de l'écart et de tenir un cap dans la durée.
@@ -147,9 +148,9 @@ const base = import.meta.env.BASE_URL;
         <table class="w-full text-sm">
           <thead>
             <tr class="bg-slate-50 border-b border-slate-200">
-              <th class="text-left p-4 font-semibold text-slate-400 w-1/4"></th>
-              <th class="text-left p-4 font-semibold" style="color:var(--sfoi-s)">S.F.O.I.</th>
-              <th class="text-left p-4 font-semibold" style="color:var(--primary-600)">IMIA</th>
+              <th class="text-left p-4 font-semibold text-slate-500 w-1/4"></th>
+              <th class="text-left p-4 font-semibold text-slate-900"><span class="inline-flex items-center gap-2"><span class="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:var(--sfoi-s)" aria-hidden="true"></span>S.F.O.I.</span></th>
+              <th class="text-left p-4 font-semibold text-slate-900"><span class="inline-flex items-center gap-2"><span class="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:var(--primary-600)" aria-hidden="true"></span>IMIA</span></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
@@ -190,7 +191,7 @@ const base = import.meta.env.BASE_URL;
     <section>
       <h2 class="text-2xl font-bold text-slate-900 mb-6">L'IMIA en mission</h2>
       <p class="text-slate-700 text-base leading-relaxed">
-        L'IMIA est mesurée par un AI Practice Steward, en porte d'entrée via le <a href={`${base}interventions/#diagnostic-imia`} class="text-blue-600 hover:underline">Diagnostic IMIA</a> (environ une semaine), puis en suivi de Mission Équipe ou de Mission Organisation. La restitution tient en un rapport synthétique : score d'écart, détail par dimension, cartographie des boucles actives, recommandation d'intervention. Jamais une feuille de route de projets ni des PoC à empiler.
+        L'IMIA est mesurée par un AI Practice Steward, en porte d'entrée via le <a href={`${base}interventions/#diagnostic-imia`} class="text-blue-600 underline underline-offset-2 hover:no-underline">Diagnostic IMIA</a> (environ une semaine), puis en suivi de Mission Équipe ou de Mission Organisation. La restitution tient en un rapport synthétique : score d'écart, détail par dimension, cartographie des boucles actives, recommandation d'intervention. Jamais une feuille de route de projets ni des PoC à empiler.
       </p>
     </section>
 
@@ -198,7 +199,7 @@ const base = import.meta.env.BASE_URL;
     <section class="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white p-8 text-center">
       <p class="text-slate-300 text-base leading-relaxed mb-6">Vous voulez mesurer l'écart entre votre intention stratégique et vos pratiques IA ?</p>
       <div class="flex flex-wrap gap-4 justify-center">
-        <a href={`${base}contact/`} class="btn-primary">Discuter d'un Diagnostic IMIA →</a>
+        <a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary">Discuter d'un Diagnostic IMIA →</a>
         <a href={`${base}interventions/`}
           style="color:white;border:2px solid rgba(255,255,255,0.3);padding:0.5rem 1.25rem;border-radius:0.5rem;font-weight:600;font-size:0.8rem;text-decoration:none"
         >Voir les interventions</a>

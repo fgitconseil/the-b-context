@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ArbreDecisionDownload from '../components/ArbreDecisionDownload.astro';
+import { CALENDLY_URL } from '../lib/links';
 const base = import.meta.env.BASE_URL;
 ---
 <Layout title="Interventions" description="Appel de cadrage gratuit, Diagnostic IMIA en une semaine, puis l'intervention adaptée : quatre situations, une réponse par situation, durées transparentes.">
@@ -34,7 +35,7 @@ const base = import.meta.env.BASE_URL;
       En parallèle, la formation distancielle gratuite reste ouverte à vos équipes : cinq blocs de 20 minutes, à leur rythme, pour comprendre la méthode S.F.O.I. et créer un langage commun avant toute intervention.
     </p>
     <div class="flex flex-wrap gap-4">
-      <a href={`${base}contact/`} class="btn-primary text-sm">Réserver un appel de cadrage gratuit →</a>
+      <a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary text-sm">Réserver un appel de cadrage gratuit →</a>
       <a href={`${base}formation/`} class="text-blue-600 text-sm font-medium hover:underline self-center">Accéder à la formation gratuite →</a>
     </div>
   </section>
@@ -48,19 +49,19 @@ const base = import.meta.env.BASE_URL;
     </p>
     <div class="bg-white border border-slate-200 rounded-xl p-6 space-y-4 mb-6">
       <div>
-        <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Vous repartez avec</p>
+        <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Vous repartez avec</p>
         <p class="text-slate-600 text-sm leading-relaxed">Un score IMIA sur 100, la cartographie des boucles qui vous coûtent (confiance aveugle, jugement délégué), un diagnostic S.F.O.I. de vos pratiques, et une recommandation d'intervention.</p>
       </div>
       <div>
-        <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Ce que ce n'est pas</p>
+        <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Ce que ce n'est pas</p>
         <p class="text-slate-600 text-sm leading-relaxed">Un audit. Pas de feuille de route de projets, pas de PoC à empiler. Une mesure de l'écart, et la décision pour le réduire. Le score est re-mesuré à 90 jours, puis chaque trimestre : l'engagement porte sur l'écart comblé, pas sur le temps passé.</p>
       </div>
       <div>
-        <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Durée</p>
+        <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Durée</p>
         <p class="text-slate-700 font-semibold">Environ 1 semaine</p>
       </div>
     </div>
-    <a href={`${base}contact/`} class="btn-primary text-sm">Réserver un appel de cadrage gratuit →</a>
+    <a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary text-sm">Réserver un appel de cadrage gratuit →</a>
   </section>
 
   <!-- Les 4 cas -->
@@ -81,16 +82,16 @@ const base = import.meta.env.BASE_URL;
       </div>
       <div class="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Offre</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Offre</p>
           <p class="text-slate-900 font-semibold">Diagnostic IMIA → Mission Équipe</p>
           <p class="text-slate-500 text-xs mt-1">Deux étapes séquencées. La Mission Équipe est déclenchée si le diagnostic le justifie.</p>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Point de départ</p>
-          <p class="text-slate-600 text-sm leading-relaxed">Le <a href="#diagnostic-imia" class="text-blue-600 hover:underline">Diagnostic IMIA</a> fixe le score, la cartographie des boucles et la recommandation d'intervention.</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Point de départ</p>
+          <p class="text-slate-600 text-sm leading-relaxed">Le <a href="#diagnostic-imia" class="text-blue-600 underline underline-offset-2 hover:no-underline">Diagnostic IMIA</a> fixe le score, la cartographie des boucles et la recommandation d'intervention.</p>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Livrables Mission Équipe (4 à 8 semaines)</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Livrables Mission Équipe (4 à 8 semaines)</p>
           <p class="text-slate-600 text-sm leading-relaxed">Un AI Practice Steward interne formé et en fonction, plusieurs savoirs critiques capitalisés et en service, un cadre de pratique tenu par l'équipe, un cycle de mesure IMIA à T0 puis à 90 jours.</p>
         </div>
       </div>
@@ -111,27 +112,27 @@ const base = import.meta.env.BASE_URL;
       </div>
       <div class="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Offre</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Offre</p>
           <p class="text-slate-900 font-semibold">Mission Savoir Critique</p>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Pour qui</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Pour qui</p>
           <p class="text-slate-600 text-sm leading-relaxed">Une équipe dont un savoir critique repose sur une ou deux personnes, avec un départ annoncé ou un processus clé non documenté.</p>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Ce que nous faisons</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Ce que nous faisons</p>
           <p class="text-slate-600 text-sm leading-relaxed">Nous extrayons le savoir tacite de l'expert par entretiens guidés, nous le formalisons dans un document pivot validé par l'équipe, puis nous mettons en service un agent qui n'exécute rien d'autre que ce qui a été formalisé.</p>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Ce que vous engagez</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Ce que vous engagez</p>
           <p class="text-slate-600 text-sm leading-relaxed">Deux ateliers d'une heure trente avec l'expert et son équipe, une relecture du livrable, un référent pour le transfert.</p>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Ce qui reste</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Ce qui reste</p>
           <p class="text-slate-600 text-sm leading-relaxed">Le document pivot, relisable et transmissible, indépendant du modèle utilisé. Sa mise à jour est la seule maintenance.</p>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Durée</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Durée</p>
           <p class="text-slate-700 font-semibold">3 à 4 semaines</p>
           <p class="text-slate-600 text-sm leading-relaxed mt-1">Le seul délai que vous subissez est celui de vos propres créneaux.</p>
         </div>
@@ -195,11 +196,11 @@ const base = import.meta.env.BASE_URL;
       </div>
       <div class="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Offre</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Offre</p>
           <p class="text-slate-900 font-semibold">Diagnostic IMIA organisationnel → Mission Organisation</p>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Livrables (2 à 4 mois)</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Livrables (2 à 4 mois)</p>
           <p class="text-slate-600 text-sm leading-relaxed">Diagnostic systémique multi-équipes, architecture skills par domaine métier, référentiel d'alignement des pratiques et des rôles, équipe interne de référents formée au transfert.</p>
         </div>
       </div>
@@ -220,15 +221,15 @@ const base = import.meta.env.BASE_URL;
       </div>
       <div class="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Offre</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Offre</p>
           <p class="text-slate-900 font-semibold">Formation présentiel équipe, 1 à 2 jours sur site</p>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Livrables</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Livrables</p>
           <p class="text-slate-600 text-sm leading-relaxed">Équipe formée à la méthode S.F.O.I., fiches mémo distribuées, cadre de départ partagé, conditions de succès identifiées pour généraliser.</p>
         </div>
         <div>
-          <p class="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1">Durée</p>
+          <p class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-1">Durée</p>
           <p class="text-slate-700 font-semibold">1 à 2 jours sur site</p>
         </div>
       </div>
@@ -281,7 +282,7 @@ const base = import.meta.env.BASE_URL;
   <section class="max-w-3xl mx-auto px-6 py-16 text-center">
     <h2 class="text-xl font-bold text-slate-900 mb-3">Votre situation ne colle à aucun de ces cas ?</h2>
     <p class="text-slate-500 text-base mb-6 leading-relaxed">Discutons. 30 minutes, sans engagement, pour comprendre où vous en êtes.</p>
-    <a href={`${base}contact/`} class="btn-primary text-base px-6 py-3">Discuter de votre situation →</a>
+    <a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary text-base px-6 py-3">Discuter de votre situation →</a>
   </section>
 
 </Layout>

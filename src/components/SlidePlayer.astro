@@ -53,7 +53,7 @@ const scriptHtmls: string[] = slides.map(s => {
   const key = normalizeForMatch(s.titre);
   return normalizedSections[key]
     ? mdToHtml(normalizedSections[key])
-    : '<p class="text-slate-400 italic text-sm">Script non disponible pour cette slide.</p>';
+    : '<p class="text-slate-500 italic text-sm">Script non disponible pour cette slide.</p>';
 });
 
 // Build-time report of H2 mismatches
@@ -104,7 +104,7 @@ const qiForJs = qi.map(q => ({ after_slide: q.after_slide }));
 >
 
   <!-- Breadcrumb -->
-  <nav class="mb-5 text-sm text-slate-400">
+  <nav class="mb-5 text-sm text-slate-500">
     <a href={`${base}formation/`} class="hover:text-slate-700 no-underline transition-colors">← Parcours</a>
     <span class="mx-2">·</span>
     <span>{phaseLabel}</span>
@@ -207,7 +207,7 @@ const qiForJs = qi.map(q => ({ after_slide: q.after_slide }));
     <details id="script-accordion" class="mt-2 rounded-xl border border-slate-100 bg-slate-50 overflow-hidden">
       <summary class="px-4 py-3 text-sm font-medium text-slate-600 cursor-pointer select-none hover:text-slate-900 transition-colors list-none flex items-center justify-between">
         <span>Voir le script complet</span>
-        <span class="text-slate-400 text-xs">▾</span>
+        <span class="text-slate-500 text-xs">▾</span>
       </summary>
       <div id="script-body" class="px-4 pb-4 pt-2 border-t border-slate-100" set:html={scriptHtmls[0]}></div>
     </details>
@@ -220,7 +220,7 @@ const qiForJs = qi.map(q => ({ after_slide: q.after_slide }));
       <div class="qf-panel" style={idx > 0 ? 'display:none' : ''}>
         <div class="flex items-center gap-3 mb-5">
           <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full uppercase tracking-wide">Quiz final</span>
-          <span class="text-xs text-slate-400">Question {idx + 1} / {TOTAL_QF}</span>
+          <span class="text-xs text-slate-500">Question {idx + 1} / {TOTAL_QF}</span>
         </div>
         <p class="text-base font-semibold text-slate-900 mb-5 leading-snug">{q.question}</p>
         <div class="quiz-block space-y-2" data-answer={String(q.answer)} data-quiz-kind="final">
