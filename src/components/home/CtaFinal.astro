@@ -1,10 +1,11 @@
 ---
-/* Home — CTA final. */
+/* Home — CTA final, même patron que le CTA de clôture d'a-propos.astro. Seul CTA après la FAQ. */
 import { CALENDLY_URL } from '../../lib/links';
 ---
-<section id="cta-final" aria-labelledby="cta-final-title" class="bg-slate-50 py-20">
+<section id="cta-final" aria-labelledby="cta-final-title" class="border-t border-slate-200 py-20">
   <div class="max-w-3xl mx-auto px-6 text-center">
-    <h2 id="cta-final-title" class="text-3xl font-bold text-slate-900 leading-tight mb-8">Transformez votre IA d'entreprise dès cette semaine.</h2>
-    <a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary text-base px-8 py-3">Discuter de votre situation</a>
+    <h2 id="cta-final-title" class="text-xl font-bold text-slate-900 mb-3">Parlons de votre situation.</h2>
+    <p class="text-slate-500 text-base mb-6 leading-relaxed">Un appel de cadrage gratuit de 30 minutes, sans engagement.</p>
+    <a href={CALENDLY_URL} target="_blank" rel="noopener" class="btn-primary text-base px-6 py-3">Réserver un appel de cadrage →</a>
   </div>
 </section>

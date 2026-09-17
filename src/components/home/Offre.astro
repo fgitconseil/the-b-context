@@ -1,0 +1,50 @@
+---
+/* Home — L'offre : Mission Savoir Critique. Texte : _chantier-pivot/the-b-context-contenus-etape3.md §1.
+   ADR-013 : glose IMIA canonique à la première occurrence de la page (bloc « La qualification »).
+   ADR-015 : le délai du cas client est attribué à l'agenda du client. */
+const facts = [
+  ["Engagement de l'équipe métier", "2 ateliers d'1h30, plus la relecture du livrable"],
+  ['Délai de mise en production', "2 semaines, dont l'essentiel tenu par l'agenda de l'équipe"],
+  ['Développement spécifique', 'Aucun'],
+  ['Maintenance', 'La mise à jour du livrable, rien d\'autre'],
+  ['Adhésion observée', "L'équipe a demandé à tester, corriger, retester"],
+  ['Nature des gains', 'Temps rendu, homogénéisation du traitement, attention humaine recentrée sur les cas qui la méritent'],
+];
+---
+<section id="offre" aria-labelledby="offre-title" class="border-t border-slate-200 py-20">
+  <div class="max-w-3xl mx-auto px-6">
+    <p class="text-sm font-semibold text-primary-600 mb-2">L'offre</p>
+    <h2 id="offre-title" class="text-3xl font-bold text-slate-900 leading-tight mb-10">Mission Savoir Critique</h2>
+
+    <div class="space-y-6 text-slate-700 leading-relaxed mb-14">
+      <p><strong class="text-slate-900">Pour qui.</strong> Une équipe dont un savoir critique repose sur une ou deux personnes : un départ annoncé, ou une intégration de nouveaux collaborateurs qui traîne parce que l'essentiel ne s'apprend nulle part.</p>
+      <p><strong class="text-slate-900">Ce que nous faisons.</strong> Nous extrayons le savoir tacite par entretiens guidés, nous le formalisons dans un document pivot validé par l'équipe, puis nous le déclinons en compétences IA injectables dans vos IA du quotidien. Un référent interne (AI Practice Steward) est formé pour tenir le cadre après notre départ.</p>
+      <p><strong class="text-slate-900">La qualification.</strong> Une grille légère — IMIA, l'instrument qui mesure l'écart entre l'intention stratégique de la direction et les pratiques IA réelles, environ 15 minutes, 5 dimensions — cadre le besoin pendant l'appel, puis se rejoue à la livraison : un avant/après citable.</p>
+      <p><strong class="text-slate-900">Pour une organisation à plusieurs équipes</strong> : la mission se répète par périmètre, pas de produit séparé à composer.</p>
+    </div>
+
+    <article class="bg-slate-50 rounded-xl border-l-4 border-primary-600 p-6 md:p-8">
+      <h3 class="text-xl font-bold text-slate-900 mb-5">Un cas concret</h3>
+      <div class="space-y-4 text-slate-700 leading-relaxed">
+        <p>Chez un acteur du retail, une équipe RH devait fiabiliser un traitement qui reposait entièrement sur l'expérience de ses membres. Un modèle générique aurait produit une moyenne acceptable, pas leur manière de faire.</p>
+        <p>Ni diagnostic préalable, ni feuille de route, ni PoC. Le premier livrable a été un document pivot : le raisonnement de l'équipe, extrait par entretiens guidés, écrit et validé par elle. Ce document est le contrat d'interface entre ce que l'équipe sait et ce que l'agent exécute. Il rend chaque sortie explicable et localise la correction quand elle est nécessaire.</p>
+        <p>L'agent a été mis en production deux semaines après le premier atelier. Le seul délai du projet a été celui de leur agenda. Il n'exécute rien d'autre que ce qui avait été formalisé. La première livraison a été la livraison : pas de phase pilote, pas de version d'essai.</p>
+        <p>Ce qui reste après la mission n'est pas l'agent. C'est le document pivot : relisable, transmissible, indépendant du modèle.</p>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white mt-6">
+        <table class="w-full text-sm text-left">
+          <tbody class="divide-y divide-slate-100">
+            {facts.map(([label, value]) => (
+              <tr class="align-top">
+                <th scope="row" class="px-4 py-3 font-medium text-slate-900 md:w-2/5">{label}</th>
+                <td class="px-4 py-3 text-slate-600">{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-slate-600 text-sm italic mt-4">Note : la durée courante d'une Mission Savoir Critique est de 3 à 4 semaines ; ce client a été livré en 2, l'essentiel du délai restant celui de son propre agenda.</p>
+    </article>
+  </div>
+</section>
