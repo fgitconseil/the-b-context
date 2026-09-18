@@ -59,7 +59,7 @@ Redirections (astro.config.mjs, exclues du sitemap) :
 
 Pages supprimées au pivot : `/formation/` (et ses 5 blocs), `/inscription/`, `/connexion/`, `/contact/`, `/interventions/`, `/framework/` (hub), `/framework/manifeste/`, `/framework/methode-sfoi/`, `/framework/imia/`.
 
-Home (`src/pages/index.astro`, composants dans `src/components/home/`) : Hero · Constat · Offre · Pivot · note Et ensuite (LPBIA) · Ce qui reste · Pour aller plus loin · FAQ · CTA final.
+Home (`src/pages/index.astro`, composants dans `src/components/home/`) : Hero · Constat · Pivot · Offre · Ce qui reste (LPBIA) · Pour aller plus loin · FAQ · CTA final.
 
 ---
 
@@ -92,11 +92,12 @@ Le site fonctionne sur deux niveaux :
 - **Backstage** (doctrine) : Thèse · AI Practice Steward
 
 Règles :
-- **Offre unique : Mission Savoir Critique.** Pas de palier produit, pas de Diagnostic IMIA ni de Mission Équipe/Organisation vendus séparément. Une organisation à plusieurs équipes répète la mission par périmètre.
-- Le rôle AI Practice Steward n'apparaît ni dans le hero, ni dans les titres, ni dans aucune accroche : le visiteur doit reconnaître son problème avant d'avoir à décoder un nom propriétaire. Il est admis dans la description de l'offre et dans la section « Ce qui reste après notre départ » de la home, où il désigne le référent interne formé pendant la mission. Référence : ADR-016.
-- **Le titre AI Practice Steward n'est jamais porté par The B Context ni par Fayaz** : il désigne le collaborateur du client.
+- **Offre unique : Mission Savoir Critique.** Pas de palier produit, pas de Diagnostic IMIA ni de Mission Équipe/Organisation vendus séparément.
+- **L'AI Practice Steward n'est pas un livrable de la Mission Savoir Critique.** C'est un accompagnement d'équipe et d'entreprise séparé, à un tout autre ordre de grandeur économique, et il ne sert jamais d'argument de vente de la mission. Ce que la mission laisse, c'est le document pivot et les compétences IA.
+- Le rôle AI Practice Steward n'apparaît ni dans le hero, ni dans les titres, ni dans aucune accroche, ni dans le narratif de la Mission Savoir Critique : le visiteur doit reconnaître son problème avant d'avoir à décoder un nom propriétaire. Sur la home, il n'apparaît que dans « Pour aller plus loin », comme piste vers un accompagnement plus large. Référence : ADR-016.
+- **Le titre AI Practice Steward n'est jamais porté par The B Context ni par Fayaz** : il désigne un collaborateur du client, formé dans le cadre d'un accompagnement distinct.
 - **S.F.O.I.** : notoriété, pas prérequis. Plus enseignée sur le site (chaîne YouTube en préparation), aucune étape de la mission n'en dépend.
-- **La Petite Boîte IA** : mentionnée une seule fois en frontstage, dans la note discrète « Et ensuite » de la home, jamais en accroche, jamais dans le title ni la meta description.
+- **La Petite Boîte IA** : mentionnée une seule fois en frontstage, dans la section « Ce qui reste après notre départ » de la home, comme produit indépendant qui fait vivre le document pivot. Jamais en accroche, jamais dans le title ni la meta description.
 - Les CTA de prise de contact pointent vers Calendly : « Discuter de votre situation → » (ou « Discuter → » dans le header) et « Réserver un appel de cadrage → » en clôture.
 
 Source autoritaire du positionnement : `_chantier-pivot/the-b-context-strategie-etape1.md`.
